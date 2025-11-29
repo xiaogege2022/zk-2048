@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Discord Signal Test</title>
+    <style>
+        body { font-family: Arial; text-align: center; padding: 50px; background: #1a1a2e; color: white; }
+        button { font-size: 24px; padding: 20px 60px; background: #5865F2; color: white; border: none; border-radius: 10px; cursor: pointer; }
+        button:hover { background: #4752C4; }
+        #result { margin-top: 30px; font-size: 20px; }
+    </style>
+</head>
+<body>
+    <h1>BTC Trading Signal Bot</h1>
+    <p>Click to send test signal to Discord</p>
+    <button onclick="sendTest()">Send Test Signal</button>
+    <div id="result"></div>
+    <script>
+        async function sendTest() {
+            document.getElementById('result').innerText = 'Sending...';
+            try {
+                const r = await fetch('https://discord.com/api/webhooks/1444323268600266773/i5WXa-v66RrHnl6SP6IVXw4vtABzavxxeOZo6OJAk_gRMV-Khx88wWRSE_aNQ4kSqtEm', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        embeds: [{
+                            title: '🚨 BTC/USDT Trading Signal',
+                            color: 65280,
+                            fields: [
+                                {name: '📊 Direction', value: '🟢 **LONG**', inline: true},
+                                {name: '📈 Strategy', value: 'EMA 7/25 Cross', inline: true},
+                                {name: '🎯 Win Rate', value: '**80%**', inline: true},
+                                {name: '💰 Entry', value: '$95,000', inline: true},
+                                {name: '✅ TP', value: '$109,250 (+15%)', inline: true},
+                                {name: '❌ SL', value: '$88,350 (-7%)', inline: true},
+                                {name: '⚡ Leverage', value: '**25x**', inline: true}
+                            ]
+                        }]
+                    })
+                });
+                document.getElementById('result').innerText = r.ok ? '✅ Success! Check Discord!' : '❌ Failed: ' + r.status;
+            } catch(e) {
+                document.getElementById('result').innerText = '❌ Error: ' + e.message;
+            }
+        }
+    </script>
+</body>
+</html>
