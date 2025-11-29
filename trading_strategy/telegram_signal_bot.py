@@ -15,8 +15,8 @@ from enum import Enum
 # ============================================
 # 配置区域 - 请填入你的信息
 # ============================================
-TELEGRAM_BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"  # 从 BotFather 获取
-TELEGRAM_CHANNEL_ID = "YOUR_CHANNEL_ID_HERE"  # 频道 ID，格式: -100xxxxxxxxxx
+TELEGRAM_BOT_TOKEN = "8402682954:AAH4FnWpdZ4t1tQAFKcg2GXjMtzdfSd7P8A"
+TELEGRAM_CHANNEL_ID = "6935870343"
 
 # ============================================
 # 策略配置

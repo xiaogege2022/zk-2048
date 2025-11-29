@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>BTC交易信号测试 - Telegram</title>
+    <style>
+        body { font-family: Arial; text-align: center; padding: 50px; background: #1a1a2e; color: white; }
+        button { font-size: 24px; padding: 20px 60px; background: #0088cc; color: white; border: none; border-radius: 10px; cursor: pointer; }
+        button:hover { background: #006699; }
+        #result { margin-top: 30px; font-size: 20px; }
+    </style>
+</head>
+<body>
+    <h1>BTC 交易信号机器人 - Telegram</h1>
+    <p>点击按钮发送测试信号到 Telegram</p>
+    <button onclick="sendTest()">发送测试信号</button>
+    <div id="result"></div>
+    <script>
+        async function sendTest() {
+            document.getElementById('result').innerText = '发送中...';
+            const token = '8402682954:AAH4FnWpdZ4t1tQAFKcg2GXjMtzdfSd7P8A';
+            const chatId = '6935870343';
+            const message = `🚨 <b>BTC/USDT 交易信号</b>
+━━━━━━━━━━━━━━━━━━━━
+
+🟢 <b>做多 LONG</b>
+
+📊 <b>策略:</b> EMA 7/25 金叉
+📈 <b>胜率:</b> 80%
+💪 <b>信号强度:</b> ⭐⭐⭐⭐⭐ 强
+
+━━━━━━━━━━━━━━━━━━━━
+
+💰 <b>入场价格:</b> $95,000
+✅ <b>止盈:</b> $109,250 (+15%)
+❌ <b>止损:</b> $88,350 (-7%)
+⚡ <b>杠杆倍数:</b> 25倍
+
+━━━━━━━━━━━━━━━━━━━━
+
+📝 <b>策略说明:</b> EMA7上穿EMA25形成金叉，看涨信号
+
+⚠️ <i>风险提示: 仅供参考，请自行判断</i>`;
+
+            try {
+                const r = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message,
+                        parse_mode: 'HTML'
+                    })
+                });
+                const data = await r.json();
+                document.getElementById('result').innerText = data.ok ? '✅ 发送成功！请查看Telegram' : '❌ 失败: ' + data.description;
+            } catch(e) {
+                document.getElementById('result').innerText = '❌ 错误: ' + e.message;
+            }
+        }
+    </script>
+</body>
+</html>
