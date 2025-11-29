@@ -1,0 +1,46 @@
+rank,strategy_name,type,direction,win_rate,total_return_pct,final_equity,num_trades,max_drawdown,leverage,tp_pct,sl_pct,description
+1,Breakout_Buy,single,long,78.125,6.267329219166535e+18,6.267329219166534e+20,32,72.47003141215947,50,0.75,0.15,Buy on breakout above 7-day range after consolidation
+2,EMA_7_25_Cross,single,long,80.0,8137457533628123.0,8.137457533628224e+17,25,72.4375,50,0.5,0.1,"Buy on EMA7 cross above EMA25, sell on cross below"
+3,MACD_Bullish_Cross,single,long,44.927536231884055,272890199887519.6,2.728901998876196e+16,69,99.50257551010709,50,0.75,0.15,"Buy on MACD bullish cross, sell on bearish cross"
+4,EMA_Cross_Trend,combo,long,100.0,2222228460.482794,222222856048.2794,10,0.0,50,0.5,0.1,Buy on EMA cross when in uptrend
+5,Bullish_Pin_Bar,single,long,71.42857142857143,8839.28821704991,893928.821704991,28,26.513672673321537,50,0.6,0.15,Buy on bullish pin bar (hammer)
+6,EMA_50_200_Cross,single,long,71.42857142857143,7703.918670998351,780391.8670998351,7,79.33573909642134,50,0.5,0.1,Buy on EMA50 cross above EMA200 (major trend change)
+7,Flash_Crash_Bottom,single,long,66.66666666666666,4034.6780034820285,413467.8003482029,27,18.0975,50,0.22499999999999998,0.15,Buy on flash crash (>5% range with long lower wick)
+8,Fear_RSIos_Combo,combo,long,57.14285714285714,1701.680465590891,180168.0465590891,7,36.48321391606989,50,0.3,0.15,Combination of Fear and RSIos
+9,Fear_Plus_NegFunding,combo,long,40.0,1682.6684773314685,178266.84773314686,10,42.78731170970733,50,0.6,0.15,Buy when extreme fear AND negative funding
+10,FlashCrash_Fear,combo,long,75.0,1094.5678198014202,119456.78198014201,4,47.5,50,0.22499999999999998,0.15,Buy on flash crash with fear
+11,Fear_Drop15_Combo,combo,long,66.66666666666666,759.1951898219957,85919.51898219957,6,48.28435395390937,50,0.22499999999999998,0.15,Combination of Fear and Drop15
+12,Drop15_VolClx_Combo,combo,long,50.0,706.0889416790337,80608.89416790337,4,46.82300079134666,50,0.3,0.15,Combination of Drop15 and VolClx
+13,RSI_Oversold,single,long,55.55555555555556,624.2425693920109,72424.25693920109,18,39.2924234684375,50,0.22499999999999998,0.15,"Buy when RSI < 20, sell when RSI >= 50"
+14,Drop15_RSIos_Combo,combo,long,50.0,364.8635599617426,46486.355996174265,10,25.878237500000008,50,0.3,0.15,Combination of Drop15 and RSIos
+15,Flash_Pin_Combo,combo,long,55.55555555555556,310.9860836379495,41098.60836379495,27,27.627713412458466,50,0.22499999999999998,0.15,Combination of Flash and Pin
+16,Fear_Plus_Drop,combo,long,66.66666666666666,296.88432786527903,39688.432786527905,6,24.352126997923,50,0.22499999999999998,0.15,Buy when extreme fear AND 15%+ weekly drop
+17,Large_Drop_20pct,single,long,42.857142857142854,175.16439288790474,27516.439288790476,7,25.8782375,50,0.3,0.15,"Buy on 20%+ weekly drop, sell on 15% recovery"
+18,Extreme_Fear_Buy,single,long,50.0,161.2433301011364,26124.333010113638,4,54.805339573228885,50,0.22499999999999998,0.15,"Buy when Fear & Greed <= 10, sell when >= 50"
+19,NegFund_Drop15_Combo,combo,long,40.0,149.8313554391863,24983.13554391863,5,25.878237499999994,50,0.22499999999999998,0.15,Combination of NegFund and Drop15
+20,Extreme_Greed_Short,single,short,37.5,147.46446177814607,24746.446177814607,8,25.878237499999994,40,0.15000000000000002,0.1,Short when Fear & Greed >= 90
+21,Fear_Flash_Combo,combo,long,66.66666666666666,123.86518926319201,22386.5189263192,3,40.56784745720407,50,0.25,0.1,Combination of Fear and Flash
+22,Fear_Pin_Combo,combo,long,50.0,103.62499999999999,20362.5,2,9.5,50,0.25,0.1,Combination of Fear and Pin
+23,Fear_VolClx_Combo,combo,long,50.0,81.02437689678008,18102.43768967801,4,57.750091764255664,50,0.25,0.1,Combination of Fear and VolClx
+24,NegFund_VolClx_Combo,combo,long,25.0,66.77396562500002,16677.396562500002,4,25.878237499999994,50,0.25,0.1,Combination of NegFund and VolClx
+25,RSIos_Pin_Combo,combo,long,100.0,53.40355470563347,15340.355470563347,1,0.0,50,0.22499999999999998,0.15,Combination of RSIos and Pin
+26,NegFund_RSIos_Combo,combo,long,20.0,44.276329694737704,14427.63296947377,5,32.91980493749999,50,0.3,0.15,Combination of NegFund and RSIos
+27,BB_Oversold,single,long,32.142857142857146,37.622709976396436,13762.270997639644,28,62.93299992336164,50,0.22499999999999998,0.15,"Buy below lower BB, sell at middle BB"
+28,Negative_Funding_Buy,single,long,25.0,5.657173596121337,10565.717359612134,8,45.059643238935934,50,0.22499999999999998,0.15,Buy when funding very negative (shorts paying)
+29,OI_Liquidation_Buy,single,long,33.33333333333333,4.083154496549833,10408.315449654983,3,18.097499999999997,50,0.15000000000000002,0.1,Buy when OI drops >5% with price drop (forced liquidation)
+30,Large_1D_Drop,single,long,0.0,-3.75,9625.0,1,3.75,5,0.045,0.03,Buy on 10%+ single day drop
+31,Funding_OI_Drop,combo,long,0.0,-3.75,9625.0,1,3.75,5,0.045,0.03,Buy on negative funding with OI liquidation
+32,Fear_OILiq_Combo,combo,long,0.0,-3.75,9625.0,1,3.75,5,0.045,0.03,Combination of Fear and OILiq
+33,NegFund_OILiq_Combo,combo,long,0.0,-3.75,9625.0,1,3.75,5,0.045,0.03,Combination of NegFund and OILiq
+34,NegFund_Pin_Combo,combo,long,0.0,-4.258872633543506,9574.11273664565,1,4.258872633543506,5,0.045,0.03,Combination of NegFund and Pin
+35,Pin_Volume_Fear,combo,long,0.0,-5.204486352615531,9479.551364738447,1,5.204486352615531,5,0.045,0.03,Buy on pin bar with high volume and fear
+36,Volume_Drop_Fear,combo,long,100.0,-7.5,9250.0,1,7.5,5,0.045,0.03,Buy on volume climax with drop and fear
+37,Volume_Climax_Bottom,single,long,0.0,-7.882918278667803,9211.70817213322,2,7.882918278667803,5,0.045,0.03,Buy on 3x volume with >5% drop (capitulation)
+38,OILiq_RSIos_Combo,combo,long,0.0,-8.02486872588379,9197.513127411621,2,8.02486872588379,5,0.045,0.03,Combination of OILiq and RSIos
+39,NegFund_Flash_Combo,combo,long,50.0,-8.330638143121213,9166.936185687879,2,8.330638143121213,5,0.045,0.03,Combination of NegFund and Flash
+40,Drop15_OILiq_Combo,combo,long,0.0,-11.473936148663142,8852.606385133686,3,11.473936148663142,5,0.045,0.03,Combination of Drop15 and OILiq
+41,Fear_NegFund_Combo,combo,long,37.5,-13.664103701455987,8633.589629854401,8,13.664103701455987,5,0.045,0.03,Combination of Fear and NegFund
+42,Flash_RSIos_Combo,combo,long,100.0,-15.963330462420764,8403.666953757924,2,15.963330462420764,5,0.045,0.03,Combination of Flash and RSIos
+43,VolClx_RSIos_Combo,combo,long,0.0,-17.91939827189164,8208.060172810836,4,17.91939827189164,5,0.045,0.03,Combination of VolClx and RSIos
+44,Greed_Pump_Short,combo,short,0.0,-18.6019267762458,8139.80732237542,5,18.6019267762458,5,0.045,0.03,Short when extreme greed AND 20%+ weekly pump
+45,RSI_Fear_Drop,combo,long,50.0,-23.83778006313698,7616.221993686302,6,23.83778006313698,5,0.045,0.03,Buy on oversold RSI with fear and drop

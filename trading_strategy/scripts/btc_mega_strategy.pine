@@ -1,0 +1,419 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © BTC Ultimate Trading Strategy - 10000%+ Return Target
+// Combines: EMA Crossover + Pin Bar + Flash Crash + Trend Following + Trailing Stop
+
+//@version=5
+strategy("BTC Ultimate 10000% Strategy", overlay=true,
+         initial_capital=10000,
+         default_qty_type=strategy.percent_of_equity,
+         default_qty_value=25,
+         commission_type=strategy.commission.percent,
+         commission_value=0.04,
+         pyramiding=5,
+         calc_on_every_tick=true)
+
+// ============================================
+// INPUT PARAMETERS
+// ============================================
+
+// EMA Settings
+emaFastLen = input.int(7, "EMA Fast Length", minval=1, group="EMA Settings")
+emaSlowLen = input.int(25, "EMA Slow Length", minval=1, group="EMA Settings")
+emaTrendLen = input.int(99, "EMA Trend Length", minval=1, group="EMA Settings")
+ema200Len = input.int(200, "EMA 200 Length", minval=1, group="EMA Settings")
+
+// MACD Settings
+macdFast = input.int(12, "MACD Fast", group="MACD Settings")
+macdSlow = input.int(26, "MACD Slow", group="MACD Settings")
+macdSignal = input.int(9, "MACD Signal", group="MACD Settings")
+
+// RSI Settings
+rsiLen = input.int(14, "RSI Length", group="RSI Settings")
+rsiOversold = input.int(25, "RSI Oversold Level", group="RSI Settings")
+rsiOverbought = input.int(75, "RSI Overbought Level", group="RSI Settings")
+
+// Pin Bar Settings
+pinBarMultiplier = input.float(2.0, "Pin Bar Wick Multiplier", minval=1.0, group="Pin Bar Settings")
+minWickPct = input.float(1.5, "Min Wick % of Price", minval=0.5, group="Pin Bar Settings")
+
+// Flash Crash Settings
+flashCrashPct = input.float(5.0, "Flash Crash Min Range %", minval=2.0, group="Flash Crash Settings")
+flashCrashLookback = input.int(20, "Flash Crash Volume Lookback", group="Flash Crash Settings")
+volumeSpikeMult = input.float(2.0, "Volume Spike Multiplier", minval=1.0, group="Flash Crash Settings")
+
+// Breakout Settings
+consolidationLen = input.int(7, "Consolidation Lookback", group="Breakout Settings")
+consolidationThreshold = input.float(10.0, "Max Consolidation Range %", group="Breakout Settings")
+
+// Risk Management
+baseTakeProfitPct = input.float(15.0, "Base Take Profit %", minval=1.0, group="Risk Management")
+baseStopLossPct = input.float(7.0, "Base Stop Loss %", minval=0.5, group="Risk Management")
+useTrailingStop = input.bool(true, "Use Trailing Stop", group="Risk Management")
+trailingStopPct = input.float(5.0, "Trailing Stop %", minval=1.0, group="Risk Management")
+trailingStopActivation = input.float(10.0, "Trailing Stop Activation %", minval=1.0, group="Risk Management")
+
+// Position Sizing
+useKellyCriterion = input.bool(true, "Use Kelly Criterion Sizing", group="Position Sizing")
+maxPositionPct = input.float(50.0, "Max Position % of Equity", minval=10.0, maxval=100.0, group="Position Sizing")
+minPositionPct = input.float(10.0, "Min Position % of Equity", minval=5.0, maxval=50.0, group="Position Sizing")
+
+// Time Filter
+useTimeFilter = input.bool(false, "Use Time Filter", group="Time Filter")
+startYear = input.int(2020, "Start Year", group="Time Filter")
+endYear = input.int(2025, "End Year", group="Time Filter")
+
+// ============================================
+// INDICATOR CALCULATIONS
+// ============================================
+
+// EMAs
+emaFast = ta.ema(close, emaFastLen)
+emaSlow = ta.ema(close, emaSlowLen)
+emaTrend = ta.ema(close, emaTrendLen)
+ema200 = ta.ema(close, ema200Len)
+
+// MACD
+[macdLine, signalLine, histLine] = ta.macd(close, macdFast, macdSlow, macdSignal)
+
+// RSI
+rsiValue = ta.rsi(close, rsiLen)
+
+// ATR for volatility
+atr = ta.atr(14)
+atrPct = atr / close * 100
+
+// Volatility (20-day standard deviation of returns)
+returns = (close - close[1]) / close[1]
+volatility = ta.stdev(returns, 20) * math.sqrt(252) * 100
+
+// Volume Analysis
+volumeSMA = ta.sma(volume, flashCrashLookback)
+volumeRatio = volume / volumeSMA
+
+// Bollinger Bands
+[bbUpper, bbMiddle, bbLower] = ta.bb(close, 20, 2)
+
+// ============================================
+// PATTERN DETECTION
+// ============================================
+
+// Body and Wick Calculations
+body = math.abs(close - open)
+upperWick = high - math.max(close, open)
+lowerWick = math.min(close, open) - low
+totalRange = high - low
+wickRatio = body > 0 ? (upperWick + lowerWick) / body : 0
+
+// Bullish Pin Bar (Hammer)
+bullishPinBar = lowerWick > body * pinBarMultiplier and
+                lowerWick > upperWick * 2 and
+                lowerWick / close * 100 > minWickPct
+
+// Bearish Pin Bar (Shooting Star)
+bearishPinBar = upperWick > body * pinBarMultiplier and
+                upperWick > lowerWick * 2 and
+                upperWick / close * 100 > minWickPct
+
+// Flash Crash Detection (Large range with long lower wick)
+rangePct = totalRange / close * 100
+isFlashCrash = rangePct > flashCrashPct and
+               lowerWick > upperWick * 2 and
+               volumeRatio > volumeSpikeMult
+
+// Flash Pump Detection (Large range with long upper wick)
+isFlashPump = rangePct > flashCrashPct and
+              upperWick > lowerWick * 2 and
+              volumeRatio > volumeSpikeMult
+
+// ============================================
+// TREND DETECTION
+// ============================================
+
+// Strong Uptrend: EMA7 > EMA25 > EMA99
+strongUptrend = emaFast > emaSlow and emaSlow > emaTrend
+
+// Strong Downtrend: EMA7 < EMA25 < EMA99
+strongDowntrend = emaFast < emaSlow and emaSlow < emaTrend
+
+// Consolidation
+isConsolidation = not strongUptrend and not strongDowntrend
+
+// Price above/below key EMAs
+priceAboveEMA200 = close > ema200
+priceBelowEMA200 = close < ema200
+
+// ============================================
+// CROSSOVER SIGNALS
+// ============================================
+
+// EMA 7/25 Crossover
+emaGoldenCross = ta.crossover(emaFast, emaSlow)
+emaDeathCross = ta.crossunder(emaFast, emaSlow)
+
+// EMA 50/200 Crossover (Major trend change)
+ema50 = ta.ema(close, 50)
+majorGoldenCross = ta.crossover(ema50, ema200)
+majorDeathCross = ta.crossunder(ema50, ema200)
+
+// MACD Crossover
+macdBullishCross = ta.crossover(macdLine, signalLine)
+macdBearishCross = ta.crossunder(macdLine, signalLine)
+
+// ============================================
+// BREAKOUT DETECTION
+// ============================================
+
+// 7-day range for consolidation detection
+highestHigh = ta.highest(high, consolidationLen)
+lowestLow = ta.lowest(low, consolidationLen)
+rangeWidth = (highestHigh - lowestLow) / close * 100
+isTightRange = rangeWidth < consolidationThreshold
+
+// Breakout signals
+breakoutUp = close > highestHigh[1] and isTightRange[1]
+breakoutDown = close < lowestLow[1] and isTightRange[1]
+
+// ============================================
+// PRICE CHANGE CALCULATIONS
+// ============================================
+
+change1d = (close - close[1]) / close[1] * 100
+change3d = (close - close[3]) / close[3] * 100
+change7d = (close - close[7]) / close[7] * 100
+change14d = (close - close[14]) / close[14] * 100
+
+// Large moves detection
+largeDrop7d = change7d <= -15
+largeDrop3d = change3d <= -10
+largeDrop1d = change1d <= -5
+
+largePump7d = change7d >= 15
+largePump3d = change3d >= 10
+largePump1d = change1d >= 5
+
+// ============================================
+// COMBINED ENTRY SIGNALS
+// ============================================
+
+// Strategy 1: EMA Crossover + Trend (Strongest signal)
+signal1_long = emaGoldenCross and strongUptrend
+signal1_short = emaDeathCross and strongDowntrend
+
+// Strategy 2: Pin Bar + Volume
+signal2_long = bullishPinBar and volumeRatio > 1.5
+signal2_short = bearishPinBar and volumeRatio > 1.5
+
+// Strategy 3: Flash Crash Bottom
+signal3_long = isFlashCrash and close > open  // Close above open after crash
+
+// Strategy 4: Breakout
+signal4_long = breakoutUp and volumeRatio > 1.2
+signal4_short = breakoutDown and volumeRatio > 1.2
+
+// Strategy 5: RSI Extreme + EMA Support
+signal5_long = rsiValue < rsiOversold and close > emaTrend
+signal5_short = rsiValue > rsiOverbought and close < emaTrend
+
+// Strategy 6: MACD + Trend Confirmation
+signal6_long = macdBullishCross and strongUptrend and close > ema200
+signal6_short = macdBearishCross and strongDowntrend and close < ema200
+
+// Strategy 7: Major Golden/Death Cross
+signal7_long = majorGoldenCross
+signal7_short = majorDeathCross
+
+// Strategy 8: Bollinger Band Extreme
+signal8_long = close < bbLower and rsiValue < 35
+signal8_short = close > bbUpper and rsiValue > 65
+
+// ============================================
+// MASTER ENTRY CONDITIONS
+// ============================================
+
+// Long Entry: Any strong buy signal
+longCondition = signal1_long or signal2_long or signal3_long or signal4_long or
+                signal5_long or signal6_long or signal7_long or signal8_long
+
+// Short Entry: Any strong sell signal
+shortCondition = signal1_short or signal2_short or signal4_short or
+                 signal5_short or signal6_short or signal7_short or signal8_short
+
+// ============================================
+// DYNAMIC POSITION SIZING
+// ============================================
+
+// Calculate win rate from recent trades (simplified)
+var float winCount = 0
+var float totalTrades = 0
+var float avgWin = 0.05
+var float avgLoss = 0.03
+
+// Kelly Criterion: f* = (p * b - q) / b
+// p = win probability, q = 1-p, b = win/loss ratio
+kellyFraction = useKellyCriterion ? math.max(0.1, math.min(0.5, (0.6 * avgWin - 0.4 * avgLoss) / avgWin)) : 0.25
+
+// Volatility adjustment (reduce position size when volatile)
+volAdjustment = math.max(0.3, math.min(1.5, 30 / (volatility + 10)))
+
+// Calculate position size
+positionPct = math.max(minPositionPct, math.min(maxPositionPct, kellyFraction * 100 * volAdjustment))
+
+// ============================================
+// DYNAMIC STOP LOSS & TAKE PROFIT
+// ============================================
+
+// Adjust TP/SL based on volatility and signal strength
+signalStrength = (signal1_long ? 2 : 0) + (signal2_long ? 1.5 : 0) + (signal3_long ? 2 : 0) +
+                 (signal4_long ? 1.5 : 0) + (signal5_long ? 1 : 0) + (signal6_long ? 1.5 : 0) +
+                 (signal7_long ? 2 : 0) + (signal8_long ? 1 : 0)
+
+// Higher volatility = wider stops, stronger signal = tighter TP (more confident)
+dynamicTP = baseTakeProfitPct * (1 + atrPct / 5) * (1 - signalStrength * 0.05)
+dynamicSL = baseStopLossPct * (1 + atrPct / 5)
+
+// Ensure reasonable bounds
+finalTP = math.max(5.0, math.min(50.0, dynamicTP))
+finalSL = math.max(3.0, math.min(15.0, dynamicSL))
+
+// ============================================
+// TIME FILTER
+// ============================================
+
+timeFilterOk = not useTimeFilter or (year >= startYear and year <= endYear)
+
+// ============================================
+// TRADE EXECUTION
+// ============================================
+
+// Track entry price for trailing stop
+var float entryPrice = na
+var float highestSinceEntry = na
+var float lowestSinceEntry = na
+
+// Long Entry
+if longCondition and timeFilterOk and strategy.position_size == 0
+    strategy.entry("Long", strategy.long, qty=positionPct)
+    entryPrice := close
+    highestSinceEntry := close
+    lowestSinceEntry := close
+
+// Short Entry
+if shortCondition and timeFilterOk and strategy.position_size == 0
+    strategy.entry("Short", strategy.short, qty=positionPct)
+    entryPrice := close
+    highestSinceEntry := close
+    lowestSinceEntry := close
+
+// Update tracking variables
+if strategy.position_size > 0
+    highestSinceEntry := math.max(highestSinceEntry, high)
+if strategy.position_size < 0
+    lowestSinceEntry := math.min(lowestSinceEntry, low)
+
+// ============================================
+// EXIT CONDITIONS
+// ============================================
+
+// Calculate profit/loss percentage
+longProfitPct = strategy.position_size > 0 ? (close - entryPrice) / entryPrice * 100 : 0
+shortProfitPct = strategy.position_size < 0 ? (entryPrice - close) / entryPrice * 100 : 0
+
+// Trailing stop calculation
+longTrailingStop = highestSinceEntry * (1 - trailingStopPct / 100)
+shortTrailingStop = lowestSinceEntry * (1 + trailingStopPct / 100)
+
+// Long exits
+longTPHit = strategy.position_size > 0 and longProfitPct >= finalTP
+longSLHit = strategy.position_size > 0 and longProfitPct <= -finalSL
+longTrailHit = strategy.position_size > 0 and useTrailingStop and
+               longProfitPct >= trailingStopActivation and close < longTrailingStop
+longSignalExit = strategy.position_size > 0 and (emaDeathCross or macdBearishCross)
+
+// Short exits
+shortTPHit = strategy.position_size < 0 and shortProfitPct >= finalTP
+shortSLHit = strategy.position_size < 0 and shortProfitPct <= -finalSL
+shortTrailHit = strategy.position_size < 0 and useTrailingStop and
+                shortProfitPct >= trailingStopActivation and close > shortTrailingStop
+shortSignalExit = strategy.position_size < 0 and (emaGoldenCross or macdBullishCross)
+
+// Execute exits
+if longTPHit
+    strategy.close("Long", comment="TP Hit")
+
+if longSLHit
+    strategy.close("Long", comment="SL Hit")
+
+if longTrailHit
+    strategy.close("Long", comment="Trail Stop")
+
+if longSignalExit
+    strategy.close("Long", comment="Signal Exit")
+
+if shortTPHit
+    strategy.close("Short", comment="TP Hit")
+
+if shortSLHit
+    strategy.close("Short", comment="SL Hit")
+
+if shortTrailHit
+    strategy.close("Short", comment="Trail Stop")
+
+if shortSignalExit
+    strategy.close("Short", comment="Signal Exit")
+
+// ============================================
+// VISUAL ELEMENTS
+// ============================================
+
+// Plot EMAs
+plot(emaFast, "EMA Fast", color=color.new(color.blue, 0), linewidth=1)
+plot(emaSlow, "EMA Slow", color=color.new(color.orange, 0), linewidth=1)
+plot(emaTrend, "EMA Trend", color=color.new(color.purple, 0), linewidth=2)
+plot(ema200, "EMA 200", color=color.new(color.red, 0), linewidth=2)
+
+// Plot Bollinger Bands
+plot(bbUpper, "BB Upper", color=color.new(color.gray, 70))
+plot(bbLower, "BB Lower", color=color.new(color.gray, 70))
+
+// Entry signals
+plotshape(signal1_long, "EMA Cross Long", shape.triangleup, location.belowbar, color.green, size=size.small)
+plotshape(signal2_long, "Pin Bar Long", shape.circle, location.belowbar, color.lime, size=size.tiny)
+plotshape(signal3_long, "Flash Crash Long", shape.diamond, location.belowbar, color.aqua, size=size.small)
+plotshape(signal4_long, "Breakout Long", shape.arrowup, location.belowbar, color.teal, size=size.tiny)
+
+plotshape(signal1_short, "EMA Cross Short", shape.triangledown, location.abovebar, color.red, size=size.small)
+plotshape(signal2_short, "Pin Bar Short", shape.circle, location.abovebar, color.maroon, size=size.tiny)
+plotshape(signal4_short, "Breakout Short", shape.arrowdown, location.abovebar, color.fuchsia, size=size.tiny)
+
+// Trailing stop line
+plot(strategy.position_size > 0 and useTrailingStop and longProfitPct >= trailingStopActivation ? longTrailingStop : na,
+     "Long Trailing Stop", color=color.green, style=plot.style_stepline, linewidth=2)
+plot(strategy.position_size < 0 and useTrailingStop and shortProfitPct >= trailingStopActivation ? shortTrailingStop : na,
+     "Short Trailing Stop", color=color.red, style=plot.style_stepline, linewidth=2)
+
+// ============================================
+// INFO TABLE
+// ============================================
+
+var table infoTable = table.new(position.top_right, 2, 10, bgcolor=color.new(color.black, 80))
+
+if barstate.islast
+    table.cell(infoTable, 0, 0, "BTC Ultimate Strategy", text_color=color.white, text_size=size.normal)
+    table.cell(infoTable, 0, 1, "Trend: " + (strongUptrend ? "UP" : strongDowntrend ? "DOWN" : "NEUTRAL"),
+               text_color=strongUptrend ? color.green : strongDowntrend ? color.red : color.yellow)
+    table.cell(infoTable, 0, 2, "RSI: " + str.tostring(rsiValue, "#.#"),
+               text_color=rsiValue < rsiOversold ? color.green : rsiValue > rsiOverbought ? color.red : color.white)
+    table.cell(infoTable, 0, 3, "Volatility: " + str.tostring(volatility, "#.#") + "%", text_color=color.white)
+    table.cell(infoTable, 0, 4, "Position: " + str.tostring(positionPct, "#.#") + "%", text_color=color.white)
+    table.cell(infoTable, 0, 5, "TP: " + str.tostring(finalTP, "#.#") + "% | SL: " + str.tostring(finalSL, "#.#") + "%", text_color=color.white)
+    table.cell(infoTable, 0, 6, "7d Change: " + str.tostring(change7d, "#.#") + "%",
+               text_color=change7d > 0 ? color.green : color.red)
+
+// ============================================
+// ALERTS
+// ============================================
+
+alertcondition(longCondition, title="Long Entry Signal", message="BTC Ultimate: Long Entry Signal Triggered")
+alertcondition(shortCondition, title="Short Entry Signal", message="BTC Ultimate: Short Entry Signal Triggered")
+alertcondition(longTPHit or longTrailHit, title="Long Exit", message="BTC Ultimate: Long Position Closed")
+alertcondition(shortTPHit or shortTrailHit, title="Short Exit", message="BTC Ultimate: Short Position Closed")

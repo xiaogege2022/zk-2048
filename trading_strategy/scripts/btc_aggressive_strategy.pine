@@ -1,0 +1,389 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © BTC Aggressive Trading Strategy - High Frequency Version
+// Target: 100+ trades with 70%+ win rate and 10000%+ returns
+
+//@version=5
+strategy("BTC Aggressive 10000% Strategy", overlay=true,
+         initial_capital=10000,
+         default_qty_type=strategy.percent_of_equity,
+         default_qty_value=30,
+         commission_type=strategy.commission.percent,
+         commission_value=0.04,
+         pyramiding=3,
+         calc_on_every_tick=true)
+
+// ============================================
+// INPUT PARAMETERS
+// ============================================
+
+// Core Settings
+emaFast = input.int(7, "EMA Fast", group="Core")
+emaSlow = input.int(25, "EMA Slow", group="Core")
+emaTrend = input.int(99, "EMA Trend", group="Core")
+
+// Aggressive Entry Settings
+rsiLen = input.int(14, "RSI Length", group="Entry")
+rsiOB = input.int(70, "RSI Overbought", group="Entry")
+rsiOS = input.int(30, "RSI Oversold", group="Entry")
+
+// Pin Bar
+pinMultiplier = input.float(1.5, "Pin Bar Multiplier", group="Pin Bar")
+minPinPct = input.float(1.0, "Min Pin %", group="Pin Bar")
+
+// Flash Crash
+flashPct = input.float(3.0, "Flash Crash %", group="Flash")
+volMultiplier = input.float(1.5, "Volume Multiplier", group="Flash")
+
+// Risk Management
+tpPct = input.float(8.0, "Take Profit %", group="Risk")
+slPct = input.float(4.0, "Stop Loss %", group="Risk")
+useTrail = input.bool(true, "Use Trailing Stop", group="Risk")
+trailPct = input.float(3.0, "Trail %", group="Risk")
+trailActivate = input.float(5.0, "Trail Activation %", group="Risk")
+
+// Dynamic Leverage (for display only - TradingView doesn't support actual leverage)
+baseLeverage = input.int(20, "Base Leverage", group="Leverage")
+maxLeverage = input.int(50, "Max Leverage", group="Leverage")
+minLeverage = input.int(5, "Min Leverage", group="Leverage")
+
+// ============================================
+// CALCULATIONS
+// ============================================
+
+// EMAs
+ema7 = ta.ema(close, emaFast)
+ema25 = ta.ema(close, emaSlow)
+ema99 = ta.ema(close, emaTrend)
+ema200 = ta.ema(close, 200)
+ema50 = ta.ema(close, 50)
+
+// MACD
+[macd, signal, hist] = ta.macd(close, 12, 26, 9)
+
+// RSI
+rsi = ta.rsi(close, rsiLen)
+
+// ATR and Volatility
+atr = ta.atr(14)
+atrPct = atr / close * 100
+vol20 = ta.stdev(close / close[1] - 1, 20) * math.sqrt(252) * 100
+
+// Volume
+volSMA = ta.sma(volume, 20)
+volRatio = volume / volSMA
+
+// Bollinger Bands
+basis = ta.sma(close, 20)
+dev = 2 * ta.stdev(close, 20)
+bbUpper = basis + dev
+bbLower = basis - dev
+
+// Body and Wicks
+body = math.abs(close - open)
+upWick = high - math.max(close, open)
+lowWick = math.min(close, open) - low
+range_ = high - low
+
+// ============================================
+// TREND DETECTION
+// ============================================
+
+uptrend = ema7 > ema25 and ema25 > ema99
+downtrend = ema7 < ema25 and ema25 < ema99
+neutral = not uptrend and not downtrend
+
+aboveMA200 = close > ema200
+belowMA200 = close < ema200
+
+// ============================================
+// SIGNAL DETECTION
+// ============================================
+
+// 1. EMA Crossover
+emaCrossUp = ta.crossover(ema7, ema25)
+emaCrossDown = ta.crossunder(ema7, ema25)
+
+// 2. EMA 50/200 Cross (Major)
+goldenCross = ta.crossover(ema50, ema200)
+deathCross = ta.crossunder(ema50, ema200)
+
+// 3. MACD Cross
+macdCrossUp = ta.crossover(macd, signal)
+macdCrossDown = ta.crossunder(macd, signal)
+
+// 4. Pin Bar
+bullPin = lowWick > body * pinMultiplier and lowWick > upWick * 1.5 and lowWick / close * 100 > minPinPct
+bearPin = upWick > body * pinMultiplier and upWick > lowWick * 1.5 and upWick / close * 100 > minPinPct
+
+// 5. Flash Crash / Pump
+flashCrash = range_ / close * 100 > flashPct and lowWick > upWick * 2 and volRatio > volMultiplier
+flashPump = range_ / close * 100 > flashPct and upWick > lowWick * 2 and volRatio > volMultiplier
+
+// 6. RSI Extremes
+rsiOS_signal = rsi < rsiOS
+rsiOB_signal = rsi > rsiOB
+rsiExtremeOS = rsi < 20
+rsiExtremeOB = rsi > 80
+
+// 7. Bollinger Band
+bbOS = close < bbLower
+bbOB = close > bbUpper
+
+// 8. Price Drop/Pump (Percent changes)
+change1d = (close - close[1]) / close[1] * 100
+change3d = (close - close[3]) / close[3] * 100
+change7d = (close - close[7]) / close[7] * 100
+
+drop5pct1d = change1d <= -5
+drop10pct3d = change3d <= -10
+drop15pct7d = change7d <= -15
+
+pump5pct1d = change1d >= 5
+pump10pct3d = change3d >= 10
+pump15pct7d = change7d >= 15
+
+// 9. Breakout
+high7 = ta.highest(high, 7)
+low7 = ta.lowest(low, 7)
+rangeWidth = (high7 - low7) / close * 100
+tightRange = rangeWidth < 8
+
+breakoutUp = close > high7[1] and tightRange[1]
+breakoutDown = close < low7[1] and tightRange[1]
+
+// 10. Volume Climax
+volClimax = volRatio > 2.5
+
+// ============================================
+// COMBINED SIGNALS (More Aggressive)
+// ============================================
+
+// LONG SIGNALS - Lower threshold for more trades
+longSig1 = emaCrossUp                                     // EMA Cross
+longSig2 = goldenCross                                    // Golden Cross
+longSig3 = macdCrossUp and close > ema99                  // MACD Cross + Trend
+longSig4 = bullPin and volRatio > 1.2                     // Pin Bar
+longSig5 = flashCrash                                     // Flash Crash
+longSig6 = rsiExtremeOS                                   // Extreme Oversold
+longSig7 = bbOS and rsi < 35                              // BB + RSI
+longSig8 = drop10pct3d and rsi < 40                       // Drop + RSI
+longSig9 = breakoutUp                                      // Breakout
+longSig10 = emaCrossUp and uptrend                        // Cross in Trend
+longSig11 = volClimax and change1d < -3                   // Volume Climax + Drop
+longSig12 = drop5pct1d and bullPin                        // Drop + Pin
+longSig13 = rsiOS_signal and close > ema200               // RSI OS above 200
+longSig14 = macdCrossUp and rsi < 50                      // MACD + Low RSI
+longSig15 = flashCrash and rsi < 40                       // Flash + RSI
+
+// SHORT SIGNALS
+shortSig1 = emaCrossDown                                  // EMA Cross
+shortSig2 = deathCross                                    // Death Cross
+shortSig3 = macdCrossDown and close < ema99               // MACD Cross + Trend
+shortSig4 = bearPin and volRatio > 1.2                    // Pin Bar
+shortSig5 = flashPump                                     // Flash Pump
+shortSig6 = rsiExtremeOB                                  // Extreme Overbought
+shortSig7 = bbOB and rsi > 65                             // BB + RSI
+shortSig8 = pump10pct3d and rsi > 60                      // Pump + RSI
+shortSig9 = breakoutDown                                   // Breakdown
+shortSig10 = emaCrossDown and downtrend                   // Cross in Downtrend
+
+// Master conditions
+longCondition = longSig1 or longSig2 or longSig3 or longSig4 or longSig5 or
+                longSig6 or longSig7 or longSig8 or longSig9 or longSig10 or
+                longSig11 or longSig12 or longSig13 or longSig14 or longSig15
+
+shortCondition = shortSig1 or shortSig2 or shortSig3 or shortSig4 or shortSig5 or
+                 shortSig6 or shortSig7 or shortSig8 or shortSig9 or shortSig10
+
+// ============================================
+// DYNAMIC LEVERAGE CALCULATION
+// ============================================
+
+// Calculate signal strength (1-5)
+longStrength = (longSig1 ? 1 : 0) + (longSig2 ? 2 : 0) + (longSig3 ? 1 : 0) +
+               (longSig4 ? 1.5 : 0) + (longSig5 ? 2 : 0) + (longSig6 ? 1.5 : 0) +
+               (longSig7 ? 1 : 0) + (longSig8 ? 1 : 0) + (longSig9 ? 1.5 : 0) +
+               (longSig10 ? 2 : 0) + (longSig11 ? 1.5 : 0) + (longSig12 ? 1.5 : 0) +
+               (longSig13 ? 1 : 0) + (longSig14 ? 1 : 0) + (longSig15 ? 2 : 0)
+
+// Volatility factor (lower vol = higher leverage allowed)
+volFactor = vol20 > 0 ? math.max(0.5, math.min(2.0, 50 / vol20)) : 1.0
+
+// Calculate leverage
+calcLeverage = math.round(baseLeverage * volFactor * (1 + longStrength * 0.1))
+finalLeverage = math.max(minLeverage, math.min(maxLeverage, calcLeverage))
+
+// ============================================
+// POSITION TRACKING
+// ============================================
+
+var float entryPrice = na
+var float maxProfitPrice = na
+var float minLossPrice = na
+var int entryBar = na
+var float currentLeverage = na
+
+// ============================================
+// TRADE EXECUTION
+// ============================================
+
+// Long Entry
+if longCondition and strategy.position_size == 0
+    strategy.entry("Long", strategy.long)
+    entryPrice := close
+    maxProfitPrice := close
+    minLossPrice := close
+    entryBar := bar_index
+    currentLeverage := finalLeverage
+
+// Short Entry
+if shortCondition and strategy.position_size == 0
+    strategy.entry("Short", strategy.short)
+    entryPrice := close
+    maxProfitPrice := close
+    minLossPrice := close
+    entryBar := bar_index
+    currentLeverage := finalLeverage
+
+// Update tracking
+if strategy.position_size > 0
+    maxProfitPrice := math.max(maxProfitPrice, high)
+if strategy.position_size < 0
+    minLossPrice := math.min(minLossPrice, low)
+
+// ============================================
+// EXIT LOGIC
+// ============================================
+
+// Calculate P&L
+longPnL = strategy.position_size > 0 ? (close - entryPrice) / entryPrice * 100 : 0
+shortPnL = strategy.position_size < 0 ? (entryPrice - close) / entryPrice * 100 : 0
+
+// Trailing stop levels
+longTrailStop = maxProfitPrice * (1 - trailPct / 100)
+shortTrailStop = minLossPrice * (1 + trailPct / 100)
+
+// Exit conditions - Long
+longTP = strategy.position_size > 0 and longPnL >= tpPct
+longSL = strategy.position_size > 0 and longPnL <= -slPct
+longTrail = strategy.position_size > 0 and useTrail and longPnL >= trailActivate and close < longTrailStop
+longReversal = strategy.position_size > 0 and shortCondition
+
+// Exit conditions - Short
+shortTP = strategy.position_size < 0 and shortPnL >= tpPct
+shortSL = strategy.position_size < 0 and shortPnL <= -slPct
+shortTrail = strategy.position_size < 0 and useTrail and shortPnL >= trailActivate and close > shortTrailStop
+shortReversal = strategy.position_size < 0 and longCondition
+
+// Execute exits
+if longTP
+    strategy.close("Long", comment="TP")
+if longSL
+    strategy.close("Long", comment="SL")
+if longTrail
+    strategy.close("Long", comment="Trail")
+if longReversal
+    strategy.close("Long", comment="Reversal")
+
+if shortTP
+    strategy.close("Short", comment="TP")
+if shortSL
+    strategy.close("Short", comment="SL")
+if shortTrail
+    strategy.close("Short", comment="Trail")
+if shortReversal
+    strategy.close("Short", comment="Reversal")
+
+// ============================================
+// VISUALS
+// ============================================
+
+// EMAs
+plot(ema7, "EMA7", color.blue, 1)
+plot(ema25, "EMA25", color.orange, 1)
+plot(ema99, "EMA99", color.purple, 2)
+plot(ema200, "EMA200", color.red, 2)
+
+// Bollinger Bands
+p1 = plot(bbUpper, "BB Upper", color.new(color.gray, 70))
+p2 = plot(bbLower, "BB Lower", color.new(color.gray, 70))
+fill(p1, p2, color.new(color.blue, 95))
+
+// Entry Markers
+plotshape(longSig1 or longSig10, "EMA Long", shape.triangleup, location.belowbar, color.green, size=size.small)
+plotshape(longSig2, "Golden Cross", shape.diamond, location.belowbar, color.lime, size=size.normal)
+plotshape(longSig4 or longSig12, "Pin Long", shape.circle, location.belowbar, color.teal, size=size.tiny)
+plotshape(longSig5 or longSig15, "Flash Long", shape.arrowup, location.belowbar, color.aqua, size=size.small)
+plotshape(longSig6, "RSI Extreme OS", shape.xcross, location.belowbar, color.yellow, size=size.tiny)
+
+plotshape(shortSig1 or shortSig10, "EMA Short", shape.triangledown, location.abovebar, color.red, size=size.small)
+plotshape(shortSig2, "Death Cross", shape.diamond, location.abovebar, color.maroon, size=size.normal)
+plotshape(shortSig4, "Pin Short", shape.circle, location.abovebar, color.fuchsia, size=size.tiny)
+plotshape(shortSig5, "Flash Short", shape.arrowdown, location.abovebar, color.orange, size=size.small)
+
+// Trailing stop line
+trailLine = strategy.position_size > 0 ? longTrailStop : strategy.position_size < 0 ? shortTrailStop : na
+plot(useTrail and ((strategy.position_size > 0 and longPnL >= trailActivate) or (strategy.position_size < 0 and shortPnL >= trailActivate)) ? trailLine : na,
+     "Trail Stop", color.yellow, 2, plot.style_stepline)
+
+// ============================================
+// INFO PANEL
+// ============================================
+
+var table panel = table.new(position.top_right, 2, 12, bgcolor=color.new(color.black, 85))
+
+if barstate.islast
+    table.cell(panel, 0, 0, "BTC AGGRESSIVE STRATEGY", text_color=color.white, text_size=size.normal)
+    table.cell(panel, 1, 0, "", text_color=color.white)
+
+    table.cell(panel, 0, 1, "Trend:", text_color=color.gray)
+    table.cell(panel, 1, 1, uptrend ? "BULLISH" : downtrend ? "BEARISH" : "NEUTRAL",
+               text_color=uptrend ? color.green : downtrend ? color.red : color.yellow)
+
+    table.cell(panel, 0, 2, "RSI:", text_color=color.gray)
+    table.cell(panel, 1, 2, str.tostring(rsi, "#.#"),
+               text_color=rsi < 30 ? color.green : rsi > 70 ? color.red : color.white)
+
+    table.cell(panel, 0, 3, "Volatility:", text_color=color.gray)
+    table.cell(panel, 1, 3, str.tostring(vol20, "#.#") + "%", text_color=color.white)
+
+    table.cell(panel, 0, 4, "Volume Ratio:", text_color=color.gray)
+    table.cell(panel, 1, 4, str.tostring(volRatio, "#.##"),
+               text_color=volRatio > 2 ? color.yellow : color.white)
+
+    table.cell(panel, 0, 5, "Leverage:", text_color=color.gray)
+    table.cell(panel, 1, 5, str.tostring(finalLeverage) + "x", text_color=color.aqua)
+
+    table.cell(panel, 0, 6, "Signal Strength:", text_color=color.gray)
+    table.cell(panel, 1, 6, str.tostring(longStrength, "#.#"), text_color=color.lime)
+
+    table.cell(panel, 0, 7, "7d Change:", text_color=color.gray)
+    table.cell(panel, 1, 7, str.tostring(change7d, "#.#") + "%",
+               text_color=change7d > 0 ? color.green : color.red)
+
+    table.cell(panel, 0, 8, "TP/SL:", text_color=color.gray)
+    table.cell(panel, 1, 8, str.tostring(tpPct, "#") + "% / " + str.tostring(slPct, "#") + "%", text_color=color.white)
+
+    if strategy.position_size != 0
+        table.cell(panel, 0, 9, "Position:", text_color=color.gray)
+        table.cell(panel, 1, 9, strategy.position_size > 0 ? "LONG" : "SHORT",
+                   text_color=strategy.position_size > 0 ? color.green : color.red)
+
+        table.cell(panel, 0, 10, "Entry:", text_color=color.gray)
+        table.cell(panel, 1, 10, str.tostring(entryPrice, "#.#"), text_color=color.white)
+
+        table.cell(panel, 0, 11, "P&L:", text_color=color.gray)
+        pnl = strategy.position_size > 0 ? longPnL : shortPnL
+        table.cell(panel, 1, 11, str.tostring(pnl, "#.##") + "%",
+                   text_color=pnl > 0 ? color.green : color.red)
+
+// ============================================
+// ALERTS
+// ============================================
+
+alertcondition(longCondition, "Long Entry", "BTC Aggressive: LONG Entry Signal")
+alertcondition(shortCondition, "Short Entry", "BTC Aggressive: SHORT Entry Signal")
+alertcondition(longTP or longTrail, "Long Exit Profit", "BTC Aggressive: Long Take Profit")
+alertcondition(shortTP or shortTrail, "Short Exit Profit", "BTC Aggressive: Short Take Profit")
+alertcondition(longSL, "Long Stop Loss", "BTC Aggressive: Long Stop Loss Hit")
+alertcondition(shortSL, "Short Stop Loss", "BTC Aggressive: Short Stop Loss Hit")

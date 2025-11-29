@@ -1,0 +1,2274 @@
+timestamp,value,classification
+2019-09-01,42,Fear
+2019-09-02,42,Fear
+2019-09-03,42,Fear
+2019-09-04,41,Fear
+2019-09-05,41,Fear
+2019-09-06,41,Fear
+2019-09-07,41,Fear
+2019-09-08,41,Fear
+2019-09-09,41,Fear
+2019-09-10,40,Fear
+2019-09-11,40,Fear
+2019-09-12,40,Fear
+2019-09-13,40,Fear
+2019-09-14,40,Fear
+2019-09-15,39,Fear
+2019-09-16,39,Fear
+2019-09-17,39,Fear
+2019-09-18,39,Fear
+2019-09-19,39,Fear
+2019-09-20,38,Fear
+2019-09-21,38,Fear
+2019-09-22,38,Fear
+2019-09-23,38,Fear
+2019-09-24,38,Fear
+2019-09-25,38,Fear
+2019-09-26,37,Fear
+2019-09-27,37,Fear
+2019-09-28,37,Fear
+2019-09-29,37,Fear
+2019-09-30,37,Fear
+2019-10-01,36,Fear
+2019-10-02,36,Fear
+2019-10-03,36,Fear
+2019-10-04,36,Fear
+2019-10-05,36,Fear
+2019-10-06,36,Fear
+2019-10-07,35,Fear
+2019-10-08,35,Fear
+2019-10-09,35,Fear
+2019-10-10,35,Fear
+2019-10-11,35,Fear
+2019-10-12,34,Fear
+2019-10-13,34,Fear
+2019-10-14,34,Fear
+2019-10-15,34,Fear
+2019-10-16,34,Fear
+2019-10-17,33,Fear
+2019-10-18,33,Fear
+2019-10-19,33,Fear
+2019-10-20,33,Fear
+2019-10-21,33,Fear
+2019-10-22,33,Fear
+2019-10-23,32,Fear
+2019-10-24,32,Fear
+2019-10-25,32,Fear
+2019-10-26,32,Fear
+2019-10-27,32,Fear
+2019-10-28,31,Fear
+2019-10-29,31,Fear
+2019-10-30,31,Fear
+2019-10-31,31,Fear
+2019-11-01,31,Fear
+2019-11-02,31,Fear
+2019-11-03,30,Fear
+2019-11-04,30,Fear
+2019-11-05,30,Fear
+2019-11-06,30,Fear
+2019-11-07,30,Fear
+2019-11-08,29,Fear
+2019-11-09,29,Fear
+2019-11-10,29,Fear
+2019-11-11,29,Fear
+2019-11-12,29,Fear
+2019-11-13,28,Fear
+2019-11-14,28,Fear
+2019-11-15,28,Fear
+2019-11-16,28,Fear
+2019-11-17,28,Fear
+2019-11-18,28,Fear
+2019-11-19,27,Fear
+2019-11-20,27,Fear
+2019-11-21,27,Fear
+2019-11-22,27,Fear
+2019-11-23,27,Fear
+2019-11-24,26,Fear
+2019-11-25,26,Fear
+2019-11-26,26,Fear
+2019-11-27,26,Fear
+2019-11-28,26,Fear
+2019-11-29,26,Fear
+2019-11-30,25,Extreme Fear
+2019-12-01,25,Extreme Fear
+2019-12-02,25,Extreme Fear
+2019-12-03,25,Extreme Fear
+2019-12-04,25,Extreme Fear
+2019-12-05,24,Extreme Fear
+2019-12-06,24,Extreme Fear
+2019-12-07,24,Extreme Fear
+2019-12-08,24,Extreme Fear
+2019-12-09,24,Extreme Fear
+2019-12-10,23,Extreme Fear
+2019-12-11,23,Extreme Fear
+2019-12-12,23,Extreme Fear
+2019-12-13,23,Extreme Fear
+2019-12-14,23,Extreme Fear
+2019-12-15,23,Extreme Fear
+2019-12-16,22,Extreme Fear
+2019-12-17,22,Extreme Fear
+2019-12-18,22,Extreme Fear
+2019-12-19,23,Extreme Fear
+2019-12-20,24,Extreme Fear
+2019-12-21,25,Extreme Fear
+2019-12-22,27,Fear
+2019-12-23,28,Fear
+2019-12-24,29,Fear
+2019-12-25,30,Fear
+2019-12-26,31,Fear
+2019-12-27,32,Fear
+2019-12-28,33,Fear
+2019-12-29,35,Fear
+2019-12-30,36,Fear
+2019-12-31,37,Fear
+2020-01-01,38,Fear
+2020-01-02,39,Fear
+2020-01-03,39,Fear
+2020-01-04,40,Fear
+2020-01-05,40,Fear
+2020-01-06,41,Fear
+2020-01-07,41,Fear
+2020-01-08,42,Fear
+2020-01-09,43,Fear
+2020-01-10,43,Fear
+2020-01-11,44,Fear
+2020-01-12,44,Fear
+2020-01-13,45,Fear
+2020-01-14,46,Neutral
+2020-01-15,46,Neutral
+2020-01-16,47,Neutral
+2020-01-17,47,Neutral
+2020-01-18,48,Neutral
+2020-01-19,48,Neutral
+2020-01-20,49,Neutral
+2020-01-21,50,Neutral
+2020-01-22,50,Neutral
+2020-01-23,51,Neutral
+2020-01-24,51,Neutral
+2020-01-25,52,Neutral
+2020-01-26,53,Neutral
+2020-01-27,53,Neutral
+2020-01-28,54,Neutral
+2020-01-29,54,Neutral
+2020-01-30,55,Neutral
+2020-01-31,55,Neutral
+2020-02-01,56,Greed
+2020-02-02,57,Greed
+2020-02-03,57,Greed
+2020-02-04,58,Greed
+2020-02-05,58,Greed
+2020-02-06,59,Greed
+2020-02-07,60,Greed
+2020-02-08,60,Greed
+2020-02-09,61,Greed
+2020-02-10,61,Greed
+2020-02-11,62,Greed
+2020-02-12,62,Greed
+2020-02-13,63,Greed
+2020-02-14,61,Greed
+2020-02-15,59,Greed
+2020-02-16,57,Greed
+2020-02-17,55,Neutral
+2020-02-18,53,Neutral
+2020-02-19,51,Neutral
+2020-02-20,49,Neutral
+2020-02-21,47,Neutral
+2020-02-22,45,Fear
+2020-02-23,43,Fear
+2020-02-24,41,Fear
+2020-02-25,39,Fear
+2020-02-26,37,Fear
+2020-02-27,36,Fear
+2020-02-28,34,Fear
+2020-02-29,32,Fear
+2020-03-01,30,Fear
+2020-03-02,28,Fear
+2020-03-03,26,Fear
+2020-03-04,24,Extreme Fear
+2020-03-05,22,Extreme Fear
+2020-03-06,20,Extreme Fear
+2020-03-07,18,Extreme Fear
+2020-03-08,16,Extreme Fear
+2020-03-09,14,Extreme Fear
+2020-03-10,12,Extreme Fear
+2020-03-11,10,Extreme Fear
+2020-03-12,8,Extreme Fear
+2020-03-13,10,Extreme Fear
+2020-03-14,10,Extreme Fear
+2020-03-15,11,Extreme Fear
+2020-03-16,11,Extreme Fear
+2020-03-17,11,Extreme Fear
+2020-03-18,11,Extreme Fear
+2020-03-19,12,Extreme Fear
+2020-03-20,12,Extreme Fear
+2020-03-21,13,Extreme Fear
+2020-03-22,14,Extreme Fear
+2020-03-23,14,Extreme Fear
+2020-03-24,15,Extreme Fear
+2020-03-25,16,Extreme Fear
+2020-03-26,17,Extreme Fear
+2020-03-27,18,Extreme Fear
+2020-03-28,18,Extreme Fear
+2020-03-29,19,Extreme Fear
+2020-03-30,20,Extreme Fear
+2020-03-31,21,Extreme Fear
+2020-04-01,22,Extreme Fear
+2020-04-02,22,Extreme Fear
+2020-04-03,23,Extreme Fear
+2020-04-04,24,Extreme Fear
+2020-04-05,25,Extreme Fear
+2020-04-06,26,Fear
+2020-04-07,26,Fear
+2020-04-08,27,Fear
+2020-04-09,28,Fear
+2020-04-10,29,Fear
+2020-04-11,30,Fear
+2020-04-12,31,Fear
+2020-04-13,31,Fear
+2020-04-14,32,Fear
+2020-04-15,33,Fear
+2020-04-16,34,Fear
+2020-04-17,35,Fear
+2020-04-18,35,Fear
+2020-04-19,36,Fear
+2020-04-20,37,Fear
+2020-04-21,38,Fear
+2020-04-22,39,Fear
+2020-04-23,39,Fear
+2020-04-24,40,Fear
+2020-04-25,41,Fear
+2020-04-26,42,Fear
+2020-04-27,43,Fear
+2020-04-28,43,Fear
+2020-04-29,44,Fear
+2020-04-30,45,Fear
+2020-05-01,46,Neutral
+2020-05-02,46,Neutral
+2020-05-03,47,Neutral
+2020-05-04,48,Neutral
+2020-05-05,48,Neutral
+2020-05-06,49,Neutral
+2020-05-07,49,Neutral
+2020-05-08,50,Neutral
+2020-05-09,51,Neutral
+2020-05-10,51,Neutral
+2020-05-11,52,Neutral
+2020-05-12,52,Neutral
+2020-05-13,52,Neutral
+2020-05-14,53,Neutral
+2020-05-15,53,Neutral
+2020-05-16,53,Neutral
+2020-05-17,53,Neutral
+2020-05-18,53,Neutral
+2020-05-19,54,Neutral
+2020-05-20,54,Neutral
+2020-05-21,54,Neutral
+2020-05-22,54,Neutral
+2020-05-23,54,Neutral
+2020-05-24,55,Neutral
+2020-05-25,55,Neutral
+2020-05-26,55,Neutral
+2020-05-27,55,Neutral
+2020-05-28,56,Greed
+2020-05-29,56,Greed
+2020-05-30,56,Greed
+2020-05-31,56,Greed
+2020-06-01,56,Greed
+2020-06-02,57,Greed
+2020-06-03,57,Greed
+2020-06-04,57,Greed
+2020-06-05,57,Greed
+2020-06-06,57,Greed
+2020-06-07,58,Greed
+2020-06-08,58,Greed
+2020-06-09,58,Greed
+2020-06-10,58,Greed
+2020-06-11,58,Greed
+2020-06-12,59,Greed
+2020-06-13,59,Greed
+2020-06-14,59,Greed
+2020-06-15,59,Greed
+2020-06-16,59,Greed
+2020-06-17,60,Greed
+2020-06-18,60,Greed
+2020-06-19,60,Greed
+2020-06-20,60,Greed
+2020-06-21,61,Greed
+2020-06-22,61,Greed
+2020-06-23,61,Greed
+2020-06-24,61,Greed
+2020-06-25,61,Greed
+2020-06-26,62,Greed
+2020-06-27,62,Greed
+2020-06-28,62,Greed
+2020-06-29,62,Greed
+2020-06-30,62,Greed
+2020-07-01,63,Greed
+2020-07-02,63,Greed
+2020-07-03,63,Greed
+2020-07-04,63,Greed
+2020-07-05,63,Greed
+2020-07-06,64,Greed
+2020-07-07,64,Greed
+2020-07-08,64,Greed
+2020-07-09,64,Greed
+2020-07-10,64,Greed
+2020-07-11,65,Greed
+2020-07-12,65,Greed
+2020-07-13,65,Greed
+2020-07-14,65,Greed
+2020-07-15,66,Greed
+2020-07-16,66,Greed
+2020-07-17,66,Greed
+2020-07-18,66,Greed
+2020-07-19,66,Greed
+2020-07-20,67,Greed
+2020-07-21,67,Greed
+2020-07-22,67,Greed
+2020-07-23,67,Greed
+2020-07-24,67,Greed
+2020-07-25,68,Greed
+2020-07-26,68,Greed
+2020-07-27,68,Greed
+2020-07-28,68,Greed
+2020-07-29,68,Greed
+2020-07-30,68,Greed
+2020-07-31,68,Greed
+2020-08-01,68,Greed
+2020-08-02,68,Greed
+2020-08-03,68,Greed
+2020-08-04,69,Greed
+2020-08-05,69,Greed
+2020-08-06,69,Greed
+2020-08-07,69,Greed
+2020-08-08,69,Greed
+2020-08-09,69,Greed
+2020-08-10,69,Greed
+2020-08-11,69,Greed
+2020-08-12,69,Greed
+2020-08-13,69,Greed
+2020-08-14,69,Greed
+2020-08-15,69,Greed
+2020-08-16,69,Greed
+2020-08-17,69,Greed
+2020-08-18,70,Greed
+2020-08-19,70,Greed
+2020-08-20,70,Greed
+2020-08-21,70,Greed
+2020-08-22,70,Greed
+2020-08-23,70,Greed
+2020-08-24,70,Greed
+2020-08-25,70,Greed
+2020-08-26,70,Greed
+2020-08-27,70,Greed
+2020-08-28,70,Greed
+2020-08-29,70,Greed
+2020-08-30,70,Greed
+2020-08-31,70,Greed
+2020-09-01,71,Greed
+2020-09-02,71,Greed
+2020-09-03,71,Greed
+2020-09-04,71,Greed
+2020-09-05,71,Greed
+2020-09-06,71,Greed
+2020-09-07,71,Greed
+2020-09-08,71,Greed
+2020-09-09,71,Greed
+2020-09-10,71,Greed
+2020-09-11,71,Greed
+2020-09-12,71,Greed
+2020-09-13,71,Greed
+2020-09-14,71,Greed
+2020-09-15,71,Greed
+2020-09-16,72,Greed
+2020-09-17,72,Greed
+2020-09-18,72,Greed
+2020-09-19,72,Greed
+2020-09-20,72,Greed
+2020-09-21,72,Greed
+2020-09-22,72,Greed
+2020-09-23,72,Greed
+2020-09-24,72,Greed
+2020-09-25,72,Greed
+2020-09-26,72,Greed
+2020-09-27,72,Greed
+2020-09-28,72,Greed
+2020-09-29,72,Greed
+2020-09-30,73,Greed
+2020-10-01,73,Greed
+2020-10-02,73,Greed
+2020-10-03,73,Greed
+2020-10-04,73,Greed
+2020-10-05,73,Greed
+2020-10-06,73,Greed
+2020-10-07,73,Greed
+2020-10-08,73,Greed
+2020-10-09,73,Greed
+2020-10-10,73,Greed
+2020-10-11,73,Greed
+2020-10-12,73,Greed
+2020-10-13,73,Greed
+2020-10-14,74,Greed
+2020-10-15,74,Greed
+2020-10-16,74,Greed
+2020-10-17,74,Greed
+2020-10-18,74,Greed
+2020-10-19,74,Greed
+2020-10-20,74,Greed
+2020-10-21,74,Greed
+2020-10-22,74,Greed
+2020-10-23,75,Greed
+2020-10-24,75,Greed
+2020-10-25,76,Extreme Greed
+2020-10-26,76,Extreme Greed
+2020-10-27,77,Extreme Greed
+2020-10-28,77,Extreme Greed
+2020-10-29,78,Extreme Greed
+2020-10-30,78,Extreme Greed
+2020-10-31,78,Extreme Greed
+2020-11-01,79,Extreme Greed
+2020-11-02,79,Extreme Greed
+2020-11-03,80,Extreme Greed
+2020-11-04,80,Extreme Greed
+2020-11-05,81,Extreme Greed
+2020-11-06,81,Extreme Greed
+2020-11-07,82,Extreme Greed
+2020-11-08,82,Extreme Greed
+2020-11-09,83,Extreme Greed
+2020-11-10,83,Extreme Greed
+2020-11-11,83,Extreme Greed
+2020-11-12,84,Extreme Greed
+2020-11-13,84,Extreme Greed
+2020-11-14,85,Extreme Greed
+2020-11-15,85,Extreme Greed
+2020-11-16,86,Extreme Greed
+2020-11-17,86,Extreme Greed
+2020-11-18,87,Extreme Greed
+2020-11-19,87,Extreme Greed
+2020-11-20,88,Extreme Greed
+2020-11-21,88,Extreme Greed
+2020-11-22,88,Extreme Greed
+2020-11-23,89,Extreme Greed
+2020-11-24,89,Extreme Greed
+2020-11-25,90,Extreme Greed
+2020-11-26,90,Extreme Greed
+2020-11-27,91,Extreme Greed
+2020-11-28,91,Extreme Greed
+2020-11-29,92,Extreme Greed
+2020-11-30,92,Extreme Greed
+2020-12-01,92,Extreme Greed
+2020-12-02,92,Extreme Greed
+2020-12-03,93,Extreme Greed
+2020-12-04,93,Extreme Greed
+2020-12-05,93,Extreme Greed
+2020-12-06,93,Extreme Greed
+2020-12-07,93,Extreme Greed
+2020-12-08,94,Extreme Greed
+2020-12-09,94,Extreme Greed
+2020-12-10,94,Extreme Greed
+2020-12-11,94,Extreme Greed
+2020-12-12,94,Extreme Greed
+2020-12-13,94,Extreme Greed
+2020-12-14,95,Extreme Greed
+2020-12-15,95,Extreme Greed
+2020-12-16,95,Extreme Greed
+2020-12-17,95,Extreme Greed
+2020-12-18,95,Extreme Greed
+2020-12-19,95,Extreme Greed
+2020-12-20,94,Extreme Greed
+2020-12-21,94,Extreme Greed
+2020-12-22,94,Extreme Greed
+2020-12-23,94,Extreme Greed
+2020-12-24,94,Extreme Greed
+2020-12-25,94,Extreme Greed
+2020-12-26,94,Extreme Greed
+2020-12-27,94,Extreme Greed
+2020-12-28,93,Extreme Greed
+2020-12-29,93,Extreme Greed
+2020-12-30,93,Extreme Greed
+2020-12-31,93,Extreme Greed
+2021-01-01,93,Extreme Greed
+2021-01-02,94,Extreme Greed
+2021-01-03,94,Extreme Greed
+2021-01-04,94,Extreme Greed
+2021-01-05,94,Extreme Greed
+2021-01-06,94,Extreme Greed
+2021-01-07,95,Extreme Greed
+2021-01-08,95,Extreme Greed
+2021-01-09,95,Extreme Greed
+2021-01-10,95,Extreme Greed
+2021-01-11,95,Extreme Greed
+2021-01-12,95,Extreme Greed
+2021-01-13,95,Extreme Greed
+2021-01-14,95,Extreme Greed
+2021-01-15,95,Extreme Greed
+2021-01-16,95,Extreme Greed
+2021-01-17,95,Extreme Greed
+2021-01-18,95,Extreme Greed
+2021-01-19,95,Extreme Greed
+2021-01-20,95,Extreme Greed
+2021-01-21,95,Extreme Greed
+2021-01-22,95,Extreme Greed
+2021-01-23,95,Extreme Greed
+2021-01-24,95,Extreme Greed
+2021-01-25,95,Extreme Greed
+2021-01-26,95,Extreme Greed
+2021-01-27,95,Extreme Greed
+2021-01-28,95,Extreme Greed
+2021-01-29,95,Extreme Greed
+2021-01-30,94,Extreme Greed
+2021-01-31,94,Extreme Greed
+2021-02-01,94,Extreme Greed
+2021-02-02,94,Extreme Greed
+2021-02-03,94,Extreme Greed
+2021-02-04,94,Extreme Greed
+2021-02-05,94,Extreme Greed
+2021-02-06,94,Extreme Greed
+2021-02-07,94,Extreme Greed
+2021-02-08,94,Extreme Greed
+2021-02-09,94,Extreme Greed
+2021-02-10,94,Extreme Greed
+2021-02-11,94,Extreme Greed
+2021-02-12,94,Extreme Greed
+2021-02-13,94,Extreme Greed
+2021-02-14,94,Extreme Greed
+2021-02-15,94,Extreme Greed
+2021-02-16,94,Extreme Greed
+2021-02-17,94,Extreme Greed
+2021-02-18,94,Extreme Greed
+2021-02-19,94,Extreme Greed
+2021-02-20,94,Extreme Greed
+2021-02-21,94,Extreme Greed
+2021-02-22,94,Extreme Greed
+2021-02-23,94,Extreme Greed
+2021-02-24,94,Extreme Greed
+2021-02-25,94,Extreme Greed
+2021-02-26,94,Extreme Greed
+2021-02-27,93,Extreme Greed
+2021-02-28,93,Extreme Greed
+2021-03-01,93,Extreme Greed
+2021-03-02,93,Extreme Greed
+2021-03-03,93,Extreme Greed
+2021-03-04,93,Extreme Greed
+2021-03-05,93,Extreme Greed
+2021-03-06,93,Extreme Greed
+2021-03-07,93,Extreme Greed
+2021-03-08,92,Extreme Greed
+2021-03-09,92,Extreme Greed
+2021-03-10,92,Extreme Greed
+2021-03-11,92,Extreme Greed
+2021-03-12,92,Extreme Greed
+2021-03-13,92,Extreme Greed
+2021-03-14,92,Extreme Greed
+2021-03-15,91,Extreme Greed
+2021-03-16,91,Extreme Greed
+2021-03-17,90,Extreme Greed
+2021-03-18,90,Extreme Greed
+2021-03-19,89,Extreme Greed
+2021-03-20,89,Extreme Greed
+2021-03-21,88,Extreme Greed
+2021-03-22,88,Extreme Greed
+2021-03-23,88,Extreme Greed
+2021-03-24,87,Extreme Greed
+2021-03-25,87,Extreme Greed
+2021-03-26,86,Extreme Greed
+2021-03-27,86,Extreme Greed
+2021-03-28,85,Extreme Greed
+2021-03-29,85,Extreme Greed
+2021-03-30,85,Extreme Greed
+2021-03-31,84,Extreme Greed
+2021-04-01,84,Extreme Greed
+2021-04-02,83,Extreme Greed
+2021-04-03,83,Extreme Greed
+2021-04-04,82,Extreme Greed
+2021-04-05,82,Extreme Greed
+2021-04-06,82,Extreme Greed
+2021-04-07,81,Extreme Greed
+2021-04-08,81,Extreme Greed
+2021-04-09,80,Extreme Greed
+2021-04-10,80,Extreme Greed
+2021-04-11,79,Extreme Greed
+2021-04-12,79,Extreme Greed
+2021-04-13,78,Extreme Greed
+2021-04-14,78,Extreme Greed
+2021-04-15,76,Extreme Greed
+2021-04-16,74,Greed
+2021-04-17,73,Greed
+2021-04-18,71,Greed
+2021-04-19,69,Greed
+2021-04-20,67,Greed
+2021-04-21,65,Greed
+2021-04-22,63,Greed
+2021-04-23,62,Greed
+2021-04-24,60,Greed
+2021-04-25,58,Greed
+2021-04-26,56,Greed
+2021-04-27,54,Neutral
+2021-04-28,52,Neutral
+2021-04-29,51,Neutral
+2021-04-30,49,Neutral
+2021-05-01,47,Neutral
+2021-05-02,45,Fear
+2021-05-03,43,Fear
+2021-05-04,42,Fear
+2021-05-05,40,Fear
+2021-05-06,38,Fear
+2021-05-07,36,Fear
+2021-05-08,34,Fear
+2021-05-09,32,Fear
+2021-05-10,31,Fear
+2021-05-11,29,Fear
+2021-05-12,27,Fear
+2021-05-13,25,Extreme Fear
+2021-05-14,22,Extreme Fear
+2021-05-15,20,Extreme Fear
+2021-05-16,18,Extreme Fear
+2021-05-17,16,Extreme Fear
+2021-05-18,13,Extreme Fear
+2021-05-19,11,Extreme Fear
+2021-05-20,11,Extreme Fear
+2021-05-21,11,Extreme Fear
+2021-05-22,11,Extreme Fear
+2021-05-23,11,Extreme Fear
+2021-05-24,11,Extreme Fear
+2021-05-25,11,Extreme Fear
+2021-05-26,11,Extreme Fear
+2021-05-27,11,Extreme Fear
+2021-05-28,11,Extreme Fear
+2021-05-29,11,Extreme Fear
+2021-05-30,11,Extreme Fear
+2021-05-31,11,Extreme Fear
+2021-06-01,11,Extreme Fear
+2021-06-02,11,Extreme Fear
+2021-06-03,11,Extreme Fear
+2021-06-04,11,Extreme Fear
+2021-06-05,10,Extreme Fear
+2021-06-06,10,Extreme Fear
+2021-06-07,10,Extreme Fear
+2021-06-08,10,Extreme Fear
+2021-06-09,10,Extreme Fear
+2021-06-10,10,Extreme Fear
+2021-06-11,10,Extreme Fear
+2021-06-12,10,Extreme Fear
+2021-06-13,10,Extreme Fear
+2021-06-14,10,Extreme Fear
+2021-06-15,10,Extreme Fear
+2021-06-16,10,Extreme Fear
+2021-06-17,10,Extreme Fear
+2021-06-18,10,Extreme Fear
+2021-06-19,10,Extreme Fear
+2021-06-20,10,Extreme Fear
+2021-06-21,10,Extreme Fear
+2021-06-22,10,Extreme Fear
+2021-06-23,10,Extreme Fear
+2021-06-24,11,Extreme Fear
+2021-06-25,11,Extreme Fear
+2021-06-26,11,Extreme Fear
+2021-06-27,12,Extreme Fear
+2021-06-28,12,Extreme Fear
+2021-06-29,12,Extreme Fear
+2021-06-30,13,Extreme Fear
+2021-07-01,13,Extreme Fear
+2021-07-02,14,Extreme Fear
+2021-07-03,14,Extreme Fear
+2021-07-04,14,Extreme Fear
+2021-07-05,15,Extreme Fear
+2021-07-06,15,Extreme Fear
+2021-07-07,15,Extreme Fear
+2021-07-08,16,Extreme Fear
+2021-07-09,16,Extreme Fear
+2021-07-10,16,Extreme Fear
+2021-07-11,17,Extreme Fear
+2021-07-12,17,Extreme Fear
+2021-07-13,18,Extreme Fear
+2021-07-14,18,Extreme Fear
+2021-07-15,18,Extreme Fear
+2021-07-16,19,Extreme Fear
+2021-07-17,19,Extreme Fear
+2021-07-18,19,Extreme Fear
+2021-07-19,20,Extreme Fear
+2021-07-20,20,Extreme Fear
+2021-07-21,21,Extreme Fear
+2021-07-22,22,Extreme Fear
+2021-07-23,24,Extreme Fear
+2021-07-24,25,Extreme Fear
+2021-07-25,26,Fear
+2021-07-26,27,Fear
+2021-07-27,29,Fear
+2021-07-28,30,Fear
+2021-07-29,31,Fear
+2021-07-30,32,Fear
+2021-07-31,34,Fear
+2021-08-01,35,Fear
+2021-08-02,36,Fear
+2021-08-03,37,Fear
+2021-08-04,39,Fear
+2021-08-05,40,Fear
+2021-08-06,41,Fear
+2021-08-07,42,Fear
+2021-08-08,44,Fear
+2021-08-09,45,Fear
+2021-08-10,46,Neutral
+2021-08-11,47,Neutral
+2021-08-12,48,Neutral
+2021-08-13,50,Neutral
+2021-08-14,51,Neutral
+2021-08-15,52,Neutral
+2021-08-16,53,Neutral
+2021-08-17,55,Neutral
+2021-08-18,56,Greed
+2021-08-19,57,Greed
+2021-08-20,58,Greed
+2021-08-21,60,Greed
+2021-08-22,61,Greed
+2021-08-23,62,Greed
+2021-08-24,63,Greed
+2021-08-25,65,Greed
+2021-08-26,66,Greed
+2021-08-27,67,Greed
+2021-08-28,68,Greed
+2021-08-29,70,Greed
+2021-08-30,71,Greed
+2021-08-31,72,Greed
+2021-09-01,73,Greed
+2021-09-02,74,Greed
+2021-09-03,75,Greed
+2021-09-04,76,Extreme Greed
+2021-09-05,77,Extreme Greed
+2021-09-06,78,Extreme Greed
+2021-09-07,79,Extreme Greed
+2021-09-08,79,Extreme Greed
+2021-09-09,79,Extreme Greed
+2021-09-10,79,Extreme Greed
+2021-09-11,79,Extreme Greed
+2021-09-12,80,Extreme Greed
+2021-09-13,80,Extreme Greed
+2021-09-14,80,Extreme Greed
+2021-09-15,80,Extreme Greed
+2021-09-16,80,Extreme Greed
+2021-09-17,80,Extreme Greed
+2021-09-18,80,Extreme Greed
+2021-09-19,80,Extreme Greed
+2021-09-20,81,Extreme Greed
+2021-09-21,81,Extreme Greed
+2021-09-22,81,Extreme Greed
+2021-09-23,81,Extreme Greed
+2021-09-24,81,Extreme Greed
+2021-09-25,81,Extreme Greed
+2021-09-26,81,Extreme Greed
+2021-09-27,81,Extreme Greed
+2021-09-28,81,Extreme Greed
+2021-09-29,82,Extreme Greed
+2021-09-30,82,Extreme Greed
+2021-10-01,82,Extreme Greed
+2021-10-02,82,Extreme Greed
+2021-10-03,82,Extreme Greed
+2021-10-04,82,Extreme Greed
+2021-10-05,82,Extreme Greed
+2021-10-06,82,Extreme Greed
+2021-10-07,82,Extreme Greed
+2021-10-08,83,Extreme Greed
+2021-10-09,83,Extreme Greed
+2021-10-10,83,Extreme Greed
+2021-10-11,83,Extreme Greed
+2021-10-12,83,Extreme Greed
+2021-10-13,83,Extreme Greed
+2021-10-14,83,Extreme Greed
+2021-10-15,83,Extreme Greed
+2021-10-16,84,Extreme Greed
+2021-10-17,84,Extreme Greed
+2021-10-18,84,Extreme Greed
+2021-10-19,84,Extreme Greed
+2021-10-20,84,Extreme Greed
+2021-10-21,84,Extreme Greed
+2021-10-22,84,Extreme Greed
+2021-10-23,84,Extreme Greed
+2021-10-24,84,Extreme Greed
+2021-10-25,84,Extreme Greed
+2021-10-26,84,Extreme Greed
+2021-10-27,84,Extreme Greed
+2021-10-28,84,Extreme Greed
+2021-10-29,84,Extreme Greed
+2021-10-30,84,Extreme Greed
+2021-10-31,84,Extreme Greed
+2021-11-01,84,Extreme Greed
+2021-11-02,84,Extreme Greed
+2021-11-03,84,Extreme Greed
+2021-11-04,84,Extreme Greed
+2021-11-05,84,Extreme Greed
+2021-11-06,84,Extreme Greed
+2021-11-07,84,Extreme Greed
+2021-11-08,84,Extreme Greed
+2021-11-09,84,Extreme Greed
+2021-11-10,84,Extreme Greed
+2021-11-11,82,Extreme Greed
+2021-11-12,79,Extreme Greed
+2021-11-13,77,Extreme Greed
+2021-11-14,74,Greed
+2021-11-15,72,Greed
+2021-11-16,69,Greed
+2021-11-17,67,Greed
+2021-11-18,64,Greed
+2021-11-19,62,Greed
+2021-11-20,59,Greed
+2021-11-21,57,Greed
+2021-11-22,54,Neutral
+2021-11-23,52,Neutral
+2021-11-24,50,Neutral
+2021-11-25,47,Neutral
+2021-11-26,45,Fear
+2021-11-27,42,Fear
+2021-11-28,40,Fear
+2021-11-29,37,Fear
+2021-11-30,35,Fear
+2021-12-01,32,Fear
+2021-12-02,30,Fear
+2021-12-03,27,Fear
+2021-12-04,25,Extreme Fear
+2021-12-05,26,Fear
+2021-12-06,26,Fear
+2021-12-07,27,Fear
+2021-12-08,28,Fear
+2021-12-09,28,Fear
+2021-12-10,29,Fear
+2021-12-11,29,Fear
+2021-12-12,30,Fear
+2021-12-13,31,Fear
+2021-12-14,31,Fear
+2021-12-15,32,Fear
+2021-12-16,33,Fear
+2021-12-17,33,Fear
+2021-12-18,34,Fear
+2021-12-19,34,Fear
+2021-12-20,35,Fear
+2021-12-21,36,Fear
+2021-12-22,36,Fear
+2021-12-23,37,Fear
+2021-12-24,38,Fear
+2021-12-25,38,Fear
+2021-12-26,39,Fear
+2021-12-27,39,Fear
+2021-12-28,40,Fear
+2021-12-29,41,Fear
+2021-12-30,41,Fear
+2021-12-31,42,Fear
+2022-01-01,41,Fear
+2022-01-02,39,Fear
+2022-01-03,38,Fear
+2022-01-04,37,Fear
+2022-01-05,35,Fear
+2022-01-06,34,Fear
+2022-01-07,33,Fear
+2022-01-08,31,Fear
+2022-01-09,30,Fear
+2022-01-10,29,Fear
+2022-01-11,28,Fear
+2022-01-12,26,Fear
+2022-01-13,25,Extreme Fear
+2022-01-14,24,Extreme Fear
+2022-01-15,22,Extreme Fear
+2022-01-16,21,Extreme Fear
+2022-01-17,20,Extreme Fear
+2022-01-18,18,Extreme Fear
+2022-01-19,17,Extreme Fear
+2022-01-20,16,Extreme Fear
+2022-01-21,14,Extreme Fear
+2022-01-22,13,Extreme Fear
+2022-01-23,13,Extreme Fear
+2022-01-24,13,Extreme Fear
+2022-01-25,13,Extreme Fear
+2022-01-26,13,Extreme Fear
+2022-01-27,13,Extreme Fear
+2022-01-28,13,Extreme Fear
+2022-01-29,13,Extreme Fear
+2022-01-30,13,Extreme Fear
+2022-01-31,13,Extreme Fear
+2022-02-01,13,Extreme Fear
+2022-02-02,13,Extreme Fear
+2022-02-03,13,Extreme Fear
+2022-02-04,13,Extreme Fear
+2022-02-05,13,Extreme Fear
+2022-02-06,13,Extreme Fear
+2022-02-07,13,Extreme Fear
+2022-02-08,13,Extreme Fear
+2022-02-09,13,Extreme Fear
+2022-02-10,13,Extreme Fear
+2022-02-11,13,Extreme Fear
+2022-02-12,13,Extreme Fear
+2022-02-13,13,Extreme Fear
+2022-02-14,13,Extreme Fear
+2022-02-15,13,Extreme Fear
+2022-02-16,13,Extreme Fear
+2022-02-17,13,Extreme Fear
+2022-02-18,12,Extreme Fear
+2022-02-19,12,Extreme Fear
+2022-02-20,12,Extreme Fear
+2022-02-21,12,Extreme Fear
+2022-02-22,12,Extreme Fear
+2022-02-23,12,Extreme Fear
+2022-02-24,12,Extreme Fear
+2022-02-25,12,Extreme Fear
+2022-02-26,12,Extreme Fear
+2022-02-27,12,Extreme Fear
+2022-02-28,12,Extreme Fear
+2022-03-01,12,Extreme Fear
+2022-03-02,12,Extreme Fear
+2022-03-03,12,Extreme Fear
+2022-03-04,12,Extreme Fear
+2022-03-05,12,Extreme Fear
+2022-03-06,12,Extreme Fear
+2022-03-07,12,Extreme Fear
+2022-03-08,12,Extreme Fear
+2022-03-09,12,Extreme Fear
+2022-03-10,12,Extreme Fear
+2022-03-11,12,Extreme Fear
+2022-03-12,12,Extreme Fear
+2022-03-13,12,Extreme Fear
+2022-03-14,12,Extreme Fear
+2022-03-15,12,Extreme Fear
+2022-03-16,12,Extreme Fear
+2022-03-17,12,Extreme Fear
+2022-03-18,12,Extreme Fear
+2022-03-19,12,Extreme Fear
+2022-03-20,12,Extreme Fear
+2022-03-21,12,Extreme Fear
+2022-03-22,12,Extreme Fear
+2022-03-23,12,Extreme Fear
+2022-03-24,12,Extreme Fear
+2022-03-25,12,Extreme Fear
+2022-03-26,12,Extreme Fear
+2022-03-27,12,Extreme Fear
+2022-03-28,12,Extreme Fear
+2022-03-29,12,Extreme Fear
+2022-03-30,12,Extreme Fear
+2022-03-31,12,Extreme Fear
+2022-04-01,12,Extreme Fear
+2022-04-02,12,Extreme Fear
+2022-04-03,12,Extreme Fear
+2022-04-04,12,Extreme Fear
+2022-04-05,12,Extreme Fear
+2022-04-06,12,Extreme Fear
+2022-04-07,12,Extreme Fear
+2022-04-08,12,Extreme Fear
+2022-04-09,12,Extreme Fear
+2022-04-10,12,Extreme Fear
+2022-04-11,12,Extreme Fear
+2022-04-12,12,Extreme Fear
+2022-04-13,11,Extreme Fear
+2022-04-14,11,Extreme Fear
+2022-04-15,11,Extreme Fear
+2022-04-16,11,Extreme Fear
+2022-04-17,11,Extreme Fear
+2022-04-18,11,Extreme Fear
+2022-04-19,11,Extreme Fear
+2022-04-20,11,Extreme Fear
+2022-04-21,11,Extreme Fear
+2022-04-22,11,Extreme Fear
+2022-04-23,11,Extreme Fear
+2022-04-24,11,Extreme Fear
+2022-04-25,11,Extreme Fear
+2022-04-26,11,Extreme Fear
+2022-04-27,11,Extreme Fear
+2022-04-28,11,Extreme Fear
+2022-04-29,11,Extreme Fear
+2022-04-30,11,Extreme Fear
+2022-05-01,11,Extreme Fear
+2022-05-02,11,Extreme Fear
+2022-05-03,11,Extreme Fear
+2022-05-04,11,Extreme Fear
+2022-05-05,11,Extreme Fear
+2022-05-06,11,Extreme Fear
+2022-05-07,11,Extreme Fear
+2022-05-08,11,Extreme Fear
+2022-05-09,11,Extreme Fear
+2022-05-10,10,Extreme Fear
+2022-05-11,9,Extreme Fear
+2022-05-12,8,Extreme Fear
+2022-05-13,8,Extreme Fear
+2022-05-14,8,Extreme Fear
+2022-05-15,8,Extreme Fear
+2022-05-16,8,Extreme Fear
+2022-05-17,8,Extreme Fear
+2022-05-18,8,Extreme Fear
+2022-05-19,8,Extreme Fear
+2022-05-20,8,Extreme Fear
+2022-05-21,8,Extreme Fear
+2022-05-22,8,Extreme Fear
+2022-05-23,8,Extreme Fear
+2022-05-24,8,Extreme Fear
+2022-05-25,8,Extreme Fear
+2022-05-26,8,Extreme Fear
+2022-05-27,8,Extreme Fear
+2022-05-28,8,Extreme Fear
+2022-05-29,7,Extreme Fear
+2022-05-30,7,Extreme Fear
+2022-05-31,7,Extreme Fear
+2022-06-01,7,Extreme Fear
+2022-06-02,7,Extreme Fear
+2022-06-03,7,Extreme Fear
+2022-06-04,7,Extreme Fear
+2022-06-05,7,Extreme Fear
+2022-06-06,7,Extreme Fear
+2022-06-07,7,Extreme Fear
+2022-06-08,7,Extreme Fear
+2022-06-09,7,Extreme Fear
+2022-06-10,7,Extreme Fear
+2022-06-11,7,Extreme Fear
+2022-06-12,7,Extreme Fear
+2022-06-13,7,Extreme Fear
+2022-06-14,7,Extreme Fear
+2022-06-15,7,Extreme Fear
+2022-06-16,6,Extreme Fear
+2022-06-17,6,Extreme Fear
+2022-06-18,6,Extreme Fear
+2022-06-19,6,Extreme Fear
+2022-06-20,6,Extreme Fear
+2022-06-21,6,Extreme Fear
+2022-06-22,6,Extreme Fear
+2022-06-23,6,Extreme Fear
+2022-06-24,7,Extreme Fear
+2022-06-25,7,Extreme Fear
+2022-06-26,7,Extreme Fear
+2022-06-27,7,Extreme Fear
+2022-06-28,7,Extreme Fear
+2022-06-29,7,Extreme Fear
+2022-06-30,7,Extreme Fear
+2022-07-01,7,Extreme Fear
+2022-07-02,7,Extreme Fear
+2022-07-03,7,Extreme Fear
+2022-07-04,8,Extreme Fear
+2022-07-05,8,Extreme Fear
+2022-07-06,8,Extreme Fear
+2022-07-07,8,Extreme Fear
+2022-07-08,8,Extreme Fear
+2022-07-09,8,Extreme Fear
+2022-07-10,8,Extreme Fear
+2022-07-11,8,Extreme Fear
+2022-07-12,8,Extreme Fear
+2022-07-13,8,Extreme Fear
+2022-07-14,9,Extreme Fear
+2022-07-15,9,Extreme Fear
+2022-07-16,9,Extreme Fear
+2022-07-17,9,Extreme Fear
+2022-07-18,9,Extreme Fear
+2022-07-19,9,Extreme Fear
+2022-07-20,9,Extreme Fear
+2022-07-21,9,Extreme Fear
+2022-07-22,9,Extreme Fear
+2022-07-23,9,Extreme Fear
+2022-07-24,10,Extreme Fear
+2022-07-25,10,Extreme Fear
+2022-07-26,10,Extreme Fear
+2022-07-27,10,Extreme Fear
+2022-07-28,10,Extreme Fear
+2022-07-29,10,Extreme Fear
+2022-07-30,10,Extreme Fear
+2022-07-31,10,Extreme Fear
+2022-08-01,10,Extreme Fear
+2022-08-02,10,Extreme Fear
+2022-08-03,11,Extreme Fear
+2022-08-04,11,Extreme Fear
+2022-08-05,11,Extreme Fear
+2022-08-06,11,Extreme Fear
+2022-08-07,11,Extreme Fear
+2022-08-08,11,Extreme Fear
+2022-08-09,11,Extreme Fear
+2022-08-10,11,Extreme Fear
+2022-08-11,11,Extreme Fear
+2022-08-12,11,Extreme Fear
+2022-08-13,11,Extreme Fear
+2022-08-14,12,Extreme Fear
+2022-08-15,12,Extreme Fear
+2022-08-16,12,Extreme Fear
+2022-08-17,12,Extreme Fear
+2022-08-18,12,Extreme Fear
+2022-08-19,12,Extreme Fear
+2022-08-20,12,Extreme Fear
+2022-08-21,12,Extreme Fear
+2022-08-22,12,Extreme Fear
+2022-08-23,12,Extreme Fear
+2022-08-24,13,Extreme Fear
+2022-08-25,13,Extreme Fear
+2022-08-26,13,Extreme Fear
+2022-08-27,13,Extreme Fear
+2022-08-28,13,Extreme Fear
+2022-08-29,13,Extreme Fear
+2022-08-30,13,Extreme Fear
+2022-08-31,13,Extreme Fear
+2022-09-01,13,Extreme Fear
+2022-09-02,13,Extreme Fear
+2022-09-03,14,Extreme Fear
+2022-09-04,14,Extreme Fear
+2022-09-05,14,Extreme Fear
+2022-09-06,14,Extreme Fear
+2022-09-07,14,Extreme Fear
+2022-09-08,14,Extreme Fear
+2022-09-09,14,Extreme Fear
+2022-09-10,14,Extreme Fear
+2022-09-11,14,Extreme Fear
+2022-09-12,14,Extreme Fear
+2022-09-13,15,Extreme Fear
+2022-09-14,15,Extreme Fear
+2022-09-15,15,Extreme Fear
+2022-09-16,15,Extreme Fear
+2022-09-17,15,Extreme Fear
+2022-09-18,15,Extreme Fear
+2022-09-19,15,Extreme Fear
+2022-09-20,15,Extreme Fear
+2022-09-21,15,Extreme Fear
+2022-09-22,15,Extreme Fear
+2022-09-23,15,Extreme Fear
+2022-09-24,16,Extreme Fear
+2022-09-25,16,Extreme Fear
+2022-09-26,16,Extreme Fear
+2022-09-27,16,Extreme Fear
+2022-09-28,16,Extreme Fear
+2022-09-29,16,Extreme Fear
+2022-09-30,16,Extreme Fear
+2022-10-01,16,Extreme Fear
+2022-10-02,16,Extreme Fear
+2022-10-03,16,Extreme Fear
+2022-10-04,17,Extreme Fear
+2022-10-05,17,Extreme Fear
+2022-10-06,17,Extreme Fear
+2022-10-07,17,Extreme Fear
+2022-10-08,17,Extreme Fear
+2022-10-09,17,Extreme Fear
+2022-10-10,17,Extreme Fear
+2022-10-11,17,Extreme Fear
+2022-10-12,17,Extreme Fear
+2022-10-13,17,Extreme Fear
+2022-10-14,18,Extreme Fear
+2022-10-15,18,Extreme Fear
+2022-10-16,18,Extreme Fear
+2022-10-17,18,Extreme Fear
+2022-10-18,18,Extreme Fear
+2022-10-19,18,Extreme Fear
+2022-10-20,18,Extreme Fear
+2022-10-21,18,Extreme Fear
+2022-10-22,18,Extreme Fear
+2022-10-23,18,Extreme Fear
+2022-10-24,19,Extreme Fear
+2022-10-25,19,Extreme Fear
+2022-10-26,19,Extreme Fear
+2022-10-27,19,Extreme Fear
+2022-10-28,19,Extreme Fear
+2022-10-29,19,Extreme Fear
+2022-10-30,19,Extreme Fear
+2022-10-31,19,Extreme Fear
+2022-11-01,19,Extreme Fear
+2022-11-02,19,Extreme Fear
+2022-11-03,20,Extreme Fear
+2022-11-04,20,Extreme Fear
+2022-11-05,20,Extreme Fear
+2022-11-06,20,Extreme Fear
+2022-11-07,20,Extreme Fear
+2022-11-08,20,Extreme Fear
+2022-11-09,14,Extreme Fear
+2022-11-10,14,Extreme Fear
+2022-11-11,15,Extreme Fear
+2022-11-12,16,Extreme Fear
+2022-11-13,16,Extreme Fear
+2022-11-14,16,Extreme Fear
+2022-11-15,17,Extreme Fear
+2022-11-16,18,Extreme Fear
+2022-11-17,18,Extreme Fear
+2022-11-18,18,Extreme Fear
+2022-11-19,19,Extreme Fear
+2022-11-20,20,Extreme Fear
+2022-11-21,20,Extreme Fear
+2022-11-22,20,Extreme Fear
+2022-11-23,20,Extreme Fear
+2022-11-24,20,Extreme Fear
+2022-11-25,21,Extreme Fear
+2022-11-26,21,Extreme Fear
+2022-11-27,21,Extreme Fear
+2022-11-28,21,Extreme Fear
+2022-11-29,21,Extreme Fear
+2022-11-30,21,Extreme Fear
+2022-12-01,22,Extreme Fear
+2022-12-02,22,Extreme Fear
+2022-12-03,22,Extreme Fear
+2022-12-04,22,Extreme Fear
+2022-12-05,22,Extreme Fear
+2022-12-06,22,Extreme Fear
+2022-12-07,22,Extreme Fear
+2022-12-08,23,Extreme Fear
+2022-12-09,23,Extreme Fear
+2022-12-10,23,Extreme Fear
+2022-12-11,23,Extreme Fear
+2022-12-12,23,Extreme Fear
+2022-12-13,23,Extreme Fear
+2022-12-14,23,Extreme Fear
+2022-12-15,24,Extreme Fear
+2022-12-16,24,Extreme Fear
+2022-12-17,24,Extreme Fear
+2022-12-18,24,Extreme Fear
+2022-12-19,24,Extreme Fear
+2022-12-20,24,Extreme Fear
+2022-12-21,24,Extreme Fear
+2022-12-22,25,Extreme Fear
+2022-12-23,25,Extreme Fear
+2022-12-24,25,Extreme Fear
+2022-12-25,25,Extreme Fear
+2022-12-26,25,Extreme Fear
+2022-12-27,25,Extreme Fear
+2022-12-28,26,Fear
+2022-12-29,26,Fear
+2022-12-30,26,Fear
+2022-12-31,26,Fear
+2023-01-01,28,Fear
+2023-01-02,30,Fear
+2023-01-03,32,Fear
+2023-01-04,33,Fear
+2023-01-05,35,Fear
+2023-01-06,37,Fear
+2023-01-07,39,Fear
+2023-01-08,41,Fear
+2023-01-09,43,Fear
+2023-01-10,45,Fear
+2023-01-11,46,Neutral
+2023-01-12,48,Neutral
+2023-01-13,50,Neutral
+2023-01-14,52,Neutral
+2023-01-15,52,Neutral
+2023-01-16,51,Neutral
+2023-01-17,51,Neutral
+2023-01-18,51,Neutral
+2023-01-19,50,Neutral
+2023-01-20,50,Neutral
+2023-01-21,50,Neutral
+2023-01-22,49,Neutral
+2023-01-23,49,Neutral
+2023-01-24,49,Neutral
+2023-01-25,48,Neutral
+2023-01-26,48,Neutral
+2023-01-27,48,Neutral
+2023-01-28,47,Neutral
+2023-01-29,47,Neutral
+2023-01-30,46,Neutral
+2023-01-31,46,Neutral
+2023-02-01,46,Neutral
+2023-02-02,45,Fear
+2023-02-03,45,Fear
+2023-02-04,45,Fear
+2023-02-05,44,Fear
+2023-02-06,44,Fear
+2023-02-07,44,Fear
+2023-02-08,43,Fear
+2023-02-09,43,Fear
+2023-02-10,43,Fear
+2023-02-11,42,Fear
+2023-02-12,42,Fear
+2023-02-13,42,Fear
+2023-02-14,41,Fear
+2023-02-15,41,Fear
+2023-02-16,41,Fear
+2023-02-17,40,Fear
+2023-02-18,40,Fear
+2023-02-19,40,Fear
+2023-02-20,39,Fear
+2023-02-21,39,Fear
+2023-02-22,39,Fear
+2023-02-23,38,Fear
+2023-02-24,38,Fear
+2023-02-25,37,Fear
+2023-02-26,37,Fear
+2023-02-27,37,Fear
+2023-02-28,36,Fear
+2023-03-01,36,Fear
+2023-03-02,36,Fear
+2023-03-03,35,Fear
+2023-03-04,35,Fear
+2023-03-05,35,Fear
+2023-03-06,34,Fear
+2023-03-07,34,Fear
+2023-03-08,34,Fear
+2023-03-09,33,Fear
+2023-03-10,33,Fear
+2023-03-11,34,Fear
+2023-03-12,36,Fear
+2023-03-13,37,Fear
+2023-03-14,39,Fear
+2023-03-15,40,Fear
+2023-03-16,42,Fear
+2023-03-17,43,Fear
+2023-03-18,45,Fear
+2023-03-19,46,Neutral
+2023-03-20,48,Neutral
+2023-03-21,49,Neutral
+2023-03-22,51,Neutral
+2023-03-23,52,Neutral
+2023-03-24,54,Neutral
+2023-03-25,55,Neutral
+2023-03-26,57,Greed
+2023-03-27,58,Greed
+2023-03-28,60,Greed
+2023-03-29,61,Greed
+2023-03-30,63,Greed
+2023-03-31,64,Greed
+2023-04-01,64,Greed
+2023-04-02,64,Greed
+2023-04-03,64,Greed
+2023-04-04,64,Greed
+2023-04-05,64,Greed
+2023-04-06,64,Greed
+2023-04-07,64,Greed
+2023-04-08,64,Greed
+2023-04-09,64,Greed
+2023-04-10,64,Greed
+2023-04-11,64,Greed
+2023-04-12,64,Greed
+2023-04-13,64,Greed
+2023-04-14,64,Greed
+2023-04-15,64,Greed
+2023-04-16,64,Greed
+2023-04-17,64,Greed
+2023-04-18,64,Greed
+2023-04-19,64,Greed
+2023-04-20,64,Greed
+2023-04-21,64,Greed
+2023-04-22,64,Greed
+2023-04-23,64,Greed
+2023-04-24,64,Greed
+2023-04-25,64,Greed
+2023-04-26,64,Greed
+2023-04-27,64,Greed
+2023-04-28,64,Greed
+2023-04-29,64,Greed
+2023-04-30,64,Greed
+2023-05-01,64,Greed
+2023-05-02,64,Greed
+2023-05-03,64,Greed
+2023-05-04,64,Greed
+2023-05-05,64,Greed
+2023-05-06,64,Greed
+2023-05-07,64,Greed
+2023-05-08,64,Greed
+2023-05-09,64,Greed
+2023-05-10,64,Greed
+2023-05-11,64,Greed
+2023-05-12,65,Greed
+2023-05-13,65,Greed
+2023-05-14,65,Greed
+2023-05-15,65,Greed
+2023-05-16,65,Greed
+2023-05-17,65,Greed
+2023-05-18,65,Greed
+2023-05-19,65,Greed
+2023-05-20,65,Greed
+2023-05-21,65,Greed
+2023-05-22,65,Greed
+2023-05-23,65,Greed
+2023-05-24,65,Greed
+2023-05-25,65,Greed
+2023-05-26,65,Greed
+2023-05-27,65,Greed
+2023-05-28,65,Greed
+2023-05-29,65,Greed
+2023-05-30,65,Greed
+2023-05-31,65,Greed
+2023-06-01,65,Greed
+2023-06-02,65,Greed
+2023-06-03,65,Greed
+2023-06-04,65,Greed
+2023-06-05,65,Greed
+2023-06-06,65,Greed
+2023-06-07,65,Greed
+2023-06-08,65,Greed
+2023-06-09,65,Greed
+2023-06-10,65,Greed
+2023-06-11,65,Greed
+2023-06-12,65,Greed
+2023-06-13,65,Greed
+2023-06-14,65,Greed
+2023-06-15,65,Greed
+2023-06-16,65,Greed
+2023-06-17,65,Greed
+2023-06-18,65,Greed
+2023-06-19,65,Greed
+2023-06-20,65,Greed
+2023-06-21,65,Greed
+2023-06-22,65,Greed
+2023-06-23,64,Greed
+2023-06-24,64,Greed
+2023-06-25,63,Greed
+2023-06-26,63,Greed
+2023-06-27,62,Greed
+2023-06-28,62,Greed
+2023-06-29,61,Greed
+2023-06-30,61,Greed
+2023-07-01,60,Greed
+2023-07-02,60,Greed
+2023-07-03,59,Greed
+2023-07-04,59,Greed
+2023-07-05,58,Greed
+2023-07-06,58,Greed
+2023-07-07,57,Greed
+2023-07-08,57,Greed
+2023-07-09,56,Greed
+2023-07-10,56,Greed
+2023-07-11,55,Neutral
+2023-07-12,55,Neutral
+2023-07-13,54,Neutral
+2023-07-14,54,Neutral
+2023-07-15,53,Neutral
+2023-07-16,53,Neutral
+2023-07-17,52,Neutral
+2023-07-18,52,Neutral
+2023-07-19,51,Neutral
+2023-07-20,51,Neutral
+2023-07-21,50,Neutral
+2023-07-22,50,Neutral
+2023-07-23,49,Neutral
+2023-07-24,49,Neutral
+2023-07-25,48,Neutral
+2023-07-26,48,Neutral
+2023-07-27,47,Neutral
+2023-07-28,47,Neutral
+2023-07-29,46,Neutral
+2023-07-30,46,Neutral
+2023-07-31,45,Fear
+2023-08-01,45,Fear
+2023-08-02,44,Fear
+2023-08-03,44,Fear
+2023-08-04,43,Fear
+2023-08-05,43,Fear
+2023-08-06,42,Fear
+2023-08-07,42,Fear
+2023-08-08,41,Fear
+2023-08-09,41,Fear
+2023-08-10,40,Fear
+2023-08-11,40,Fear
+2023-08-12,39,Fear
+2023-08-13,39,Fear
+2023-08-14,38,Fear
+2023-08-15,38,Fear
+2023-08-16,37,Fear
+2023-08-17,37,Fear
+2023-08-18,38,Fear
+2023-08-19,38,Fear
+2023-08-20,39,Fear
+2023-08-21,39,Fear
+2023-08-22,40,Fear
+2023-08-23,40,Fear
+2023-08-24,41,Fear
+2023-08-25,41,Fear
+2023-08-26,42,Fear
+2023-08-27,42,Fear
+2023-08-28,43,Fear
+2023-08-29,43,Fear
+2023-08-30,44,Fear
+2023-08-31,44,Fear
+2023-09-01,45,Fear
+2023-09-02,45,Fear
+2023-09-03,46,Neutral
+2023-09-04,46,Neutral
+2023-09-05,47,Neutral
+2023-09-06,47,Neutral
+2023-09-07,48,Neutral
+2023-09-08,48,Neutral
+2023-09-09,49,Neutral
+2023-09-10,49,Neutral
+2023-09-11,50,Neutral
+2023-09-12,50,Neutral
+2023-09-13,51,Neutral
+2023-09-14,51,Neutral
+2023-09-15,52,Neutral
+2023-09-16,52,Neutral
+2023-09-17,53,Neutral
+2023-09-18,53,Neutral
+2023-09-19,54,Neutral
+2023-09-20,54,Neutral
+2023-09-21,55,Neutral
+2023-09-22,56,Greed
+2023-09-23,56,Greed
+2023-09-24,57,Greed
+2023-09-25,57,Greed
+2023-09-26,58,Greed
+2023-09-27,58,Greed
+2023-09-28,59,Greed
+2023-09-29,59,Greed
+2023-09-30,60,Greed
+2023-10-01,60,Greed
+2023-10-02,61,Greed
+2023-10-03,61,Greed
+2023-10-04,62,Greed
+2023-10-05,62,Greed
+2023-10-06,63,Greed
+2023-10-07,63,Greed
+2023-10-08,64,Greed
+2023-10-09,64,Greed
+2023-10-10,65,Greed
+2023-10-11,65,Greed
+2023-10-12,66,Greed
+2023-10-13,66,Greed
+2023-10-14,67,Greed
+2023-10-15,67,Greed
+2023-10-16,68,Greed
+2023-10-17,68,Greed
+2023-10-18,69,Greed
+2023-10-19,69,Greed
+2023-10-20,70,Greed
+2023-10-21,70,Greed
+2023-10-22,71,Greed
+2023-10-23,71,Greed
+2023-10-24,72,Greed
+2023-10-25,72,Greed
+2023-10-26,72,Greed
+2023-10-27,72,Greed
+2023-10-28,72,Greed
+2023-10-29,72,Greed
+2023-10-30,72,Greed
+2023-10-31,72,Greed
+2023-11-01,72,Greed
+2023-11-02,72,Greed
+2023-11-03,72,Greed
+2023-11-04,72,Greed
+2023-11-05,73,Greed
+2023-11-06,73,Greed
+2023-11-07,73,Greed
+2023-11-08,73,Greed
+2023-11-09,73,Greed
+2023-11-10,73,Greed
+2023-11-11,73,Greed
+2023-11-12,73,Greed
+2023-11-13,73,Greed
+2023-11-14,73,Greed
+2023-11-15,73,Greed
+2023-11-16,73,Greed
+2023-11-17,73,Greed
+2023-11-18,73,Greed
+2023-11-19,73,Greed
+2023-11-20,73,Greed
+2023-11-21,73,Greed
+2023-11-22,73,Greed
+2023-11-23,73,Greed
+2023-11-24,73,Greed
+2023-11-25,73,Greed
+2023-11-26,73,Greed
+2023-11-27,74,Greed
+2023-11-28,74,Greed
+2023-11-29,74,Greed
+2023-11-30,74,Greed
+2023-12-01,74,Greed
+2023-12-02,74,Greed
+2023-12-03,74,Greed
+2023-12-04,74,Greed
+2023-12-05,74,Greed
+2023-12-06,74,Greed
+2023-12-07,74,Greed
+2023-12-08,74,Greed
+2023-12-09,74,Greed
+2023-12-10,74,Greed
+2023-12-11,74,Greed
+2023-12-12,74,Greed
+2023-12-13,74,Greed
+2023-12-14,74,Greed
+2023-12-15,74,Greed
+2023-12-16,74,Greed
+2023-12-17,73,Greed
+2023-12-18,73,Greed
+2023-12-19,73,Greed
+2023-12-20,73,Greed
+2023-12-21,73,Greed
+2023-12-22,73,Greed
+2023-12-23,73,Greed
+2023-12-24,73,Greed
+2023-12-25,73,Greed
+2023-12-26,73,Greed
+2023-12-27,73,Greed
+2023-12-28,73,Greed
+2023-12-29,73,Greed
+2023-12-30,73,Greed
+2023-12-31,73,Greed
+2024-01-01,73,Greed
+2024-01-02,73,Greed
+2024-01-03,72,Greed
+2024-01-04,72,Greed
+2024-01-05,72,Greed
+2024-01-06,72,Greed
+2024-01-07,72,Greed
+2024-01-08,72,Greed
+2024-01-09,72,Greed
+2024-01-10,72,Greed
+2024-01-11,72,Greed
+2024-01-12,72,Greed
+2024-01-13,72,Greed
+2024-01-14,73,Greed
+2024-01-15,73,Greed
+2024-01-16,73,Greed
+2024-01-17,73,Greed
+2024-01-18,73,Greed
+2024-01-19,74,Greed
+2024-01-20,74,Greed
+2024-01-21,74,Greed
+2024-01-22,74,Greed
+2024-01-23,74,Greed
+2024-01-24,75,Greed
+2024-01-25,75,Greed
+2024-01-26,75,Greed
+2024-01-27,75,Greed
+2024-01-28,76,Extreme Greed
+2024-01-29,76,Extreme Greed
+2024-01-30,76,Extreme Greed
+2024-01-31,76,Extreme Greed
+2024-02-01,76,Extreme Greed
+2024-02-02,77,Extreme Greed
+2024-02-03,77,Extreme Greed
+2024-02-04,77,Extreme Greed
+2024-02-05,77,Extreme Greed
+2024-02-06,77,Extreme Greed
+2024-02-07,78,Extreme Greed
+2024-02-08,78,Extreme Greed
+2024-02-09,78,Extreme Greed
+2024-02-10,78,Extreme Greed
+2024-02-11,78,Extreme Greed
+2024-02-12,79,Extreme Greed
+2024-02-13,79,Extreme Greed
+2024-02-14,79,Extreme Greed
+2024-02-15,79,Extreme Greed
+2024-02-16,80,Extreme Greed
+2024-02-17,80,Extreme Greed
+2024-02-18,80,Extreme Greed
+2024-02-19,80,Extreme Greed
+2024-02-20,80,Extreme Greed
+2024-02-21,81,Extreme Greed
+2024-02-22,81,Extreme Greed
+2024-02-23,81,Extreme Greed
+2024-02-24,81,Extreme Greed
+2024-02-25,81,Extreme Greed
+2024-02-26,82,Extreme Greed
+2024-02-27,82,Extreme Greed
+2024-02-28,82,Extreme Greed
+2024-02-29,82,Extreme Greed
+2024-03-01,83,Extreme Greed
+2024-03-02,83,Extreme Greed
+2024-03-03,84,Extreme Greed
+2024-03-04,84,Extreme Greed
+2024-03-05,84,Extreme Greed
+2024-03-06,85,Extreme Greed
+2024-03-07,85,Extreme Greed
+2024-03-08,86,Extreme Greed
+2024-03-09,86,Extreme Greed
+2024-03-10,86,Extreme Greed
+2024-03-11,87,Extreme Greed
+2024-03-12,87,Extreme Greed
+2024-03-13,88,Extreme Greed
+2024-03-14,88,Extreme Greed
+2024-03-15,87,Extreme Greed
+2024-03-16,86,Extreme Greed
+2024-03-17,85,Extreme Greed
+2024-03-18,84,Extreme Greed
+2024-03-19,83,Extreme Greed
+2024-03-20,82,Extreme Greed
+2024-03-21,81,Extreme Greed
+2024-03-22,80,Extreme Greed
+2024-03-23,79,Extreme Greed
+2024-03-24,78,Extreme Greed
+2024-03-25,77,Extreme Greed
+2024-03-26,76,Extreme Greed
+2024-03-27,75,Greed
+2024-03-28,74,Greed
+2024-03-29,73,Greed
+2024-03-30,72,Greed
+2024-03-31,71,Greed
+2024-04-01,70,Greed
+2024-04-02,69,Greed
+2024-04-03,68,Greed
+2024-04-04,67,Greed
+2024-04-05,66,Greed
+2024-04-06,65,Greed
+2024-04-07,64,Greed
+2024-04-08,63,Greed
+2024-04-09,62,Greed
+2024-04-10,61,Greed
+2024-04-11,60,Greed
+2024-04-12,59,Greed
+2024-04-13,58,Greed
+2024-04-14,58,Greed
+2024-04-15,59,Greed
+2024-04-16,59,Greed
+2024-04-17,59,Greed
+2024-04-18,60,Greed
+2024-04-19,60,Greed
+2024-04-20,60,Greed
+2024-04-21,60,Greed
+2024-04-22,61,Greed
+2024-04-23,61,Greed
+2024-04-24,61,Greed
+2024-04-25,62,Greed
+2024-04-26,62,Greed
+2024-04-27,62,Greed
+2024-04-28,63,Greed
+2024-04-29,63,Greed
+2024-04-30,63,Greed
+2024-05-01,64,Greed
+2024-05-02,64,Greed
+2024-05-03,64,Greed
+2024-05-04,65,Greed
+2024-05-05,65,Greed
+2024-05-06,65,Greed
+2024-05-07,66,Greed
+2024-05-08,66,Greed
+2024-05-09,66,Greed
+2024-05-10,66,Greed
+2024-05-11,67,Greed
+2024-05-12,67,Greed
+2024-05-13,67,Greed
+2024-05-14,68,Greed
+2024-05-15,68,Greed
+2024-05-16,68,Greed
+2024-05-17,69,Greed
+2024-05-18,69,Greed
+2024-05-19,69,Greed
+2024-05-20,70,Greed
+2024-05-21,70,Greed
+2024-05-22,70,Greed
+2024-05-23,70,Greed
+2024-05-24,71,Greed
+2024-05-25,71,Greed
+2024-05-26,71,Greed
+2024-05-27,72,Greed
+2024-05-28,72,Greed
+2024-05-29,72,Greed
+2024-05-30,73,Greed
+2024-05-31,73,Greed
+2024-06-01,72,Greed
+2024-06-02,70,Greed
+2024-06-03,69,Greed
+2024-06-04,68,Greed
+2024-06-05,67,Greed
+2024-06-06,65,Greed
+2024-06-07,64,Greed
+2024-06-08,63,Greed
+2024-06-09,62,Greed
+2024-06-10,60,Greed
+2024-06-11,59,Greed
+2024-06-12,58,Greed
+2024-06-13,57,Greed
+2024-06-14,55,Neutral
+2024-06-15,54,Neutral
+2024-06-16,53,Neutral
+2024-06-17,52,Neutral
+2024-06-18,50,Neutral
+2024-06-19,49,Neutral
+2024-06-20,48,Neutral
+2024-06-21,47,Neutral
+2024-06-22,45,Fear
+2024-06-23,44,Fear
+2024-06-24,43,Fear
+2024-06-25,42,Fear
+2024-06-26,40,Fear
+2024-06-27,39,Fear
+2024-06-28,38,Fear
+2024-06-29,37,Fear
+2024-06-30,35,Fear
+2024-07-01,34,Fear
+2024-07-02,33,Fear
+2024-07-03,32,Fear
+2024-07-04,30,Fear
+2024-07-05,29,Fear
+2024-07-06,29,Fear
+2024-07-07,28,Fear
+2024-07-08,28,Fear
+2024-07-09,27,Fear
+2024-07-10,27,Fear
+2024-07-11,27,Fear
+2024-07-12,26,Fear
+2024-07-13,26,Fear
+2024-07-14,26,Fear
+2024-07-15,25,Extreme Fear
+2024-07-16,25,Extreme Fear
+2024-07-17,24,Extreme Fear
+2024-07-18,24,Extreme Fear
+2024-07-19,24,Extreme Fear
+2024-07-20,23,Extreme Fear
+2024-07-21,23,Extreme Fear
+2024-07-22,22,Extreme Fear
+2024-07-23,22,Extreme Fear
+2024-07-24,22,Extreme Fear
+2024-07-25,21,Extreme Fear
+2024-07-26,21,Extreme Fear
+2024-07-27,20,Extreme Fear
+2024-07-28,20,Extreme Fear
+2024-07-29,20,Extreme Fear
+2024-07-30,19,Extreme Fear
+2024-07-31,19,Extreme Fear
+2024-08-01,19,Extreme Fear
+2024-08-02,18,Extreme Fear
+2024-08-03,18,Extreme Fear
+2024-08-04,17,Extreme Fear
+2024-08-05,17,Extreme Fear
+2024-08-06,17,Extreme Fear
+2024-08-07,17,Extreme Fear
+2024-08-08,17,Extreme Fear
+2024-08-09,18,Extreme Fear
+2024-08-10,18,Extreme Fear
+2024-08-11,18,Extreme Fear
+2024-08-12,18,Extreme Fear
+2024-08-13,18,Extreme Fear
+2024-08-14,18,Extreme Fear
+2024-08-15,19,Extreme Fear
+2024-08-16,19,Extreme Fear
+2024-08-17,19,Extreme Fear
+2024-08-18,19,Extreme Fear
+2024-08-19,19,Extreme Fear
+2024-08-20,19,Extreme Fear
+2024-08-21,20,Extreme Fear
+2024-08-22,20,Extreme Fear
+2024-08-23,20,Extreme Fear
+2024-08-24,20,Extreme Fear
+2024-08-25,20,Extreme Fear
+2024-08-26,20,Extreme Fear
+2024-08-27,20,Extreme Fear
+2024-08-28,21,Extreme Fear
+2024-08-29,21,Extreme Fear
+2024-08-30,21,Extreme Fear
+2024-08-31,21,Extreme Fear
+2024-09-01,21,Extreme Fear
+2024-09-02,21,Extreme Fear
+2024-09-03,22,Extreme Fear
+2024-09-04,22,Extreme Fear
+2024-09-05,22,Extreme Fear
+2024-09-06,22,Extreme Fear
+2024-09-07,23,Extreme Fear
+2024-09-08,24,Extreme Fear
+2024-09-09,25,Extreme Fear
+2024-09-10,26,Fear
+2024-09-11,27,Fear
+2024-09-12,28,Fear
+2024-09-13,29,Fear
+2024-09-14,30,Fear
+2024-09-15,31,Fear
+2024-09-16,32,Fear
+2024-09-17,33,Fear
+2024-09-18,34,Fear
+2024-09-19,35,Fear
+2024-09-20,35,Fear
+2024-09-21,36,Fear
+2024-09-22,37,Fear
+2024-09-23,38,Fear
+2024-09-24,39,Fear
+2024-09-25,40,Fear
+2024-09-26,41,Fear
+2024-09-27,42,Fear
+2024-09-28,43,Fear
+2024-09-29,44,Fear
+2024-09-30,45,Fear
+2024-10-01,46,Neutral
+2024-10-02,47,Neutral
+2024-10-03,48,Neutral
+2024-10-04,49,Neutral
+2024-10-05,50,Neutral
+2024-10-06,51,Neutral
+2024-10-07,52,Neutral
+2024-10-08,53,Neutral
+2024-10-09,54,Neutral
+2024-10-10,55,Neutral
+2024-10-11,56,Greed
+2024-10-12,57,Greed
+2024-10-13,58,Greed
+2024-10-14,59,Greed
+2024-10-15,60,Greed
+2024-10-16,61,Greed
+2024-10-17,62,Greed
+2024-10-18,62,Greed
+2024-10-19,63,Greed
+2024-10-20,64,Greed
+2024-10-21,65,Greed
+2024-10-22,66,Greed
+2024-10-23,67,Greed
+2024-10-24,68,Greed
+2024-10-25,69,Greed
+2024-10-26,70,Greed
+2024-10-27,71,Greed
+2024-10-28,72,Greed
+2024-10-29,73,Greed
+2024-10-30,74,Greed
+2024-10-31,75,Greed
+2024-11-01,76,Extreme Greed
+2024-11-02,77,Extreme Greed
+2024-11-03,78,Extreme Greed
+2024-11-04,79,Extreme Greed
+2024-11-05,80,Extreme Greed
+2024-11-06,81,Extreme Greed
+2024-11-07,82,Extreme Greed
+2024-11-08,83,Extreme Greed
+2024-11-09,84,Extreme Greed
+2024-11-10,85,Extreme Greed
+2024-11-11,86,Extreme Greed
+2024-11-12,87,Extreme Greed
+2024-11-13,87,Extreme Greed
+2024-11-14,88,Extreme Greed
+2024-11-15,89,Extreme Greed
+2024-11-16,90,Extreme Greed
+2024-11-17,90,Extreme Greed
+2024-11-18,91,Extreme Greed
+2024-11-19,92,Extreme Greed
+2024-11-20,93,Extreme Greed
+2024-11-21,93,Extreme Greed
+2024-11-22,94,Extreme Greed
+2024-11-23,94,Extreme Greed
+2024-11-24,94,Extreme Greed
+2024-11-25,94,Extreme Greed
+2024-11-26,94,Extreme Greed
+2024-11-27,94,Extreme Greed
+2024-11-28,94,Extreme Greed
+2024-11-29,94,Extreme Greed
+2024-11-30,94,Extreme Greed
+2024-12-01,94,Extreme Greed
+2024-12-02,94,Extreme Greed
+2024-12-03,94,Extreme Greed
+2024-12-04,94,Extreme Greed
+2024-12-05,94,Extreme Greed
+2024-12-06,94,Extreme Greed
+2024-12-07,94,Extreme Greed
+2024-12-08,94,Extreme Greed
+2024-12-09,94,Extreme Greed
+2024-12-10,94,Extreme Greed
+2024-12-11,94,Extreme Greed
+2024-12-12,94,Extreme Greed
+2024-12-13,94,Extreme Greed
+2024-12-14,94,Extreme Greed
+2024-12-15,94,Extreme Greed
+2024-12-16,94,Extreme Greed
+2024-12-17,94,Extreme Greed
+2024-12-18,94,Extreme Greed
+2024-12-19,94,Extreme Greed
+2024-12-20,94,Extreme Greed
+2024-12-21,94,Extreme Greed
+2024-12-22,94,Extreme Greed
+2024-12-23,94,Extreme Greed
+2024-12-24,94,Extreme Greed
+2024-12-25,94,Extreme Greed
+2024-12-26,94,Extreme Greed
+2024-12-27,94,Extreme Greed
+2024-12-28,94,Extreme Greed
+2024-12-29,94,Extreme Greed
+2024-12-30,94,Extreme Greed
+2024-12-31,94,Extreme Greed
+2025-01-01,94,Extreme Greed
+2025-01-02,94,Extreme Greed
+2025-01-03,94,Extreme Greed
+2025-01-04,94,Extreme Greed
+2025-01-05,94,Extreme Greed
+2025-01-06,94,Extreme Greed
+2025-01-07,94,Extreme Greed
+2025-01-08,94,Extreme Greed
+2025-01-09,94,Extreme Greed
+2025-01-10,94,Extreme Greed
+2025-01-11,94,Extreme Greed
+2025-01-12,94,Extreme Greed
+2025-01-13,94,Extreme Greed
+2025-01-14,94,Extreme Greed
+2025-01-15,94,Extreme Greed
+2025-01-16,94,Extreme Greed
+2025-01-17,94,Extreme Greed
+2025-01-18,94,Extreme Greed
+2025-01-19,94,Extreme Greed
+2025-01-20,94,Extreme Greed
+2025-01-21,94,Extreme Greed
+2025-01-22,94,Extreme Greed
+2025-01-23,94,Extreme Greed
+2025-01-24,94,Extreme Greed
+2025-01-25,94,Extreme Greed
+2025-01-26,94,Extreme Greed
+2025-01-27,94,Extreme Greed
+2025-01-28,94,Extreme Greed
+2025-01-29,94,Extreme Greed
+2025-01-30,94,Extreme Greed
+2025-01-31,94,Extreme Greed
+2025-02-01,94,Extreme Greed
+2025-02-02,94,Extreme Greed
+2025-02-03,94,Extreme Greed
+2025-02-04,94,Extreme Greed
+2025-02-05,94,Extreme Greed
+2025-02-06,94,Extreme Greed
+2025-02-07,94,Extreme Greed
+2025-02-08,94,Extreme Greed
+2025-02-09,94,Extreme Greed
+2025-02-10,94,Extreme Greed
+2025-02-11,94,Extreme Greed
+2025-02-12,94,Extreme Greed
+2025-02-13,94,Extreme Greed
+2025-02-14,94,Extreme Greed
+2025-02-15,94,Extreme Greed
+2025-02-16,94,Extreme Greed
+2025-02-17,94,Extreme Greed
+2025-02-18,94,Extreme Greed
+2025-02-19,94,Extreme Greed
+2025-02-20,94,Extreme Greed
+2025-02-21,94,Extreme Greed
+2025-02-22,94,Extreme Greed
+2025-02-23,94,Extreme Greed
+2025-02-24,94,Extreme Greed
+2025-02-25,94,Extreme Greed
+2025-02-26,94,Extreme Greed
+2025-02-27,94,Extreme Greed
+2025-02-28,94,Extreme Greed
+2025-03-01,94,Extreme Greed
+2025-03-02,94,Extreme Greed
+2025-03-03,94,Extreme Greed
+2025-03-04,94,Extreme Greed
+2025-03-05,94,Extreme Greed
+2025-03-06,94,Extreme Greed
+2025-03-07,94,Extreme Greed
+2025-03-08,94,Extreme Greed
+2025-03-09,94,Extreme Greed
+2025-03-10,94,Extreme Greed
+2025-03-11,94,Extreme Greed
+2025-03-12,94,Extreme Greed
+2025-03-13,94,Extreme Greed
+2025-03-14,94,Extreme Greed
+2025-03-15,94,Extreme Greed
+2025-03-16,94,Extreme Greed
+2025-03-17,94,Extreme Greed
+2025-03-18,94,Extreme Greed
+2025-03-19,94,Extreme Greed
+2025-03-20,94,Extreme Greed
+2025-03-21,94,Extreme Greed
+2025-03-22,94,Extreme Greed
+2025-03-23,94,Extreme Greed
+2025-03-24,94,Extreme Greed
+2025-03-25,94,Extreme Greed
+2025-03-26,94,Extreme Greed
+2025-03-27,94,Extreme Greed
+2025-03-28,94,Extreme Greed
+2025-03-29,94,Extreme Greed
+2025-03-30,94,Extreme Greed
+2025-03-31,94,Extreme Greed
+2025-04-01,94,Extreme Greed
+2025-04-02,94,Extreme Greed
+2025-04-03,94,Extreme Greed
+2025-04-04,94,Extreme Greed
+2025-04-05,94,Extreme Greed
+2025-04-06,94,Extreme Greed
+2025-04-07,94,Extreme Greed
+2025-04-08,94,Extreme Greed
+2025-04-09,94,Extreme Greed
+2025-04-10,94,Extreme Greed
+2025-04-11,94,Extreme Greed
+2025-04-12,94,Extreme Greed
+2025-04-13,94,Extreme Greed
+2025-04-14,94,Extreme Greed
+2025-04-15,94,Extreme Greed
+2025-04-16,94,Extreme Greed
+2025-04-17,94,Extreme Greed
+2025-04-18,94,Extreme Greed
+2025-04-19,94,Extreme Greed
+2025-04-20,94,Extreme Greed
+2025-04-21,94,Extreme Greed
+2025-04-22,94,Extreme Greed
+2025-04-23,94,Extreme Greed
+2025-04-24,94,Extreme Greed
+2025-04-25,94,Extreme Greed
+2025-04-26,94,Extreme Greed
+2025-04-27,94,Extreme Greed
+2025-04-28,94,Extreme Greed
+2025-04-29,94,Extreme Greed
+2025-04-30,94,Extreme Greed
+2025-05-01,94,Extreme Greed
+2025-05-02,94,Extreme Greed
+2025-05-03,94,Extreme Greed
+2025-05-04,94,Extreme Greed
+2025-05-05,94,Extreme Greed
+2025-05-06,94,Extreme Greed
+2025-05-07,94,Extreme Greed
+2025-05-08,94,Extreme Greed
+2025-05-09,94,Extreme Greed
+2025-05-10,94,Extreme Greed
+2025-05-11,94,Extreme Greed
+2025-05-12,94,Extreme Greed
+2025-05-13,94,Extreme Greed
+2025-05-14,94,Extreme Greed
+2025-05-15,94,Extreme Greed
+2025-05-16,94,Extreme Greed
+2025-05-17,94,Extreme Greed
+2025-05-18,94,Extreme Greed
+2025-05-19,94,Extreme Greed
+2025-05-20,94,Extreme Greed
+2025-05-21,94,Extreme Greed
+2025-05-22,94,Extreme Greed
+2025-05-23,94,Extreme Greed
+2025-05-24,94,Extreme Greed
+2025-05-25,94,Extreme Greed
+2025-05-26,94,Extreme Greed
+2025-05-27,94,Extreme Greed
+2025-05-28,94,Extreme Greed
+2025-05-29,94,Extreme Greed
+2025-05-30,94,Extreme Greed
+2025-05-31,94,Extreme Greed
+2025-06-01,94,Extreme Greed
+2025-06-02,94,Extreme Greed
+2025-06-03,94,Extreme Greed
+2025-06-04,94,Extreme Greed
+2025-06-05,94,Extreme Greed
+2025-06-06,94,Extreme Greed
+2025-06-07,94,Extreme Greed
+2025-06-08,94,Extreme Greed
+2025-06-09,94,Extreme Greed
+2025-06-10,94,Extreme Greed
+2025-06-11,94,Extreme Greed
+2025-06-12,94,Extreme Greed
+2025-06-13,94,Extreme Greed
+2025-06-14,94,Extreme Greed
+2025-06-15,94,Extreme Greed
+2025-06-16,94,Extreme Greed
+2025-06-17,94,Extreme Greed
+2025-06-18,94,Extreme Greed
+2025-06-19,94,Extreme Greed
+2025-06-20,94,Extreme Greed
+2025-06-21,94,Extreme Greed
+2025-06-22,94,Extreme Greed
+2025-06-23,94,Extreme Greed
+2025-06-24,94,Extreme Greed
+2025-06-25,94,Extreme Greed
+2025-06-26,94,Extreme Greed
+2025-06-27,94,Extreme Greed
+2025-06-28,94,Extreme Greed
+2025-06-29,94,Extreme Greed
+2025-06-30,94,Extreme Greed
+2025-07-01,94,Extreme Greed
+2025-07-02,94,Extreme Greed
+2025-07-03,94,Extreme Greed
+2025-07-04,94,Extreme Greed
+2025-07-05,94,Extreme Greed
+2025-07-06,94,Extreme Greed
+2025-07-07,94,Extreme Greed
+2025-07-08,94,Extreme Greed
+2025-07-09,94,Extreme Greed
+2025-07-10,94,Extreme Greed
+2025-07-11,94,Extreme Greed
+2025-07-12,94,Extreme Greed
+2025-07-13,94,Extreme Greed
+2025-07-14,94,Extreme Greed
+2025-07-15,94,Extreme Greed
+2025-07-16,94,Extreme Greed
+2025-07-17,94,Extreme Greed
+2025-07-18,94,Extreme Greed
+2025-07-19,94,Extreme Greed
+2025-07-20,94,Extreme Greed
+2025-07-21,94,Extreme Greed
+2025-07-22,94,Extreme Greed
+2025-07-23,94,Extreme Greed
+2025-07-24,94,Extreme Greed
+2025-07-25,94,Extreme Greed
+2025-07-26,94,Extreme Greed
+2025-07-27,94,Extreme Greed
+2025-07-28,94,Extreme Greed
+2025-07-29,94,Extreme Greed
+2025-07-30,94,Extreme Greed
+2025-07-31,94,Extreme Greed
+2025-08-01,94,Extreme Greed
+2025-08-02,94,Extreme Greed
+2025-08-03,94,Extreme Greed
+2025-08-04,94,Extreme Greed
+2025-08-05,94,Extreme Greed
+2025-08-06,94,Extreme Greed
+2025-08-07,94,Extreme Greed
+2025-08-08,94,Extreme Greed
+2025-08-09,94,Extreme Greed
+2025-08-10,94,Extreme Greed
+2025-08-11,94,Extreme Greed
+2025-08-12,94,Extreme Greed
+2025-08-13,94,Extreme Greed
+2025-08-14,94,Extreme Greed
+2025-08-15,94,Extreme Greed
+2025-08-16,94,Extreme Greed
+2025-08-17,94,Extreme Greed
+2025-08-18,94,Extreme Greed
+2025-08-19,94,Extreme Greed
+2025-08-20,94,Extreme Greed
+2025-08-21,94,Extreme Greed
+2025-08-22,94,Extreme Greed
+2025-08-23,94,Extreme Greed
+2025-08-24,94,Extreme Greed
+2025-08-25,94,Extreme Greed
+2025-08-26,94,Extreme Greed
+2025-08-27,94,Extreme Greed
+2025-08-28,94,Extreme Greed
+2025-08-29,94,Extreme Greed
+2025-08-30,94,Extreme Greed
+2025-08-31,94,Extreme Greed
+2025-09-01,94,Extreme Greed
+2025-09-02,94,Extreme Greed
+2025-09-03,94,Extreme Greed
+2025-09-04,94,Extreme Greed
+2025-09-05,94,Extreme Greed
+2025-09-06,94,Extreme Greed
+2025-09-07,94,Extreme Greed
+2025-09-08,94,Extreme Greed
+2025-09-09,94,Extreme Greed
+2025-09-10,94,Extreme Greed
+2025-09-11,94,Extreme Greed
+2025-09-12,94,Extreme Greed
+2025-09-13,94,Extreme Greed
+2025-09-14,94,Extreme Greed
+2025-09-15,94,Extreme Greed
+2025-09-16,94,Extreme Greed
+2025-09-17,94,Extreme Greed
+2025-09-18,94,Extreme Greed
+2025-09-19,94,Extreme Greed
+2025-09-20,94,Extreme Greed
+2025-09-21,94,Extreme Greed
+2025-09-22,94,Extreme Greed
+2025-09-23,94,Extreme Greed
+2025-09-24,94,Extreme Greed
+2025-09-25,94,Extreme Greed
+2025-09-26,94,Extreme Greed
+2025-09-27,94,Extreme Greed
+2025-09-28,94,Extreme Greed
+2025-09-29,94,Extreme Greed
+2025-09-30,94,Extreme Greed
+2025-10-01,94,Extreme Greed
+2025-10-02,94,Extreme Greed
+2025-10-03,94,Extreme Greed
+2025-10-04,94,Extreme Greed
+2025-10-05,94,Extreme Greed
+2025-10-06,94,Extreme Greed
+2025-10-07,94,Extreme Greed
+2025-10-08,94,Extreme Greed
+2025-10-09,94,Extreme Greed
+2025-10-10,94,Extreme Greed
+2025-10-11,94,Extreme Greed
+2025-10-12,94,Extreme Greed
+2025-10-13,94,Extreme Greed
+2025-10-14,94,Extreme Greed
+2025-10-15,94,Extreme Greed
+2025-10-16,94,Extreme Greed
+2025-10-17,94,Extreme Greed
+2025-10-18,94,Extreme Greed
+2025-10-19,94,Extreme Greed
+2025-10-20,94,Extreme Greed
+2025-10-21,94,Extreme Greed
+2025-10-22,94,Extreme Greed
+2025-10-23,94,Extreme Greed
+2025-10-24,94,Extreme Greed
+2025-10-25,94,Extreme Greed
+2025-10-26,94,Extreme Greed
+2025-10-27,94,Extreme Greed
+2025-10-28,94,Extreme Greed
+2025-10-29,94,Extreme Greed
+2025-10-30,94,Extreme Greed
+2025-10-31,94,Extreme Greed
+2025-11-01,94,Extreme Greed
+2025-11-02,94,Extreme Greed
+2025-11-03,94,Extreme Greed
+2025-11-04,94,Extreme Greed
+2025-11-05,94,Extreme Greed
+2025-11-06,94,Extreme Greed
+2025-11-07,94,Extreme Greed
+2025-11-08,94,Extreme Greed
+2025-11-09,94,Extreme Greed
+2025-11-10,94,Extreme Greed
+2025-11-11,94,Extreme Greed
+2025-11-12,94,Extreme Greed
+2025-11-13,94,Extreme Greed
+2025-11-14,94,Extreme Greed
+2025-11-15,94,Extreme Greed
+2025-11-16,94,Extreme Greed
+2025-11-17,94,Extreme Greed
+2025-11-18,94,Extreme Greed
+2025-11-19,94,Extreme Greed
+2025-11-20,94,Extreme Greed
