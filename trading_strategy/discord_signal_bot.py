@@ -15,7 +15,7 @@ from enum import Enum
 # ============================================
 # 配置区域 - Discord Webhook URL
 # ============================================
-DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1444322680487678086/HM4858p2cKDUGM63Ps7_OEpCgTI3OJUJi-tZ4c3HCWvCZHMqACh8s6iT-zNN1QwmUKH0"
+DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1444323268600266773/i5WXa-v66RrHnl6SP6IVXw4vtABzavxxeOZo6OJAk_gRMV-Khx88wWRSE_aNQ4kSqtEm"
 
 # ============================================
 # 策略配置
