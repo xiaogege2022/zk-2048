@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Discord Signal Test</title>
+    <title>BTC交易信号测试</title>
     <style>
         body { font-family: Arial; text-align: center; padding: 50px; background: #1a1a2e; color: white; }
         button { font-size: 24px; padding: 20px 60px; background: #5865F2; color: white; border: none; border-radius: 10px; cursor: pointer; }
@@ -11,13 +11,13 @@
     </style>
 </head>
 <body>
-    <h1>BTC Trading Signal Bot</h1>
-    <p>Click to send test signal to Discord</p>
-    <button onclick="sendTest()">Send Test Signal</button>
+    <h1>BTC 交易信号机器人</h1>
+    <p>点击按钮发送测试信号到 Discord</p>
+    <button onclick="sendTest()">发送测试信号</button>
     <div id="result"></div>
     <script>
         async function sendTest() {
-            document.getElementById('result').innerText = 'Sending...';
+            document.getElementById('result').innerText = '发送中...';
             try {
                 const r = await fetch('https://discord.com/api/webhooks/1444323268600266773/i5WXa-v66RrHnl6SP6IVXw4vtABzavxxeOZo6OJAk_gRMV-Khx88wWRSE_aNQ4kSqtEm', {
                     method: 'POST',
@@ -41,9 +41,9 @@
                         }]
                     })
                 });
-                document.getElementById('result').innerText = r.ok ? '✅ Success! Check Discord!' : '❌ Failed: ' + r.status;
+                document.getElementById('result').innerText = r.ok ? '✅ 发送成功！请查看Discord' : '❌ 失败: ' + r.status;
             } catch(e) {
-                document.getElementById('result').innerText = '❌ Error: ' + e.message;
+                document.getElementById('result').innerText = '❌ 错误: ' + e.message;
             }
         }
     </script>
