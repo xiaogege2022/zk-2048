@@ -150,58 +150,20 @@ class DiscordSignalBot:
             direction_text = "做空 SHORT"
 
         embed = {
-            "title": f"🚨 BTC/USDT 交易信号",
+            "title": "🚨 BTC/USDT 交易信号",
             "color": color,
             "fields": [
-                {
-                    "name": "📊 方向",
-                    "value": f"{direction_emoji} **{direction_text}**",
-                    "inline": True
-                },
-                {
-                    "name": "📈 策略",
-                    "value": signal.strategy_name,
-                    "inline": True
-                },
-                {
-                    "name": "🎯 胜率",
-                    "value": f"**{signal.win_rate:.1f}%**",
-                    "inline": True
-                },
-                {
-                    "name": "💰 入场价格",
-                    "value": f"${signal.entry_price:,.2f}",
-                    "inline": True
-                },
-                {
-                    "name": "✅ 止盈 (TP)",
-                    "value": f"${tp_price:,.2f} (+{signal.take_profit:.1f}%)",
-                    "inline": True
-                },
-                {
-                    "name": "❌ 止损 (SL)",
-                    "value": f"${sl_price:,.2f} (-{signal.stop_loss:.1f}%)",
-                    "inline": True
-                },
-                {
-                    "name": "⚡ 建议杠杆",
-                    "value": f"**{signal.leverage}x**",
-                    "inline": True
-                },
-                {
-                    "name": "💪 信号强度",
-                    "value": signal.confidence,
-                    "inline": True
-                },
-                {
-                    "name": "📝 说明",
-                    "value": signal.description,
-                    "inline": False
-                }
+                {"name": "📊 方向", "value": f"{direction_emoji} **{direction_text}**", "inline": True},
+                {"name": "📈 策略", "value": signal.strategy_name, "inline": True},
+                {"name": "🎯 胜率", "value": f"**{signal.win_rate:.1f}%**", "inline": True},
+                {"name": "💰 入场价格", "value": f"${signal.entry_price:,.2f}", "inline": True},
+                {"name": "✅ 止盈", "value": f"${tp_price:,.2f} (+{signal.take_profit:.1f}%)", "inline": True},
+                {"name": "❌ 止损", "value": f"${sl_price:,.2f} (-{signal.stop_loss:.1f}%)", "inline": True},
+                {"name": "⚡ 杠杆倍数", "value": f"**{signal.leverage}倍**", "inline": True},
+                {"name": "💪 信号强度", "value": signal.confidence, "inline": True},
+                {"name": "📝 策略说明", "value": signal.description, "inline": False}
             ],
-            "footer": {
-                "text": f"⚠️ 风险提示: 仅供参考，请自行判断 | {now}"
-            }
+            "footer": {"text": f"⚠️ 风险提示: 仅供参考，请自行判断 | {now}"}
         }
         return embed
 

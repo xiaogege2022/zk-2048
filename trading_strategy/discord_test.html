@@ -24,17 +24,20 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         embeds: [{
-                            title: '🚨 BTC/USDT Trading Signal',
+                            title: '🚨 BTC/USDT 交易信号',
                             color: 65280,
                             fields: [
-                                {name: '📊 Direction', value: '🟢 **LONG**', inline: true},
-                                {name: '📈 Strategy', value: 'EMA 7/25 Cross', inline: true},
-                                {name: '🎯 Win Rate', value: '**80%**', inline: true},
-                                {name: '💰 Entry', value: '$95,000', inline: true},
-                                {name: '✅ TP', value: '$109,250 (+15%)', inline: true},
-                                {name: '❌ SL', value: '$88,350 (-7%)', inline: true},
-                                {name: '⚡ Leverage', value: '**25x**', inline: true}
-                            ]
+                                {name: '📊 方向', value: '🟢 **做多 LONG**', inline: true},
+                                {name: '📈 策略', value: 'EMA 7/25 金叉', inline: true},
+                                {name: '🎯 胜率', value: '**80%**', inline: true},
+                                {name: '💰 入场价格', value: '$95,000', inline: true},
+                                {name: '✅ 止盈', value: '$109,250 (+15%)', inline: true},
+                                {name: '❌ 止损', value: '$88,350 (-7%)', inline: true},
+                                {name: '⚡ 杠杆倍数', value: '**25倍**', inline: true},
+                                {name: '💪 信号强度', value: '⭐⭐⭐⭐⭐ 强', inline: true},
+                                {name: '📝 策略说明', value: 'EMA7上穿EMA25形成金叉，看涨信号', inline: false}
+                            ],
+                            footer: {text: '⚠️ 风险提示: 仅供参考，请自行判断'}
                         }]
                     })
                 });
