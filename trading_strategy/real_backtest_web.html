@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTC策略真实回测系统</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #e0e0e0; line-height: 1.6; padding: 20px; min-height: 100vh;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        h1 { text-align: center; color: #00d4ff; font-size: 2em; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #888; margin-bottom: 20px; }
+        h2 { color: #00d4ff; margin: 25px 0 15px; border-bottom: 2px solid rgba(0,212,255,0.3); padding-bottom: 10px; }
+
+        .control-panel {
+            background: rgba(0, 0, 0, 0.3); border-radius: 15px; padding: 20px; margin: 20px 0;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;
+        }
+        .control-group { }
+        .control-group label { display: block; color: #00d4ff; margin-bottom: 5px; font-size: 0.9em; }
+        .control-group select, .control-group input {
+            width: 100%; padding: 10px; border: 1px solid #00d4ff; border-radius: 8px;
+            background: rgba(0,0,0,0.5); color: #fff; font-size: 1em;
+        }
+
+        .btn {
+            padding: 15px 30px; border: none; border-radius: 10px; cursor: pointer;
+            font-size: 1.1em; font-weight: bold; transition: all 0.3s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #00ff88); color: #000;
+        }
+        .btn-primary:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(0,212,255,0.5); }
+        .btn-primary:disabled { background: #666; cursor: not-allowed; transform: none; }
+
+        .progress-bar {
+            background: rgba(0,0,0,0.3); border-radius: 10px; height: 30px; margin: 15px 0; overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; background: linear-gradient(90deg, #00d4ff, #00ff88);
+            transition: width 0.3s; display: flex; align-items: center; justify-content: center;
+            color: #000; font-weight: bold;
+        }
+
+        .log-box {
+            background: rgba(0,0,0,0.5); border-radius: 10px; padding: 15px;
+            height: 200px; overflow-y: auto; font-family: monospace; font-size: 0.9em;
+            margin: 15px 0;
+        }
+        .log-box .info { color: #00d4ff; }
+        .log-box .success { color: #00ff88; }
+        .log-box .warn { color: #ffd700; }
+        .log-box .error { color: #ff6b6b; }
+
+        .results-section { display: none; }
+
+        table {
+            width: 100%; border-collapse: collapse; margin: 15px 0;
+            background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden;
+        }
+        th, td { padding: 12px 15px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { background: rgba(0,212,255,0.2); color: #00d4ff; }
+        tr:hover { background: rgba(255,255,255,0.05); }
+        .green { color: #00ff88; }
+        .red { color: #ff6b6b; }
+        .gold { color: #ffd700; }
+
+        .strategy-card {
+            background: rgba(0,0,0,0.3); border-radius: 15px; padding: 20px;
+            margin: 20px 0; border-left: 4px solid #00d4ff;
+        }
+        .strategy-name { font-size: 1.3em; color: #00d4ff; margin-bottom: 15px; }
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px; margin: 15px 0;
+        }
+        .stat-item {
+            background: rgba(0,212,255,0.1); padding: 12px; border-radius: 8px; text-align: center;
+        }
+        .stat-value { font-size: 1.4em; font-weight: bold; }
+        .stat-label { color: #888; font-size: 0.85em; }
+
+        .trade-list { max-height: 300px; overflow-y: auto; }
+
+        .warning-box {
+            background: rgba(255,100,100,0.2); border: 2px solid #ff6b6b;
+            border-radius: 10px; padding: 15px; margin: 15px 0;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,212,255,0.1));
+            border: 2px solid #00ff88; border-radius: 15px; padding: 20px; margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📈 BTC/USDT 策略真实回测系统</h1>
+        <p class="subtitle">使用币安真实历史K线数据验证最优止盈止损参数</p>
+
+        <div class="control-panel">
+            <div class="control-group">
+                <label>数据周期</label>
+                <select id="interval">
+                    <option value="1h" selected>1小时</option>
+                    <option value="4h">4小时</option>
+                    <option value="1d">日线</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>历史天数</label>
+                <select id="days">
+                    <option value="180">180天</option>
+                    <option value="365" selected>365天</option>
+                    <option value="730">730天(2年)</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>杠杆倍数</label>
+                <select id="leverage">
+                    <option value="10">10x</option>
+                    <option value="20" selected>20x</option>
+                    <option value="30">30x</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>初始资金</label>
+                <input type="number" id="capital" value="10000">
+            </div>
+            <div class="control-group" style="display: flex; align-items: flex-end;">
+                <button class="btn btn-primary" id="startBtn" onclick="startBacktest()">
+                    🚀 开始回测
+                </button>
+            </div>
+        </div>
+
+        <div class="progress-bar" id="progressBar" style="display: none;">
+            <div class="progress-fill" id="progressFill" style="width: 0%;">0%</div>
+        </div>
+
+        <div class="log-box" id="logBox"></div>
+
+        <div class="results-section" id="resultsSection">
+            <h2>📊 回测结果总览</h2>
+            <div id="summaryBox"></div>
+            <div id="resultsTable"></div>
+
+            <h2>📈 各策略详细报告</h2>
+            <div id="detailedResults"></div>
+        </div>
+    </div>
+
+<script>
+// ============================================
+// 全局变量
+// ============================================
+let klines = [];
+let allSignals = {};
+let backtestResults = [];
+
+// ============================================
+// 日志函数
+// ============================================
+function log(msg, type = 'info') {
+    const logBox = document.getElementById('logBox');
+    const time = new Date().toLocaleTimeString();
+    logBox.innerHTML += `<div class="${type}">[${time}] ${msg}</div>`;
+    logBox.scrollTop = logBox.scrollHeight;
+}
+
+function updateProgress(pct, text) {
+    document.getElementById('progressBar').style.display = 'block';
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressFill').textContent = text || (pct + '%');
+}
+
+// ============================================
+// 获取币安K线数据
+// ============================================
+async function fetchKlines(symbol, interval, limit, startTime = null) {
+    let url = `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`;
+    if (startTime) url += `&startTime=${startTime}`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    return data.map(k => ({
+        timestamp: k[0],
+        open: parseFloat(k[1]),
+        high: parseFloat(k[2]),
+        low: parseFloat(k[3]),
+        close: parseFloat(k[4]),
+        volume: parseFloat(k[5]),
+        closeTime: k[6],
+        datetime: new Date(k[0]).toLocaleString('zh-CN')
+    }));
+}
+
+async function fetchAllHistoricalData(symbol, interval, days) {
+    const allKlines = [];
+    const endTime = Date.now();
+    const startTime = endTime - days * 24 * 60 * 60 * 1000;
+
+    let currentStart = startTime;
+    const batchSize = 1000;
+    let batch = 0;
+
+    log(`开始获取 ${days} 天历史数据...`, 'info');
+
+    while (currentStart < endTime) {
+        try {
+            const klines = await fetchKlines(symbol, interval, batchSize, currentStart);
+            if (klines.length === 0) break;
+
+            allKlines.push(...klines);
+            currentStart = klines[klines.length - 1].closeTime + 1;
+
+            batch++;
+            updateProgress(Math.min(90, batch * 10), `获取数据中... ${allKlines.length}条`);
+            log(`已获取 ${allKlines.length} 条K线数据`, 'info');
+
+            await new Promise(r => setTimeout(r, 100));
+        } catch (e) {
+            log(`获取数据出错: ${e.message}`, 'error');
+            break;
+        }
+    }
+
+    log(`✅ 共获取 ${allKlines.length} 条K线数据`, 'success');
+    return allKlines;
+}
+
+// ============================================
+// 技术指标计算
+// ============================================
+function calculateEMA(prices, period) {
+    const ema = [];
+    const multiplier = 2 / (period + 1);
+
+    // 前period-1个设为0
+    for (let i = 0; i < period - 1; i++) ema.push(0);
+
+    // 第一个EMA用SMA
+    let sum = 0;
+    for (let i = 0; i < period; i++) sum += prices[i];
+    ema.push(sum / period);
+
+    // 后续EMA
+    for (let i = period; i < prices.length; i++) {
+        ema.push((prices[i] - ema[ema.length - 1]) * multiplier + ema[ema.length - 1]);
+    }
+
+    return ema;
+}
+
+function calculateRSI(prices, period = 14) {
+    const rsi = new Array(period).fill(50);
+    const gains = [];
+    const losses = [];
+
+    for (let i = 1; i < prices.length; i++) {
+        const change = prices[i] - prices[i-1];
+        gains.push(Math.max(0, change));
+        losses.push(Math.max(0, -change));
+    }
+
+    for (let i = period; i < prices.length; i++) {
+        let avgGain = 0, avgLoss = 0;
+        for (let j = i - period; j < i; j++) {
+            avgGain += gains[j];
+            avgLoss += losses[j];
+        }
+        avgGain /= period;
+        avgLoss /= period;
+
+        if (avgLoss === 0) {
+            rsi.push(100);
+        } else {
+            const rs = avgGain / avgLoss;
+            rsi.push(100 - (100 / (1 + rs)));
+        }
+    }
+
+    return rsi;
+}
+
+// ============================================
+// 策略信号检测
+// ============================================
+function detectEMACrossover(klines, fast = 7, slow = 25) {
+    const closes = klines.map(k => k.close);
+    const emaFast = calculateEMA(closes, fast);
+    const emaSlow = calculateEMA(closes, slow);
+
+    const signals = [];
+
+    for (let i = slow + 1; i < klines.length; i++) {
+        // 金叉
+        if (emaFast[i-1] <= emaSlow[i-1] && emaFast[i] > emaSlow[i]) {
+            let maxGain = 0, maxLoss = 0;
+
+            for (let j = i + 1; j < Math.min(i + 25, klines.length); j++) {
+                const highPct = (klines[j].high - klines[i].close) / klines[i].close * 100;
+                const lowPct = (klines[j].low - klines[i].close) / klines[i].close * 100;
+                maxGain = Math.max(maxGain, highPct);
+                maxLoss = Math.min(maxLoss, lowPct);
+            }
+
+            signals.push({
+                type: `EMA${fast}/${slow}金叉`,
+                entryTime: klines[i].datetime,
+                entryPrice: klines[i].close,
+                maxGain, maxLoss: Math.abs(maxLoss),
+                index: i
+            });
+        }
+    }
+
+    return signals;
+}
+
+function detectTrendEMACrossover(klines) {
+    const closes = klines.map(k => k.close);
+    const ema7 = calculateEMA(closes, 7);
+    const ema25 = calculateEMA(closes, 25);
+    const ema50 = calculateEMA(closes, 50);
+
+    const signals = [];
+
+    for (let i = 51; i < klines.length; i++) {
+        if (ema7[i-1] <= ema25[i-1] && ema7[i] > ema25[i] && klines[i].close > ema50[i]) {
+            let maxGain = 0, maxLoss = 0;
+
+            for (let j = i + 1; j < Math.min(i + 49, klines.length); j++) {
+                const highPct = (klines[j].high - klines[i].close) / klines[i].close * 100;
+                const lowPct = (klines[j].low - klines[i].close) / klines[i].close * 100;
+                maxGain = Math.max(maxGain, highPct);
+                maxLoss = Math.min(maxLoss, lowPct);
+            }
+
+            signals.push({
+                type: '趋势EMA交叉',
+                entryTime: klines[i].datetime,
+                entryPrice: klines[i].close,
+                maxGain, maxLoss: Math.abs(maxLoss),
+                index: i
+            });
+        }
+    }
+
+    return signals;
+}
+
+function detectPinBar(klines) {
+    const signals = [];
+
+    for (let i = 1; i < klines.length; i++) {
+        const k = klines[i];
+        const body = Math.abs(k.close - k.open);
+        const upperWick = k.high - Math.max(k.close, k.open);
+        const lowerWick = Math.min(k.close, k.open) - k.low;
+
+        if (body > 0 && lowerWick > body * 2 && upperWick < body) {
+            let maxGain = 0, maxLoss = 0;
+
+            for (let j = i + 1; j < Math.min(i + 25, klines.length); j++) {
+                const highPct = (klines[j].high - k.close) / k.close * 100;
+                const lowPct = (klines[j].low - k.close) / k.close * 100;
+                maxGain = Math.max(maxGain, highPct);
+                maxLoss = Math.min(maxLoss, lowPct);
+            }
+
+            signals.push({
+                type: '看涨插针',
+                entryTime: k.datetime,
+                entryPrice: k.close,
+                maxGain, maxLoss: Math.abs(maxLoss),
+                index: i
+            });
+        }
+    }
+
+    return signals;
+}
+
+function detectBreakout(klines, lookback = 7) {
+    const signals = [];
+
+    for (let i = lookback; i < klines.length; i++) {
+        let prevHigh = 0;
+        for (let j = i - lookback; j < i; j++) {
+            prevHigh = Math.max(prevHigh, klines[j].high);
+        }
+
+        if (klines[i].close > prevHigh && klines[i-1].close <= prevHigh) {
+            let maxGain = 0, maxLoss = 0;
+
+            for (let j = i + 1; j < Math.min(i + 25, klines.length); j++) {
+                const highPct = (klines[j].high - klines[i].close) / klines[i].close * 100;
+                const lowPct = (klines[j].low - klines[i].close) / klines[i].close * 100;
+                maxGain = Math.max(maxGain, highPct);
+                maxLoss = Math.min(maxLoss, lowPct);
+            }
+
+            signals.push({
+                type: '突破买入',
+                entryTime: klines[i].datetime,
+                entryPrice: klines[i].close,
+                maxGain, maxLoss: Math.abs(maxLoss),
+                index: i
+            });
+        }
+    }
+
+    return signals;
+}
+
+function detectGoldenCross(klines) {
+    const closes = klines.map(k => k.close);
+    const ema50 = calculateEMA(closes, 50);
+    const ema200 = calculateEMA(closes, 200);
+
+    const signals = [];
+
+    for (let i = 201; i < klines.length; i++) {
+        if (ema50[i-1] <= ema200[i-1] && ema50[i] > ema200[i]) {
+            let maxGain = 0, maxLoss = 0;
+
+            for (let j = i + 1; j < Math.min(i + 100, klines.length); j++) {
+                const highPct = (klines[j].high - klines[i].close) / klines[i].close * 100;
+                const lowPct = (klines[j].low - klines[i].close) / klines[i].close * 100;
+                maxGain = Math.max(maxGain, highPct);
+                maxLoss = Math.min(maxLoss, lowPct);
+            }
+
+            signals.push({
+                type: 'EMA50/200黄金交叉',
+                entryTime: klines[i].datetime,
+                entryPrice: klines[i].close,
+                maxGain, maxLoss: Math.abs(maxLoss),
+                index: i
+            });
+        }
+    }
+
+    return signals;
+}
+
+function detectPanicDip(klines) {
+    const closes = klines.map(k => k.close);
+    const rsi = calculateRSI(closes, 14);
+
+    const signals = [];
+
+    for (let i = 24; i < klines.length; i++) {
+        const drop24h = (klines[i].close - klines[i-24].close) / klines[i-24].close * 100;
+
+        if (rsi[i] < 30 && drop24h < -5) {
+            let maxGain = 0, maxLoss = 0;
+
+            for (let j = i + 1; j < Math.min(i + 49, klines.length); j++) {
+                const highPct = (klines[j].high - klines[i].close) / klines[i].close * 100;
+                const lowPct = (klines[j].low - klines[i].close) / klines[i].close * 100;
+                maxGain = Math.max(maxGain, highPct);
+                maxLoss = Math.min(maxLoss, lowPct);
+            }
+
+            signals.push({
+                type: '恐慌+闪崩',
+                entryTime: klines[i].datetime,
+                entryPrice: klines[i].close,
+                maxGain, maxLoss: Math.abs(maxLoss),
+                rsi: rsi[i],
+                drop24h,
+                index: i
+            });
+        }
+    }
+
+    return signals;
+}
+
+// ============================================
+// 回测引擎
+// ============================================
+function backtestStrategy(signals, klines, tpPct, slPct, leverage, initialCapital) {
+    let capital = initialCapital;
+    const trades = [];
+    let wins = 0, losses = 0;
+    let peakCapital = capital;
+    let maxDrawdown = 0;
+
+    for (const signal of signals) {
+        const entryIdx = signal.index;
+        const entryPrice = signal.entryPrice;
+
+        const tpPrice = entryPrice * (1 + tpPct / 100);
+        const slPrice = entryPrice * (1 - slPct / 100);
+
+        let exitPrice = null;
+        let exitReason = null;
+        let exitTime = null;
+
+        for (let j = entryIdx + 1; j < Math.min(entryIdx + 100, klines.length); j++) {
+            const k = klines[j];
+
+            if (k.low <= slPrice) {
+                exitPrice = slPrice;
+                exitReason = '止损';
+                exitTime = k.datetime;
+                break;
+            }
+
+            if (k.high >= tpPrice) {
+                exitPrice = tpPrice;
+                exitReason = '止盈';
+                exitTime = k.datetime;
+                break;
+            }
+        }
+
+        if (!exitPrice) {
+            const exitIdx = Math.min(entryIdx + 100, klines.length - 1);
+            exitPrice = klines[exitIdx].close;
+            exitReason = '超时平仓';
+            exitTime = klines[exitIdx].datetime;
+        }
+
+        let pnlPct = (exitPrice - entryPrice) / entryPrice * leverage;
+        if (pnlPct < -1) pnlPct = -1;
+
+        const pnlAmount = capital * pnlPct;
+        capital += pnlAmount;
+
+        if (pnlPct > 0) wins++;
+        else losses++;
+
+        if (capital > peakCapital) peakCapital = capital;
+        const drawdown = peakCapital > 0 ? (peakCapital - capital) / peakCapital : 0;
+        maxDrawdown = Math.max(maxDrawdown, drawdown);
+
+        trades.push({
+            entryTime: signal.entryTime,
+            entryPrice,
+            exitTime,
+            exitPrice,
+            exitReason,
+            pnlPct: pnlPct * 100,
+            pnlAmount,
+            capitalAfter: capital
+        });
+
+        if (capital <= 0) break;
+    }
+
+    const totalTrades = trades.length;
+    const winRate = totalTrades > 0 ? wins / totalTrades * 100 : 0;
+    const totalReturn = (capital - initialCapital) / initialCapital * 100;
+
+    return {
+        strategyType: signals[0]?.type || 'Unknown',
+        tpPct, slPct, leverage,
+        initialCapital,
+        finalCapital: capital,
+        totalReturn,
+        totalTrades,
+        wins, losses,
+        winRate,
+        maxDrawdown: maxDrawdown * 100,
+        trades
+    };
+}
+
+// ============================================
+// 主回测流程
+// ============================================
+async function startBacktest() {
+    const btn = document.getElementById('startBtn');
+    btn.disabled = true;
+    btn.textContent = '回测中...';
+
+    document.getElementById('logBox').innerHTML = '';
+    document.getElementById('resultsSection').style.display = 'none';
+
+    const interval = document.getElementById('interval').value;
+    const days = parseInt(document.getElementById('days').value);
+    const leverage = parseInt(document.getElementById('leverage').value);
+    const capital = parseFloat(document.getElementById('capital').value);
+
+    try {
+        // 获取历史数据
+        klines = await fetchAllHistoricalData('BTCUSDT', interval, days);
+
+        if (klines.length < 200) {
+            log('数据不足，请增加历史天数', 'error');
+            return;
+        }
+
+        log(`数据范围: ${klines[0].datetime} 至 ${klines[klines.length-1].datetime}`, 'success');
+
+        const minPrice = Math.min(...klines.map(k => k.low));
+        const maxPrice = Math.max(...klines.map(k => k.high));
+        log(`BTC价格范围: $${minPrice.toFixed(0)} - $${maxPrice.toFixed(0)}`, 'info');
+
+        // 检测信号
+        updateProgress(92, '检测策略信号...');
+        log('正在检测各策略信号...', 'info');
+
+        allSignals = {
+            'EMA7/25金叉': detectEMACrossover(klines, 7, 25),
+            '趋势EMA交叉': detectTrendEMACrossover(klines),
+            '看涨插针': detectPinBar(klines),
+            '突破买入': detectBreakout(klines),
+            'EMA50/200黄金交叉': detectGoldenCross(klines),
+            '恐慌+闪崩': detectPanicDip(klines)
+        };
+
+        for (const [name, signals] of Object.entries(allSignals)) {
+            log(`${name}: 发现 ${signals.length} 个信号`, 'info');
+        }
+
+        // 最优参数
+        const optimalParams = {
+            '趋势EMA交叉': { tp: 55, sl: 1 },
+            'EMA7/25金叉': { tp: 50, sl: 1 },
+            '突破买入': { tp: 55, sl: 1 },
+            '恐慌+闪崩': { tp: 125, sl: 1 },
+            '看涨插针': { tp: 55, sl: 1 },
+            'EMA50/200黄金交叉': { tp: 80, sl: 1 }
+        };
+
+        // 执行回测
+        updateProgress(95, '执行回测...');
+        log('正在执行回测...', 'info');
+
+        backtestResults = [];
+
+        for (const [name, signals] of Object.entries(allSignals)) {
+            if (signals.length === 0) continue;
+
+            const params = optimalParams[name] || { tp: 50, sl: 2 };
+            const result = backtestStrategy(signals, klines, params.tp, params.sl, leverage, capital);
+            backtestResults.push(result);
+
+            log(`${name}: 胜率${result.winRate.toFixed(1)}%, 总收益${result.totalReturn.toFixed(1)}%`,
+                result.totalReturn > 0 ? 'success' : 'warn');
+        }
+
+        // 显示结果
+        updateProgress(100, '完成!');
+        displayResults();
+
+        log('✅ 回测完成!', 'success');
+
+    } catch (e) {
+        log(`回测出错: ${e.message}`, 'error');
+        console.error(e);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '🚀 开始回测';
+    }
+}
+
+// ============================================
+// 显示结果
+// ============================================
+function displayResults() {
+    document.getElementById('resultsSection').style.display = 'block';
+
+    // 排序结果
+    backtestResults.sort((a, b) => b.totalReturn - a.totalReturn);
+
+    // 摘要
+    const bestStrategy = backtestResults[0];
+    const totalTrades = backtestResults.reduce((s, r) => s + r.totalTrades, 0);
+
+    document.getElementById('summaryBox').innerHTML = `
+        <div class="summary-box">
+            <h3 style="color: #00ff88; margin-bottom: 15px;">🏆 回测摘要</h3>
+            <p><strong>最佳策略:</strong> <span class="gold">${bestStrategy?.strategyType || '-'}</span></p>
+            <p><strong>最高收益:</strong> <span class="${bestStrategy?.totalReturn > 0 ? 'green' : 'red'}">${bestStrategy?.totalReturn.toFixed(1) || 0}%</span></p>
+            <p><strong>总交易次数:</strong> ${totalTrades}</p>
+        </div>
+
+        <div class="warning-box">
+            <strong>⚠️ 重要风险提示:</strong><br>
+            • 历史表现不代表未来收益<br>
+            • 回测未考虑交易手续费、滑点、资金费率<br>
+            • 1%止损在高杠杆下可能因价格跳空而被击穿<br>
+            • 实盘交易请务必控制仓位
+        </div>
+    `;
+
+    // 结果表格
+    let tableHtml = `
+        <table>
+            <thead>
+                <tr>
+                    <th>策略</th>
+                    <th>止盈/止损</th>
+                    <th>交易次数</th>
+                    <th>胜率</th>
+                    <th>总收益</th>
+                    <th>最大回撤</th>
+                    <th>最终资金</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    for (const r of backtestResults) {
+        const profitClass = r.totalReturn > 0 ? 'green' : 'red';
+        tableHtml += `
+            <tr>
+                <td><strong>${r.strategyType}</strong></td>
+                <td>${r.tpPct}% / ${r.slPct}%</td>
+                <td>${r.totalTrades}</td>
+                <td class="${r.winRate >= 50 ? 'green' : 'red'}">${r.winRate.toFixed(1)}%</td>
+                <td class="${profitClass}"><strong>${r.totalReturn.toFixed(1)}%</strong></td>
+                <td class="red">${r.maxDrawdown.toFixed(1)}%</td>
+                <td class="${profitClass}">$${r.finalCapital.toFixed(2)}</td>
+            </tr>
+        `;
+    }
+
+    tableHtml += '</tbody></table>';
+    document.getElementById('resultsTable').innerHTML = tableHtml;
+
+    // 详细策略卡片
+    let detailHtml = '';
+    for (const r of backtestResults) {
+        if (r.totalTrades === 0) continue;
+
+        detailHtml += `
+            <div class="strategy-card">
+                <div class="strategy-name">📈 ${r.strategyType}</div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">${r.totalTrades}</div>
+                        <div class="stat-label">交易次数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: ${r.winRate >= 50 ? '#00ff88' : '#ff6b6b'}">${r.winRate.toFixed(1)}%</div>
+                        <div class="stat-label">胜率</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: ${r.totalReturn > 0 ? '#00ff88' : '#ff6b6b'}">${r.totalReturn.toFixed(1)}%</div>
+                        <div class="stat-label">总收益</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: #ff6b6b">${r.maxDrawdown.toFixed(1)}%</div>
+                        <div class="stat-label">最大回撤</div>
+                    </div>
+                </div>
+
+                <h4 style="color: #ffd700; margin: 15px 0;">交易记录 (前15笔)</h4>
+                <div class="trade-list">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>入场时间</th>
+                                <th>入场价</th>
+                                <th>出场时间</th>
+                                <th>出场价</th>
+                                <th>出场原因</th>
+                                <th>盈亏%</th>
+                                <th>账户余额</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+        `;
+
+        for (const trade of r.trades.slice(0, 15)) {
+            const pnlClass = trade.pnlPct > 0 ? 'green' : 'red';
+            const reasonClass = trade.exitReason === '止盈' ? 'green' : (trade.exitReason === '止损' ? 'red' : 'gold');
+
+            detailHtml += `
+                <tr>
+                    <td>${trade.entryTime}</td>
+                    <td>$${trade.entryPrice.toFixed(2)}</td>
+                    <td>${trade.exitTime}</td>
+                    <td>$${trade.exitPrice.toFixed(2)}</td>
+                    <td class="${reasonClass}">${trade.exitReason}</td>
+                    <td class="${pnlClass}">${trade.pnlPct > 0 ? '+' : ''}${trade.pnlPct.toFixed(1)}%</td>
+                    <td>$${trade.capitalAfter.toFixed(2)}</td>
+                </tr>
+            `;
+        }
+
+        detailHtml += `
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    }
+
+    document.getElementById('detailedResults').innerHTML = detailHtml;
+}
+</script>
+</body>
+</html>

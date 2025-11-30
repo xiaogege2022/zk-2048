@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTC全周期策略回测系统</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #e0e0e0; line-height: 1.6; padding: 20px; min-height: 100vh;
+        }
+        .container { max-width: 1600px; margin: 0 auto; }
+        h1 { text-align: center; color: #00d4ff; font-size: 2em; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #888; margin-bottom: 20px; }
+        h2 { color: #00d4ff; margin: 25px 0 15px; border-bottom: 2px solid rgba(0,212,255,0.3); padding-bottom: 10px; }
+        h3 { color: #00ff88; margin: 20px 0 10px; }
+
+        .control-panel {
+            background: rgba(0, 0, 0, 0.3); border-radius: 15px; padding: 20px; margin: 20px 0;
+            display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end;
+        }
+        .control-group { flex: 1; min-width: 150px; }
+        .control-group label { display: block; color: #00d4ff; margin-bottom: 5px; font-size: 0.9em; }
+        .control-group select, .control-group input {
+            width: 100%; padding: 10px; border: 1px solid #00d4ff; border-radius: 8px;
+            background: rgba(0,0,0,0.5); color: #fff; font-size: 1em;
+        }
+
+        .btn {
+            padding: 15px 30px; border: none; border-radius: 10px; cursor: pointer;
+            font-size: 1.1em; font-weight: bold; transition: all 0.3s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #00ff88); color: #000;
+        }
+        .btn-primary:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(0,212,255,0.5); }
+        .btn-primary:disabled { background: #666; cursor: not-allowed; transform: none; }
+
+        .progress-container { margin: 15px 0; }
+        .progress-bar {
+            background: rgba(0,0,0,0.3); border-radius: 10px; height: 25px; overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; background: linear-gradient(90deg, #00d4ff, #00ff88);
+            transition: width 0.3s; display: flex; align-items: center; justify-content: center;
+            color: #000; font-weight: bold; font-size: 0.9em;
+        }
+        .progress-label { color: #888; font-size: 0.85em; margin-top: 5px; }
+
+        .log-box {
+            background: rgba(0,0,0,0.5); border-radius: 10px; padding: 15px;
+            height: 250px; overflow-y: auto; font-family: monospace; font-size: 0.85em;
+            margin: 15px 0;
+        }
+        .log-box .info { color: #00d4ff; }
+        .log-box .success { color: #00ff88; }
+        .log-box .warn { color: #ffd700; }
+        .log-box .error { color: #ff6b6b; }
+
+        .results-section { display: none; }
+
+        table {
+            width: 100%; border-collapse: collapse; margin: 15px 0;
+            background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; font-size: 0.9em;
+        }
+        th, td { padding: 10px 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { background: rgba(0,212,255,0.2); color: #00d4ff; font-weight: 600; }
+        tr:hover { background: rgba(255,255,255,0.05); }
+        .green { color: #00ff88; }
+        .red { color: #ff6b6b; }
+        .gold { color: #ffd700; }
+
+        .timeframe-section {
+            background: rgba(0,0,0,0.2); border-radius: 15px; padding: 20px;
+            margin: 20px 0; border-left: 4px solid #00d4ff;
+        }
+        .timeframe-header {
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 10px; margin-bottom: 15px;
+        }
+        .timeframe-name { font-size: 1.3em; color: #00d4ff; }
+        .timeframe-stats { display: flex; gap: 15px; flex-wrap: wrap; }
+        .stat-badge {
+            background: rgba(0,212,255,0.1); padding: 5px 12px; border-radius: 20px;
+            font-size: 0.85em;
+        }
+
+        .summary-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px; margin: 20px 0;
+        }
+        .summary-card {
+            background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px; text-align: center;
+        }
+        .summary-value { font-size: 2em; font-weight: bold; color: #00ff88; }
+        .summary-label { color: #888; font-size: 0.9em; margin-top: 5px; }
+
+        .warning-box {
+            background: rgba(255,100,100,0.2); border: 2px solid #ff6b6b;
+            border-radius: 10px; padding: 15px; margin: 15px 0;
+        }
+
+        .best-tag {
+            background: linear-gradient(135deg, #ffd700, #ff8c00); color: #000;
+            padding: 2px 8px; border-radius: 10px; font-size: 0.75em; font-weight: bold;
+        }
+
+        .tabs {
+            display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap;
+        }
+        .tab {
+            padding: 10px 20px; border-radius: 8px; cursor: pointer;
+            background: rgba(0,0,0,0.3); color: #888; transition: all 0.3s;
+        }
+        .tab.active { background: rgba(0,212,255,0.3); color: #00d4ff; }
+        .tab:hover { background: rgba(0,212,255,0.2); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 BTC/USDT 全周期策略回测系统</h1>
+        <p class="subtitle">5分钟 | 15分钟 | 1小时 | 4小时 | 日线 | 周线 - 真实币安数据回测</p>
+
+        <div class="control-panel">
+            <div class="control-group">
+                <label>杠杆倍数</label>
+                <select id="leverage">
+                    <option value="10">10x</option>
+                    <option value="20" selected>20x</option>
+                    <option value="30">30x</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>初始资金 (USDT)</label>
+                <input type="number" id="capital" value="10000">
+            </div>
+            <div class="control-group">
+                <label>历史天数</label>
+                <select id="days">
+                    <option value="90">90天</option>
+                    <option value="180">180天</option>
+                    <option value="365" selected>365天</option>
+                    <option value="730">730天</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <button class="btn btn-primary" id="startBtn" onclick="startFullBacktest()">
+                    🚀 开始全周期回测
+                </button>
+            </div>
+        </div>
+
+        <div class="progress-container" id="progressContainer" style="display: none;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%;">0%</div>
+            </div>
+            <div class="progress-label" id="progressLabel">准备中...</div>
+        </div>
+
+        <div class="log-box" id="logBox"></div>
+
+        <div class="results-section" id="resultsSection">
+            <h2>🏆 回测结果总览</h2>
+
+            <div class="summary-grid" id="summaryGrid"></div>
+
+            <div class="warning-box">
+                <strong>⚠️ 重要风险提示:</strong><br>
+                • 历史表现不代表未来收益，市场条件随时变化<br>
+                • 回测未考虑：交易手续费(0.04%)、滑点、资金费率、流动性<br>
+                • 1%止损在极端行情下可能因价格跳空被击穿<br>
+                • 不同周期信号可能冲突，实盘需综合判断
+            </div>
+
+            <h2>📈 各周期详细回测</h2>
+
+            <div class="tabs" id="timeframeTabs"></div>
+            <div id="timeframeContents"></div>
+        </div>
+    </div>
+
+<script>
+// ============================================
+// 配置
+// ============================================
+const TIMEFRAMES = [
+    { interval: '5m', name: '5分钟', lookback: 24, holdBars: 12 },
+    { interval: '15m', name: '15分钟', lookback: 24, holdBars: 16 },
+    { interval: '1h', name: '1小时', lookback: 24, holdBars: 24 },
+    { interval: '4h', name: '4小时', lookback: 24, holdBars: 12 },
+    { interval: '1d', name: '日线', lookback: 20, holdBars: 20 },
+    { interval: '1w', name: '周线', lookback: 12, holdBars: 8 }
+];
+
+const OPTIMAL_PARAMS = {
+    '趋势EMA交叉': { tp: 55, sl: 1 },
+    'EMA7/25金叉': { tp: 50, sl: 1 },
+    '突破买入': { tp: 55, sl: 1 },
+    '恐慌+闪崩': { tp: 125, sl: 1 },
+    '看涨插针': { tp: 55, sl: 1 },
+    'EMA50/200黄金交叉': { tp: 80, sl: 1 }
+};
+
+let allResults = {};
+
+// ============================================
+// 日志和进度
+// ============================================
+function log(msg, type = 'info') {
+    const logBox = document.getElementById('logBox');
+    const time = new Date().toLocaleTimeString();
+    logBox.innerHTML += `<div class="${type}">[${time}] ${msg}</div>`;
+    logBox.scrollTop = logBox.scrollHeight;
+}
+
+function updateProgress(pct, label) {
+    document.getElementById('progressContainer').style.display = 'block';
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressFill').textContent = Math.round(pct) + '%';
+    document.getElementById('progressLabel').textContent = label;
+}
+
+// ============================================
+// 币安API
+// ============================================
+async function fetchKlines(symbol, interval, limit, startTime = null) {
+    let url = `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`;
+    if (startTime) url += `&startTime=${startTime}`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    return data.map(k => ({
+        timestamp: k[0],
+        open: parseFloat(k[1]),
+        high: parseFloat(k[2]),
+        low: parseFloat(k[3]),
+        close: parseFloat(k[4]),
+        volume: parseFloat(k[5]),
+        closeTime: k[6],
+        datetime: new Date(k[0]).toLocaleString('zh-CN')
+    }));
+}
+
+async function fetchAllData(symbol, interval, days) {
+    const allKlines = [];
+    const endTime = Date.now();
+    const startTime = endTime - days * 24 * 60 * 60 * 1000;
+    let currentStart = startTime;
+
+    while (currentStart < endTime) {
+        try {
+            const klines = await fetchKlines(symbol, interval, 1000, currentStart);
+            if (klines.length === 0) break;
+            allKlines.push(...klines);
+            currentStart = klines[klines.length - 1].closeTime + 1;
+            await new Promise(r => setTimeout(r, 50));
+        } catch (e) {
+            log(`获取${interval}数据出错: ${e.message}`, 'error');
+            break;
+        }
+    }
+    return allKlines;
+}
+
+// ============================================
+// 技术指标
+// ============================================
+function calculateEMA(prices, period) {
+    const ema = [];
+    const multiplier = 2 / (period + 1);
+    for (let i = 0; i < period - 1; i++) ema.push(0);
+    let sum = 0;
+    for (let i = 0; i < period; i++) sum += prices[i];
+    ema.push(sum / period);
+    for (let i = period; i < prices.length; i++) {
+        ema.push((prices[i] - ema[ema.length - 1]) * multiplier + ema[ema.length - 1]);
+    }
+    return ema;
+}
+
+function calculateRSI(prices, period = 14) {
+    const rsi = new Array(period).fill(50);
+    const gains = [], losses = [];
+    for (let i = 1; i < prices.length; i++) {
+        const change = prices[i] - prices[i-1];
+        gains.push(Math.max(0, change));
+        losses.push(Math.max(0, -change));
+    }
+    for (let i = period; i < prices.length; i++) {
+        let avgGain = 0, avgLoss = 0;
+        for (let j = i - period; j < i; j++) { avgGain += gains[j]; avgLoss += losses[j]; }
+        avgGain /= period; avgLoss /= period;
+        rsi.push(avgLoss === 0 ? 100 : 100 - (100 / (1 + avgGain / avgLoss)));
+    }
+    return rsi;
+}
+
+// ============================================
+// 策略检测
+// ============================================
+function detectAllSignals(klines, tf) {
+    const closes = klines.map(k => k.close);
+    const signals = {
+        'EMA7/25金叉': [],
+        '趋势EMA交叉': [],
+        '看涨插针': [],
+        '突破买入': [],
+        'EMA50/200黄金交叉': [],
+        '恐慌+闪崩': []
+    };
+
+    const ema7 = calculateEMA(closes, 7);
+    const ema25 = calculateEMA(closes, 25);
+    const ema50 = calculateEMA(closes, 50);
+    const ema200 = calculateEMA(closes, 200);
+    const rsi = calculateRSI(closes, 14);
+
+    for (let i = Math.max(201, tf.lookback); i < klines.length - tf.holdBars; i++) {
+        const k = klines[i];
+        const entryPrice = k.close;
+
+        // 计算后续最大涨跌幅
+        let maxGain = 0, maxLoss = 0;
+        for (let j = i + 1; j < Math.min(i + tf.holdBars, klines.length); j++) {
+            maxGain = Math.max(maxGain, (klines[j].high - entryPrice) / entryPrice * 100);
+            maxLoss = Math.min(maxLoss, (klines[j].low - entryPrice) / entryPrice * 100);
+        }
+
+        const signalBase = {
+            entryTime: k.datetime,
+            entryPrice,
+            maxGain,
+            maxLoss: Math.abs(maxLoss),
+            index: i
+        };
+
+        // EMA7/25金叉
+        if (ema7[i-1] <= ema25[i-1] && ema7[i] > ema25[i]) {
+            signals['EMA7/25金叉'].push({ ...signalBase, type: 'EMA7/25金叉' });
+        }
+
+        // 趋势EMA交叉
+        if (ema7[i-1] <= ema25[i-1] && ema7[i] > ema25[i] && k.close > ema50[i]) {
+            signals['趋势EMA交叉'].push({ ...signalBase, type: '趋势EMA交叉' });
+        }
+
+        // 看涨插针
+        const body = Math.abs(k.close - k.open);
+        const lowerWick = Math.min(k.close, k.open) - k.low;
+        const upperWick = k.high - Math.max(k.close, k.open);
+        if (body > 0 && lowerWick > body * 2 && upperWick < body) {
+            signals['看涨插针'].push({ ...signalBase, type: '看涨插针' });
+        }
+
+        // 突破买入
+        let prevHigh = 0;
+        for (let j = i - tf.lookback; j < i; j++) prevHigh = Math.max(prevHigh, klines[j].high);
+        if (k.close > prevHigh && klines[i-1].close <= prevHigh) {
+            signals['突破买入'].push({ ...signalBase, type: '突破买入' });
+        }
+
+        // 黄金交叉
+        if (ema50[i-1] <= ema200[i-1] && ema50[i] > ema200[i]) {
+            signals['EMA50/200黄金交叉'].push({ ...signalBase, type: 'EMA50/200黄金交叉' });
+        }
+
+        // 恐慌+闪崩
+        if (i >= 24) {
+            const drop = (k.close - klines[i-24].close) / klines[i-24].close * 100;
+            if (rsi[i] < 30 && drop < -5) {
+                signals['恐慌+闪崩'].push({ ...signalBase, type: '恐慌+闪崩', rsi: rsi[i], drop });
+            }
+        }
+    }
+
+    return signals;
+}
+
+// ============================================
+// 回测引擎
+// ============================================
+function backtestStrategy(signals, klines, tpPct, slPct, leverage, initialCapital, holdBars) {
+    if (signals.length === 0) return null;
+
+    let capital = initialCapital;
+    const trades = [];
+    let wins = 0, losses = 0;
+    let peakCapital = capital;
+    let maxDrawdown = 0;
+
+    for (const signal of signals) {
+        const entryIdx = signal.index;
+        const entryPrice = signal.entryPrice;
+        const tpPrice = entryPrice * (1 + tpPct / 100);
+        const slPrice = entryPrice * (1 - slPct / 100);
+
+        let exitPrice = null, exitReason = null, exitTime = null;
+
+        for (let j = entryIdx + 1; j < Math.min(entryIdx + holdBars, klines.length); j++) {
+            const k = klines[j];
+            if (k.low <= slPrice) { exitPrice = slPrice; exitReason = '止损'; exitTime = k.datetime; break; }
+            if (k.high >= tpPrice) { exitPrice = tpPrice; exitReason = '止盈'; exitTime = k.datetime; break; }
+        }
+
+        if (!exitPrice) {
+            const exitIdx = Math.min(entryIdx + holdBars, klines.length - 1);
+            exitPrice = klines[exitIdx].close;
+            exitReason = '超时';
+            exitTime = klines[exitIdx].datetime;
+        }
+
+        let pnlPct = (exitPrice - entryPrice) / entryPrice * leverage;
+        if (pnlPct < -1) pnlPct = -1;
+        capital += capital * pnlPct;
+
+        if (pnlPct > 0) wins++; else losses++;
+        if (capital > peakCapital) peakCapital = capital;
+        maxDrawdown = Math.max(maxDrawdown, peakCapital > 0 ? (peakCapital - capital) / peakCapital : 0);
+
+        trades.push({ entryTime: signal.entryTime, entryPrice, exitTime, exitPrice, exitReason, pnlPct: pnlPct * 100, capitalAfter: capital });
+        if (capital <= 0) break;
+    }
+
+    return {
+        strategyType: signals[0].type,
+        tpPct, slPct, leverage,
+        finalCapital: capital,
+        totalReturn: (capital - initialCapital) / initialCapital * 100,
+        totalTrades: trades.length,
+        wins, losses,
+        winRate: trades.length > 0 ? wins / trades.length * 100 : 0,
+        maxDrawdown: maxDrawdown * 100,
+        trades
+    };
+}
+
+// ============================================
+// 主回测流程
+// ============================================
+async function startFullBacktest() {
+    const btn = document.getElementById('startBtn');
+    btn.disabled = true;
+    btn.textContent = '回测中...';
+    document.getElementById('logBox').innerHTML = '';
+    document.getElementById('resultsSection').style.display = 'none';
+    allResults = {};
+
+    const leverage = parseInt(document.getElementById('leverage').value);
+    const capital = parseFloat(document.getElementById('capital').value);
+    const days = parseInt(document.getElementById('days').value);
+
+    log(`开始全周期回测 | 杠杆: ${leverage}x | 资金: $${capital} | 历史: ${days}天`, 'info');
+
+    try {
+        let progress = 0;
+        const progressStep = 100 / TIMEFRAMES.length;
+
+        for (const tf of TIMEFRAMES) {
+            updateProgress(progress, `下载${tf.name}数据...`);
+            log(`正在获取 ${tf.name} K线数据...`, 'info');
+
+            const klines = await fetchAllData('BTCUSDT', tf.interval, days);
+            log(`${tf.name}: 获取 ${klines.length} 条K线`, 'success');
+
+            if (klines.length < 250) {
+                log(`${tf.name}: 数据不足，跳过`, 'warn');
+                progress += progressStep;
+                continue;
+            }
+
+            updateProgress(progress + progressStep * 0.5, `分析${tf.name}信号...`);
+            const signals = detectAllSignals(klines, tf);
+
+            const tfResults = [];
+            for (const [stratName, stratSignals] of Object.entries(signals)) {
+                if (stratSignals.length === 0) continue;
+                const params = OPTIMAL_PARAMS[stratName] || { tp: 50, sl: 2 };
+                const result = backtestStrategy(stratSignals, klines, params.tp, params.sl, leverage, capital, tf.holdBars);
+                if (result) {
+                    tfResults.push(result);
+                    log(`${tf.name} ${stratName}: ${result.totalTrades}笔, 胜率${result.winRate.toFixed(1)}%, 收益${result.totalReturn.toFixed(1)}%`,
+                        result.totalReturn > 0 ? 'success' : 'warn');
+                }
+            }
+
+            allResults[tf.interval] = {
+                name: tf.name,
+                klineCount: klines.length,
+                dateRange: `${klines[0].datetime} ~ ${klines[klines.length-1].datetime}`,
+                results: tfResults.sort((a, b) => b.totalReturn - a.totalReturn)
+            };
+
+            progress += progressStep;
+        }
+
+        updateProgress(100, '回测完成!');
+        displayAllResults();
+        log('✅ 全周期回测完成!', 'success');
+
+    } catch (e) {
+        log(`回测出错: ${e.message}`, 'error');
+        console.error(e);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '🚀 开始全周期回测';
+    }
+}
+
+// ============================================
+// 显示结果
+// ============================================
+function displayAllResults() {
+    document.getElementById('resultsSection').style.display = 'block';
+
+    // 找出最佳
+    let bestOverall = null;
+    let totalTrades = 0;
+    let profitableTF = 0;
+
+    for (const [interval, data] of Object.entries(allResults)) {
+        for (const r of data.results) {
+            totalTrades += r.totalTrades;
+            if (!bestOverall || r.totalReturn > bestOverall.totalReturn) {
+                bestOverall = { ...r, timeframe: data.name };
+            }
+        }
+        if (data.results.some(r => r.totalReturn > 0)) profitableTF++;
+    }
+
+    // 摘要
+    document.getElementById('summaryGrid').innerHTML = `
+        <div class="summary-card">
+            <div class="summary-value">${Object.keys(allResults).length}</div>
+            <div class="summary-label">测试周期数</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-value">${totalTrades}</div>
+            <div class="summary-label">总交易次数</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-value" style="color: ${bestOverall?.totalReturn > 0 ? '#00ff88' : '#ff6b6b'}">${bestOverall?.totalReturn.toFixed(1) || 0}%</div>
+            <div class="summary-label">最高单策略收益</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-value gold">${bestOverall?.timeframe || '-'}</div>
+            <div class="summary-label">最佳周期</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-value gold">${bestOverall?.strategyType || '-'}</div>
+            <div class="summary-label">最佳策略</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-value">${profitableTF}/${Object.keys(allResults).length}</div>
+            <div class="summary-label">盈利周期数</div>
+        </div>
+    `;
+
+    // Tabs
+    let tabsHtml = '';
+    let contentsHtml = '';
+    let first = true;
+
+    for (const [interval, data] of Object.entries(allResults)) {
+        const activeClass = first ? 'active' : '';
+        const bestReturn = data.results[0]?.totalReturn || 0;
+        const returnClass = bestReturn > 0 ? 'green' : 'red';
+
+        tabsHtml += `<div class="tab ${activeClass}" onclick="switchTab('${interval}')">${data.name} <span class="${returnClass}">(${bestReturn.toFixed(0)}%)</span></div>`;
+
+        contentsHtml += `
+            <div class="tab-content ${activeClass}" id="tab-${interval}">
+                <div class="timeframe-section">
+                    <div class="timeframe-header">
+                        <div class="timeframe-name">📊 ${data.name} 回测结果</div>
+                        <div class="timeframe-stats">
+                            <span class="stat-badge">K线数: ${data.klineCount}</span>
+                            <span class="stat-badge">${data.dateRange}</span>
+                        </div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>策略</th>
+                                <th>止盈/止损</th>
+                                <th>交易数</th>
+                                <th>胜率</th>
+                                <th>总收益</th>
+                                <th>最大回撤</th>
+                                <th>最终资金</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.results.map((r, idx) => `
+                                <tr>
+                                    <td><strong>${r.strategyType}</strong> ${idx === 0 ? '<span class="best-tag">最优</span>' : ''}</td>
+                                    <td>${r.tpPct}%/${r.slPct}%</td>
+                                    <td>${r.totalTrades}</td>
+                                    <td class="${r.winRate >= 50 ? 'green' : 'red'}">${r.winRate.toFixed(1)}%</td>
+                                    <td class="${r.totalReturn > 0 ? 'green' : 'red'}"><strong>${r.totalReturn.toFixed(1)}%</strong></td>
+                                    <td class="red">${r.maxDrawdown.toFixed(1)}%</td>
+                                    <td class="${r.finalCapital > 10000 ? 'green' : 'red'}">$${r.finalCapital.toFixed(2)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+
+                    ${data.results[0] ? `
+                    <h3>🏆 最佳策略交易记录 (${data.results[0].strategyType})</h3>
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        <table>
+                            <thead>
+                                <tr><th>入场时间</th><th>入场价</th><th>出场时间</th><th>出场价</th><th>结果</th><th>盈亏</th><th>余额</th></tr>
+                            </thead>
+                            <tbody>
+                                ${data.results[0].trades.slice(0, 20).map(t => `
+                                    <tr>
+                                        <td>${t.entryTime}</td>
+                                        <td>$${t.entryPrice.toFixed(2)}</td>
+                                        <td>${t.exitTime}</td>
+                                        <td>$${t.exitPrice.toFixed(2)}</td>
+                                        <td class="${t.exitReason === '止盈' ? 'green' : (t.exitReason === '止损' ? 'red' : 'gold')}">${t.exitReason}</td>
+                                        <td class="${t.pnlPct > 0 ? 'green' : 'red'}">${t.pnlPct > 0 ? '+' : ''}${t.pnlPct.toFixed(1)}%</td>
+                                        <td>$${t.capitalAfter.toFixed(2)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    ` : '<p>该周期无交易信号</p>'}
+                </div>
+            </div>
+        `;
+
+        first = false;
+    }
+
+    document.getElementById('timeframeTabs').innerHTML = tabsHtml;
+    document.getElementById('timeframeContents').innerHTML = contentsHtml;
+}
+
+function switchTab(interval) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector(`.tab[onclick="switchTab('${interval}')"]`).classList.add('active');
+    document.getElementById(`tab-${interval}`).classList.add('active');
+}
+</script>
+</body>
+</html>
