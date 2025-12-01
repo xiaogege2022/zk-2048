@@ -584,11 +584,13 @@ def generate_html_report(results):
                         <th>止损价</th>
                         <th>出场价</th>
                         <th>出场原因</th>
-                        <th>盈亏%</th>
+                        <th>涨跌%</th>
+                        <th>实际盈亏%</th>
                     </tr>
 """
 
             trades = r['trades_detail']
+            leverage = r['leverage']  # 获取杠杆倍数
             for j, t in enumerate(trades[:30], 1):  # 最多显示30笔
                 entry_time = pd.Timestamp(t['entry_time']).strftime('%Y-%m-%d %H:%M')
                 reason_map = {
@@ -599,6 +601,7 @@ def generate_html_report(results):
                 }
                 reason_cn = reason_map.get(t['exit_reason'], t['exit_reason'])
                 pnl_class = 'win' if t['pnl_pct'] > 0 else 'loss'
+                real_pnl = t['pnl_pct'] * leverage  # 实际盈亏 = 涨跌% × 杠杆
 
                 # 对于移动止损，显示最终止损价
                 if r['tp_type'] == 'trailing':
@@ -615,12 +618,13 @@ def generate_html_report(results):
                         <td>{sl_display}</td>
                         <td>${t['exit_price']:,.0f}</td>
                         <td>{reason_cn}</td>
-                        <td class="{pnl_class}">{t['pnl_pct']:+.2f}%</td>
+                        <td>{t['pnl_pct']:+.2f}%</td>
+                        <td class="{pnl_class}">{real_pnl:+.2f}%</td>
                     </tr>"""
 
             if len(trades) > 30:
                 html += f"""
-                    <tr><td colspan="8" style="text-align:center; color:#8b949e;">
+                    <tr><td colspan="9" style="text-align:center; color:#8b949e;">
                         ... 还有 {len(trades)-30} 笔交易 ...
                     </td></tr>"""
 
