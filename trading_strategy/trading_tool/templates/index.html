@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTC/USDT 自动交易工具</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0d1117, #161b22);
+            color: #e6edf3;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; }
+
+        h1 {
+            text-align: center;
+            color: #ffd700;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .card h2 {
+            color: #58a6ff;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #8b949e;
+            font-size: 0.9em;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            background: rgba(0,0,0,0.3);
+            color: #e6edf3;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #58a6ff;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #238636, #2ea043);
+            color: white;
+        }
+
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(46, 160, 67, 0.4); }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #da3633, #f85149);
+            color: white;
+        }
+
+        .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(248, 81, 73, 0.4); }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #e6edf3;
+        }
+
+        .btn-secondary:hover { background: rgba(255,255,255,0.2); }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #9e6a03, #d29922);
+            color: white;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .status-connected { background: rgba(46, 160, 67, 0.2); color: #3fb950; }
+        .status-disconnected { background: rgba(248, 81, 73, 0.2); color: #f85149; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .stat-item {
+            background: rgba(0,0,0,0.2);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: #8b949e;
+            margin-top: 4px;
+        }
+
+        .strategy-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .strategy-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .strategy-item:hover { background: rgba(255,255,255,0.05); }
+
+        .strategy-item.selected { background: rgba(88, 166, 255, 0.15); border-left: 3px solid #58a6ff; }
+
+        .strategy-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .strategy-info { flex: 1; }
+        .strategy-name { font-weight: bold; color: #e6edf3; }
+        .strategy-meta { font-size: 0.8em; color: #8b949e; margin-top: 2px; }
+
+        .strategy-stats {
+            text-align: right;
+        }
+
+        .win-rate { color: #3fb950; font-weight: bold; }
+        .ev-value { color: #ffd700; font-size: 0.85em; }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .badge-1w { background: #da3633; }
+        .badge-1d { background: #d29922; }
+        .badge-4h { background: #1f6feb; }
+        .badge-1h { background: #8957e5; }
+
+        .position-card {
+            background: rgba(46, 160, 67, 0.1);
+            border: 1px solid #2ea043;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .position-card.loss {
+            background: rgba(248, 81, 73, 0.1);
+            border-color: #f85149;
+        }
+
+        .pnl-positive { color: #3fb950; }
+        .pnl-negative { color: #f85149; }
+
+        .trade-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85em;
+        }
+
+        .trade-table th {
+            background: rgba(255, 215, 0, 0.1);
+            padding: 10px;
+            text-align: left;
+            color: #ffd700;
+        }
+
+        .trade-table td {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .mode-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .mode-tab {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.03);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .mode-tab:hover { border-color: rgba(255,255,255,0.2); }
+
+        .mode-tab.active {
+            border-color: #58a6ff;
+            background: rgba(88, 166, 255, 0.1);
+        }
+
+        .mode-tab h3 { color: #58a6ff; margin-bottom: 5px; }
+        .mode-tab p { font-size: 0.85em; color: #8b949e; }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+
+        .alert-success { background: rgba(46, 160, 67, 0.2); color: #3fb950; }
+        .alert-error { background: rgba(248, 81, 73, 0.2); color: #f85149; }
+        .alert-warning { background: rgba(210, 153, 34, 0.2); color: #d29922; }
+        .alert-info { background: rgba(88, 166, 255, 0.2); color: #58a6ff; }
+
+        .trailing-stop-info {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .trailing-stop-info h4 { color: #ffd700; margin-bottom: 5px; }
+
+        .signal-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .signal-active { background: #3fb950; animation: pulse 1s infinite; }
+        .signal-inactive { background: #484f58; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .fear-index {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .fear-value {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .fear-extreme { color: #da3633; }
+        .fear-fear { color: #f85149; }
+        .fear-neutral { color: #d29922; }
+        .fear-greed { color: #3fb950; }
+        .fear-extreme-greed { color: #238636; }
+
+        .hidden { display: none; }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #8b949e;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1s infinite;
+        }
+
+        @keyframes dots {
+            0%, 100% { content: '.'; }
+            33% { content: '..'; }
+            66% { content: '...'; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BTC/USDT 自动交易工具</h1>
+
+        <div id="alerts"></div>
+
+        <div class="grid">
+            <!-- API连接 -->
+            <div class="card">
+                <h2>API 连接</h2>
+                <div id="connection-status">
+                    <span class="status-badge status-disconnected">未连接</span>
+                </div>
+
+                <div id="connect-form">
+                    <div class="form-group">
+                        <label>API Key</label>
+                        <input type="text" id="api-key" placeholder="输入你的API Key">
+                    </div>
+                    <div class="form-group">
+                        <label>API Secret</label>
+                        <input type="password" id="api-secret" placeholder="输入你的API Secret">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="testnet" checked style="width:auto;margin-right:5px;">
+                            使用测试网 (推荐先测试)
+                        </label>
+                    </div>
+                    <button class="btn-primary" onclick="connect()">连接</button>
+                </div>
+
+                <div id="connected-info" class="hidden">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="balance">-</div>
+                            <div class="stat-label">可用余额 (USDT)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="btc-price">-</div>
+                            <div class="stat-label">BTC 价格</div>
+                        </div>
+                    </div>
+
+                    <div class="fear-index">
+                        <div>
+                            <div class="stat-label">恐惧贪婪指数</div>
+                            <div class="fear-value" id="fear-value">-</div>
+                        </div>
+                        <div id="fear-class" style="flex:1;text-align:right;">-</div>
+                    </div>
+
+                    <button class="btn-danger" onclick="disconnect()">断开连接</button>
+                </div>
+            </div>
+
+            <!-- 当前持仓 -->
+            <div class="card">
+                <h2>当前持仓</h2>
+                <div id="position-info">
+                    <p style="color:#8b949e;">无持仓</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 交易模式 -->
+        <div class="card" style="margin-top:20px;">
+            <h2>交易模式</h2>
+            <div class="mode-tabs">
+                <div class="mode-tab active" id="tab-manual" onclick="setMode('manual')">
+                    <h3>手动交易</h3>
+                    <p>手动选择策略和参数开仓</p>
+                </div>
+                <div class="mode-tab" id="tab-auto" onclick="setMode('auto')">
+                    <h3>AI 全自动</h3>
+                    <p>自动监控信号并交易</p>
+                </div>
+            </div>
+
+            <!-- 手动交易面板 -->
+            <div id="manual-panel">
+                <div class="grid">
+                    <div>
+                        <h3 style="margin-bottom:10px;">选择策略</h3>
+                        <div class="form-group">
+                            <select id="timeframe-filter" onchange="filterStrategies()">
+                                <option value="all">全部周期</option>
+                                <option value="1w">周线 (1w)</option>
+                                <option value="1d">日线 (1d)</option>
+                                <option value="4h">4小时 (4h)</option>
+                                <option value="1h">1小时 (1h)</option>
+                            </select>
+                        </div>
+                        <div class="strategy-list" id="strategy-list">
+                            <div class="loading">加载策略</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 style="margin-bottom:10px;">开仓参数</h3>
+                        <div class="form-group">
+                            <label>选中的策略</label>
+                            <input type="text" id="selected-strategy" readonly placeholder="请从左侧选择策略">
+                        </div>
+                        <div class="form-group">
+                            <label>开仓金额 (USDT)</label>
+                            <input type="number" id="amount-usdt" value="100" min="10">
+                        </div>
+                        <div class="form-group">
+                            <label>止盈 %</label>
+                            <input type="number" id="tp-pct" value="100" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>止损 %</label>
+                            <input type="number" id="sl-pct" value="5" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>移动止损回撤 % (0=不使用)</label>
+                            <input type="number" id="trail-pct" value="5" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>杠杆倍数</label>
+                            <input type="number" id="leverage" value="10" min="1" max="125">
+                        </div>
+                        <button class="btn-primary" onclick="openPosition()" style="width:100%;">开仓</button>
+                    </div>
+                </div>
+
+                <div style="margin-top:15px;">
+                    <button class="btn-secondary" onclick="checkSignals()">检查当前信号</button>
+                    <div id="signal-result" style="margin-top:10px;"></div>
+                </div>
+            </div>
+
+            <!-- 自动交易面板 -->
+            <div id="auto-panel" class="hidden">
+                <div class="alert alert-warning">
+                    自动模式将根据选中的策略自动监控信号并开仓，请确保你了解风险！
+                </div>
+
+                <div class="grid">
+                    <div>
+                        <h3 style="margin-bottom:10px;">选择自动交易策略 (可多选)</h3>
+                        <div class="strategy-list" id="auto-strategy-list">
+                            <div class="loading">加载策略</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 style="margin-bottom:10px;">自动交易设置</h3>
+                        <div class="form-group">
+                            <label>最大仓位 (USDT)</label>
+                            <input type="number" id="auto-max-position" value="100" min="10">
+                        </div>
+                        <div class="form-group">
+                            <label>信号检查间隔 (秒)</label>
+                            <input type="number" id="auto-interval" value="60" min="10">
+                        </div>
+
+                        <div id="auto-status" style="margin:15px 0;">
+                            <span class="signal-indicator signal-inactive"></span>
+                            <span>自动交易未启动</span>
+                        </div>
+
+                        <button class="btn-primary" id="btn-start-auto" onclick="startAuto()">启动自动交易</button>
+                        <button class="btn-danger hidden" id="btn-stop-auto" onclick="stopAuto()">停止自动交易</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 交易历史 -->
+        <div class="card" style="margin-top:20px;">
+            <h2>交易历史</h2>
+            <div id="trade-history">
+                <p style="color:#8b949e;">暂无交易记录</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let strategies = [];
+        let selectedStrategy = null;
+        let autoSelectedStrategies = [];
+        let statusInterval = null;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStrategies();
+        });
+
+        // 显示提示
+        function showAlert(message, type = 'info') {
+            const alerts = document.getElementById('alerts');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alerts.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        // 连接API
+        async function connect() {
+            const apiKey = document.getElementById('api-key').value;
+            const apiSecret = document.getElementById('api-secret').value;
+            const testnet = document.getElementById('testnet').checked;
+
+            if (!apiKey || !apiSecret) {
+                showAlert('请输入API Key和Secret', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/connect', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ api_key: apiKey, api_secret: apiSecret, testnet })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    document.getElementById('connect-form').classList.add('hidden');
+                    document.getElementById('connected-info').classList.remove('hidden');
+                    document.getElementById('connection-status').innerHTML =
+                        '<span class="status-badge status-connected">已连接' + (testnet ? ' (测试网)' : '') + '</span>';
+
+                    // 开始状态更新
+                    statusInterval = setInterval(updateStatus, 3000);
+                    updateStatus();
+                } else {
+                    showAlert(data.message, 'error');
+                }
+            } catch (e) {
+                showAlert('连接失败: ' + e.message, 'error');
+            }
+        }
+
+        // 断开连接
+        async function disconnect() {
+            await fetch('/api/disconnect', { method: 'POST' });
+            document.getElementById('connect-form').classList.remove('hidden');
+            document.getElementById('connected-info').classList.add('hidden');
+            document.getElementById('connection-status').innerHTML =
+                '<span class="status-badge status-disconnected">未连接</span>';
+
+            if (statusInterval) clearInterval(statusInterval);
+            showAlert('已断开连接', 'info');
+        }
+
+        // 更新状态
+        async function updateStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+
+                if (data.connected) {
+                    document.getElementById('balance').textContent = data.balance?.toFixed(2) || '-';
+                    document.getElementById('btc-price').textContent = '$' + (data.price?.toLocaleString() || '-');
+
+                    // 恐惧指数
+                    if (data.fear_index) {
+                        const fearEl = document.getElementById('fear-value');
+                        fearEl.textContent = data.fear_index;
+                        fearEl.className = 'fear-value';
+
+                        let fearClass = 'fear-neutral';
+                        if (data.fear_index < 20) fearClass = 'fear-extreme';
+                        else if (data.fear_index < 40) fearClass = 'fear-fear';
+                        else if (data.fear_index > 80) fearClass = 'fear-extreme-greed';
+                        else if (data.fear_index > 60) fearClass = 'fear-greed';
+
+                        fearEl.classList.add(fearClass);
+                        document.getElementById('fear-class').textContent = data.fear_class;
+                    }
+
+                    // 持仓信息
+                    updatePositionInfo(data.position, data.trailing_stop);
+                }
+            } catch (e) {
+                console.error('Status update error:', e);
+            }
+        }
+
+        // 更新持仓信息
+        function updatePositionInfo(position, trailingStop) {
+            const container = document.getElementById('position-info');
+
+            if (!position) {
+                container.innerHTML = '<p style="color:#8b949e;">无持仓</p>';
+                return;
+            }
+
+            const pnlClass = position.unrealized_pnl >= 0 ? 'pnl-positive' : 'pnl-negative';
+            const cardClass = position.unrealized_pnl >= 0 ? '' : 'loss';
+
+            let html = `
+                <div class="position-card ${cardClass}">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">${position.quantity}</div>
+                            <div class="stat-label">持仓数量 (BTC)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">$${position.entry_price.toLocaleString()}</div>
+                            <div class="stat-label">入场价格</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value ${pnlClass}">${position.unrealized_pnl >= 0 ? '+' : ''}${position.unrealized_pnl.toFixed(2)}</div>
+                            <div class="stat-label">未实现盈亏 (USDT)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${position.leverage}x</div>
+                            <div class="stat-label">杠杆倍数</div>
+                        </div>
+                    </div>
+            `;
+
+            if (trailingStop) {
+                html += `
+                    <div class="trailing-stop-info">
+                        <h4>移动止损</h4>
+                        <p>最高价: $${trailingStop.highest_price.toLocaleString()}</p>
+                        <p>当前止损: $${trailingStop.current_sl.toLocaleString()}</p>
+                        <p>回撤比例: ${trailingStop.trail_pct}%</p>
+                    </div>
+                `;
+            }
+
+            html += `
+                    <button class="btn-danger" onclick="closePosition()" style="margin-top:15px;width:100%;">平仓</button>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // 加载策略
+        async function loadStrategies() {
+            try {
+                const response = await fetch('/api/strategies');
+                strategies = await response.json();
+                renderStrategies();
+                renderAutoStrategies();
+            } catch (e) {
+                console.error('Load strategies error:', e);
+            }
+        }
+
+        // 渲染策略列表
+        function renderStrategies(filter = 'all') {
+            const container = document.getElementById('strategy-list');
+            const filtered = filter === 'all' ? strategies : strategies.filter(s => s.timeframe === filter);
+
+            container.innerHTML = filtered.map((s, i) => `
+                <div class="strategy-item ${selectedStrategy === s ? 'selected' : ''}" onclick="selectStrategy(${i})">
+                    <div class="strategy-info">
+                        <div class="strategy-name">
+                            <span class="badge badge-${s.timeframe}">${s.timeframe}</span>
+                            ${s.name}
+                        </div>
+                        <div class="strategy-meta">
+                            TP: ${s.tp}% | SL: ${s.sl}% | 移动: ${s.trail}% | ${s.leverage}x
+                        </div>
+                    </div>
+                    <div class="strategy-stats">
+                        <div class="win-rate">${s.win_rate.toFixed(1)}%</div>
+                        <div class="ev-value">EV: ${s.ev.toFixed(0)}%</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染自动交易策略列表
+        function renderAutoStrategies() {
+            const container = document.getElementById('auto-strategy-list');
+
+            container.innerHTML = strategies.map((s, i) => `
+                <div class="strategy-item">
+                    <input type="checkbox" id="auto-s-${i}" onchange="toggleAutoStrategy(${i})">
+                    <div class="strategy-info">
+                        <div class="strategy-name">
+                            <span class="badge badge-${s.timeframe}">${s.timeframe}</span>
+                            ${s.name}
+                        </div>
+                        <div class="strategy-meta">
+                            TP: ${s.tp}% | SL: ${s.sl}% | 移动: ${s.trail}% | ${s.leverage}x
+                        </div>
+                    </div>
+                    <div class="strategy-stats">
+                        <div class="win-rate">${s.win_rate.toFixed(1)}%</div>
+                        <div class="ev-value">EV: ${s.ev.toFixed(0)}%</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 选择策略
+        function selectStrategy(index) {
+            selectedStrategy = strategies[index];
+            document.getElementById('selected-strategy').value = `${selectedStrategy.name} (${selectedStrategy.timeframe})`;
+            document.getElementById('tp-pct').value = selectedStrategy.tp;
+            document.getElementById('sl-pct').value = selectedStrategy.sl;
+            document.getElementById('trail-pct').value = selectedStrategy.trail;
+            document.getElementById('leverage').value = selectedStrategy.leverage;
+            renderStrategies(document.getElementById('timeframe-filter').value);
+        }
+
+        // 筛选策略
+        function filterStrategies() {
+            const filter = document.getElementById('timeframe-filter').value;
+            renderStrategies(filter);
+        }
+
+        // 切换自动策略
+        function toggleAutoStrategy(index) {
+            const checkbox = document.getElementById(`auto-s-${index}`);
+            if (checkbox.checked) {
+                autoSelectedStrategies.push(strategies[index]);
+            } else {
+                autoSelectedStrategies = autoSelectedStrategies.filter(s =>
+                    s.name !== strategies[index].name || s.timeframe !== strategies[index].timeframe
+                );
+            }
+        }
+
+        // 设置模式
+        function setMode(mode) {
+            document.getElementById('tab-manual').classList.toggle('active', mode === 'manual');
+            document.getElementById('tab-auto').classList.toggle('active', mode === 'auto');
+            document.getElementById('manual-panel').classList.toggle('hidden', mode !== 'manual');
+            document.getElementById('auto-panel').classList.toggle('hidden', mode !== 'auto');
+        }
+
+        // 开仓
+        async function openPosition() {
+            if (!selectedStrategy) {
+                showAlert('请先选择策略', 'error');
+                return;
+            }
+
+            const data = {
+                strategy: selectedStrategy.name,
+                tp_pct: parseFloat(document.getElementById('tp-pct').value),
+                sl_pct: parseFloat(document.getElementById('sl-pct').value),
+                trail_pct: parseFloat(document.getElementById('trail-pct').value),
+                leverage: parseInt(document.getElementById('leverage').value),
+                amount_usdt: parseFloat(document.getElementById('amount-usdt').value)
+            };
+
+            try {
+                const response = await fetch('/api/open_position', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert(result.message, 'success');
+                    updateStatus();
+                    loadTrades();
+                } else {
+                    showAlert(result.error, 'error');
+                }
+            } catch (e) {
+                showAlert('开仓失败: ' + e.message, 'error');
+            }
+        }
+
+        // 平仓
+        async function closePosition() {
+            try {
+                const response = await fetch('/api/close_position', { method: 'POST' });
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert(result.message, 'success');
+                    updateStatus();
+                    loadTrades();
+                } else {
+                    showAlert(result.error, 'error');
+                }
+            } catch (e) {
+                showAlert('平仓失败: ' + e.message, 'error');
+            }
+        }
+
+        // 检查信号
+        async function checkSignals() {
+            const timeframe = document.getElementById('timeframe-filter').value;
+            const tf = timeframe === 'all' ? '1h' : timeframe;
+
+            try {
+                const response = await fetch(`/api/check_signals?timeframe=${tf}`);
+                const data = await response.json();
+
+                let html = `<p>检查时间: ${data.checked_at} | 当前价格: $${data.current_price.toLocaleString()} | 恐惧指数: ${data.fear_index}</p>`;
+
+                if (data.triggered && data.triggered.length > 0) {
+                    html += '<p style="color:#3fb950;margin-top:10px;">触发的信号:</p>';
+                    data.triggered.forEach(s => {
+                        html += `<div class="strategy-item">
+                            <span class="signal-indicator signal-active"></span>
+                            <span class="badge badge-${s.timeframe}">${s.timeframe}</span>
+                            <strong>${s.name}</strong> - 胜率: ${s.win_rate.toFixed(1)}% | EV: ${s.ev.toFixed(0)}%
+                        </div>`;
+                    });
+                } else {
+                    html += '<p style="color:#8b949e;margin-top:10px;">暂无信号触发</p>';
+                }
+
+                document.getElementById('signal-result').innerHTML = html;
+            } catch (e) {
+                showAlert('检查信号失败: ' + e.message, 'error');
+            }
+        }
+
+        // 启动自动交易
+        async function startAuto() {
+            if (autoSelectedStrategies.length === 0) {
+                showAlert('请至少选择一个策略', 'error');
+                return;
+            }
+
+            const data = {
+                mode: 'auto',
+                strategies: autoSelectedStrategies,
+                interval: parseInt(document.getElementById('auto-interval').value),
+                max_position: parseFloat(document.getElementById('auto-max-position').value)
+            };
+
+            await fetch('/api/set_mode', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const response = await fetch('/api/start_auto', { method: 'POST' });
+            const result = await response.json();
+
+            if (result.success) {
+                showAlert(result.message, 'success');
+                document.getElementById('auto-status').innerHTML =
+                    '<span class="signal-indicator signal-active"></span><span>自动交易运行中...</span>';
+                document.getElementById('btn-start-auto').classList.add('hidden');
+                document.getElementById('btn-stop-auto').classList.remove('hidden');
+            } else {
+                showAlert(result.error, 'error');
+            }
+        }
+
+        // 停止自动交易
+        async function stopAuto() {
+            const response = await fetch('/api/stop_auto', { method: 'POST' });
+            const result = await response.json();
+
+            showAlert(result.message, 'info');
+            document.getElementById('auto-status').innerHTML =
+                '<span class="signal-indicator signal-inactive"></span><span>自动交易已停止</span>';
+            document.getElementById('btn-start-auto').classList.remove('hidden');
+            document.getElementById('btn-stop-auto').classList.add('hidden');
+        }
+
+        // 加载交易历史
+        async function loadTrades() {
+            try {
+                const response = await fetch('/api/trades');
+                const trades = await response.json();
+
+                if (trades.length === 0) {
+                    document.getElementById('trade-history').innerHTML = '<p style="color:#8b949e;">暂无交易记录</p>';
+                    return;
+                }
+
+                let html = `<table class="trade-table">
+                    <tr>
+                        <th>#</th>
+                        <th>策略</th>
+                        <th>入场时间</th>
+                        <th>入场价</th>
+                        <th>出场价</th>
+                        <th>盈亏%</th>
+                        <th>状态</th>
+                    </tr>`;
+
+                trades.forEach(t => {
+                    const pnlClass = (t.pnl_pct || 0) >= 0 ? 'pnl-positive' : 'pnl-negative';
+                    html += `<tr>
+                        <td>${t.id}</td>
+                        <td>${t.strategy}</td>
+                        <td>${t.entry_time}</td>
+                        <td>$${t.entry_price.toLocaleString()}</td>
+                        <td>${t.exit_price ? '$' + t.exit_price.toLocaleString() : '-'}</td>
+                        <td class="${pnlClass}">${t.pnl_pct ? t.pnl_pct.toFixed(2) + '%' : '-'}</td>
+                        <td>${t.status}</td>
+                    </tr>`;
+                });
+
+                html += '</table>';
+                document.getElementById('trade-history').innerHTML = html;
+            } catch (e) {
+                console.error('Load trades error:', e);
+            }
+        }
+    </script>
+</body>
+</html>
