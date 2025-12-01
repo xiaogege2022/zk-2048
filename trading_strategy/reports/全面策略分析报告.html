@@ -1,0 +1,1845 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>BTC/USDT 全面策略分析报告</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1600px; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            color: #ffd700;
+            font-size: 2.5em;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        .subtitle { text-align: center; color: #888; margin-bottom: 30px; }
+        .section {
+            background: rgba(255,255,255,0.03);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .section h2 {
+            color: #ffd700;
+            border-bottom: 2px solid #ffd700;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; }
+        th {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            padding: 12px 6px;
+            text-align: left;
+        }
+        td { padding: 10px 6px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        tr:hover { background: rgba(255,215,0,0.05); }
+        .ev-super { color: #ffd700; font-weight: bold; }
+        .ev-high { color: #4ade80; font-weight: bold; }
+        .winrate-super { color: #ffd700; font-weight: bold; }
+        .winrate-high { color: #4ade80; }
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 0.75em;
+            font-weight: bold;
+        }
+        .badge-1w { background: #dc2626; }
+        .badge-1d { background: #ea580c; }
+        .badge-4h { background: #2563eb; }
+        .badge-1h { background: #7c3aed; }
+        .badge-fixed { background: #059669; }
+        .badge-trail { background: #0891b2; }
+        .highlight { background: linear-gradient(90deg, rgba(255,215,0,0.1), transparent); }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-value { font-size: 2em; color: #ffd700; font-weight: bold; }
+        .stat-label { color: #888; margin-top: 5px; }
+        .signal-table { font-size: 0.85em; }
+        .signal-zero { color: #666; }
+        .signal-low { color: #f97316; }
+        .signal-ok { color: #4ade80; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BTC/USDT 全面策略分析报告</h1>
+        <p class="subtitle">覆盖周期: 1w, 1d, 4h, 1h | 止盈止损: 固定 + 移动 | 生成时间: 2025-12-01 04:34</p>
+
+        <!-- 统计概览 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">81,862</div>
+                <div class="stat-label">参数组合总数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">6000.0%</div>
+                <div class="stat-label">最高EV</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">100.0%</div>
+                <div class="stat-label">最高胜率</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">23</div>
+                <div class="stat-label">策略数量</div>
+            </div>
+        </div>
+
+        <!-- 策略信号统计 -->
+        <div class="section">
+            <h2>各策略信号数量统计</h2>
+            <table class="signal-table">
+                <tr>
+                    <th>策略名称</th>
+                    <th>条件描述</th>
+                    <th>1w信号</th>
+                    <th>1d信号</th>
+                    <th>4h信号</th>
+                    <th>1h信号</th>
+                </tr>
+
+                <tr>
+                    <td><b>EMA金叉+上升趋势</b></td>
+                    <td>EMA7上穿EMA25 且 价格在EMA50上方</td>
+                    <td class="signal-ok">6</td>
+                    <td class="signal-ok">37</td>
+                    <td class="signal-ok">247</td>
+                    <td class="signal-ok">1046</td>
+                </tr>
+                <tr>
+                    <td><b>EMA金叉+强趋势</b></td>
+                    <td>EMA7上穿EMA25 且 EMA50>EMA200</td>
+                    <td class="signal-low">4</td>
+                    <td class="signal-ok">26</td>
+                    <td class="signal-ok">132</td>
+                    <td class="signal-ok">584</td>
+                </tr>
+                <tr>
+                    <td><b>EMA金叉+MACD金叉</b></td>
+                    <td>EMA7上穿EMA25 且 MACD在信号线上方</td>
+                    <td class="signal-low">3</td>
+                    <td class="signal-ok">36</td>
+                    <td class="signal-ok">244</td>
+                    <td class="signal-ok">1019</td>
+                </tr>
+                <tr>
+                    <td><b>EMA金叉+放量</b></td>
+                    <td>EMA7上穿EMA25 且 成交量>2倍均量</td>
+                    <td class="signal-zero">0</td>
+                    <td class="signal-low">1</td>
+                    <td class="signal-ok">43</td>
+                    <td class="signal-ok">223</td>
+                </tr>
+                <tr>
+                    <td><b>黄金交叉+趋势</b></td>
+                    <td>EMA50上穿EMA200 且 价格在EMA50上方</td>
+                    <td class="signal-low">2</td>
+                    <td class="signal-ok">5</td>
+                    <td class="signal-ok">32</td>
+                    <td class="signal-ok">161</td>
+                </tr>
+                <tr>
+                    <td><b>RSI超卖+恐惧</b></td>
+                    <td>RSI<30 且 恐惧贪婪<25</td>
+                    <td class="signal-ok">13</td>
+                    <td class="signal-ok">115</td>
+                    <td class="signal-ok">479</td>
+                    <td class="signal-ok">1286</td>
+                </tr>
+                <tr>
+                    <td><b>RSI极度超卖+极度恐惧</b></td>
+                    <td>RSI<20 且 恐惧贪婪<15</td>
+                    <td class="signal-low">3</td>
+                    <td class="signal-ok">18</td>
+                    <td class="signal-ok">62</td>
+                    <td class="signal-ok">153</td>
+                </tr>
+                <tr>
+                    <td><b>RSI超卖+布林带下轨</b></td>
+                    <td>RSI<30 且 价格低于布林带下轨</td>
+                    <td class="signal-low">1</td>
+                    <td class="signal-ok">52</td>
+                    <td class="signal-ok">489</td>
+                    <td class="signal-ok">1692</td>
+                </tr>
+                <tr>
+                    <td><b>RSI超卖+大跌</b></td>
+                    <td>RSI<30 且 7日跌幅>15%</td>
+                    <td class="signal-ok">13</td>
+                    <td class="signal-ok">44</td>
+                    <td class="signal-ok">21</td>
+                    <td class="signal-ok">11</td>
+                </tr>
+                <tr>
+                    <td><b>恐惧+大跌</b></td>
+                    <td>恐惧贪婪<25 且 7日跌幅>10%</td>
+                    <td class="signal-ok">40</td>
+                    <td class="signal-ok">82</td>
+                    <td class="signal-ok">57</td>
+                    <td class="signal-ok">27</td>
+                </tr>
+                <tr>
+                    <td><b>极度恐惧+闪崩</b></td>
+                    <td>恐惧贪婪<15 且 日跌>5%</td>
+                    <td class="signal-ok">5</td>
+                    <td class="signal-ok">17</td>
+                    <td class="signal-ok">10</td>
+                    <td class="signal-ok">8</td>
+                </tr>
+                <tr>
+                    <td><b>恐惧+Pin Bar</b></td>
+                    <td>恐惧贪婪<25 且 看涨Pin Bar</td>
+                    <td class="signal-low">3</td>
+                    <td class="signal-ok">27</td>
+                    <td class="signal-ok">109</td>
+                    <td class="signal-ok">441</td>
+                </tr>
+                <tr>
+                    <td><b>恐惧+放量下跌</b></td>
+                    <td>恐惧贪婪<25 且 放量下跌</td>
+                    <td class="signal-zero">0</td>
+                    <td class="signal-ok">5</td>
+                    <td class="signal-ok">14</td>
+                    <td class="signal-ok">21</td>
+                </tr>
+                <tr>
+                    <td><b>Pin Bar+上升趋势</b></td>
+                    <td>看涨Pin Bar 且 价格在EMA50上方</td>
+                    <td class="signal-ok">16</td>
+                    <td class="signal-ok">54</td>
+                    <td class="signal-ok">330</td>
+                    <td class="signal-ok">1409</td>
+                </tr>
+                <tr>
+                    <td><b>Pin Bar+RSI超卖</b></td>
+                    <td>看涨Pin Bar 且 RSI<30</td>
+                    <td class="signal-low">2</td>
+                    <td class="signal-ok">15</td>
+                    <td class="signal-ok">84</td>
+                    <td class="signal-ok">383</td>
+                </tr>
+                <tr>
+                    <td><b>Pin Bar+放量</b></td>
+                    <td>看涨Pin Bar 且 成交量>2倍均量</td>
+                    <td class="signal-low">1</td>
+                    <td class="signal-low">4</td>
+                    <td class="signal-ok">52</td>
+                    <td class="signal-ok">278</td>
+                </tr>
+                <tr>
+                    <td><b>MACD金叉+RSI回升+趋势</b></td>
+                    <td>MACD金叉 且 RSI在30-50 且 上升趋势</td>
+                    <td class="signal-low">1</td>
+                    <td class="signal-ok">5</td>
+                    <td class="signal-ok">49</td>
+                    <td class="signal-ok">177</td>
+                </tr>
+                <tr>
+                    <td><b>EMA金叉+MACD金叉+放量</b></td>
+                    <td>EMA金叉+MACD确认+放量</td>
+                    <td class="signal-zero">0</td>
+                    <td class="signal-low">1</td>
+                    <td class="signal-ok">37</td>
+                    <td class="signal-ok">201</td>
+                </tr>
+                <tr>
+                    <td><b>布林带下轨+RSI超卖+恐惧</b></td>
+                    <td>布林带下轨+RSI<30+恐惧</td>
+                    <td class="signal-low">1</td>
+                    <td class="signal-ok">28</td>
+                    <td class="signal-ok">124</td>
+                    <td class="signal-ok">308</td>
+                </tr>
+                <tr>
+                    <td><b>负资金费+RSI超卖</b></td>
+                    <td>负资金费率 且 RSI<30</td>
+                    <td class="signal-ok">9</td>
+                    <td class="signal-ok">63</td>
+                    <td class="signal-ok">304</td>
+                    <td class="signal-ok">844</td>
+                </tr>
+                <tr>
+                    <td><b>极负资金费+恐惧</b></td>
+                    <td>资金费率<-0.1% 且 恐惧</td>
+                    <td class="signal-zero">0</td>
+                    <td class="signal-zero">0</td>
+                    <td class="signal-zero">0</td>
+                    <td class="signal-zero">0</td>
+                </tr>
+                <tr>
+                    <td><b>三重底部信号</b></td>
+                    <td>RSI<20 + 极度恐惧 + 7日跌>15%</td>
+                    <td class="signal-low">3</td>
+                    <td class="signal-ok">10</td>
+                    <td class="signal-ok">8</td>
+                    <td class="signal-ok">10</td>
+                </tr>
+                <tr>
+                    <td><b>完美抄底</b></td>
+                    <td>RSI<30 + 恐惧 + Pin Bar</td>
+                    <td class="signal-low">1</td>
+                    <td class="signal-ok">7</td>
+                    <td class="signal-ok">26</td>
+                    <td class="signal-ok">77</td>
+                </tr>
+                <tr>
+                    <td><b>趋势+动量+成交量</b></td>
+                    <td>EMA金叉+MACD金叉+放量+趋势</td>
+                    <td class="signal-zero">0</td>
+                    <td class="signal-zero">0</td>
+                    <td class="signal-ok">5</td>
+                    <td class="signal-ok">35</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Top 50 EV策略 -->
+        <div class="section">
+            <h2>Top 50 最优EV策略 (所有周期)</h2>
+            <table>
+                <tr>
+                    <th>#</th>
+                    <th>策略</th>
+                    <th>周期</th>
+                    <th>止盈类型</th>
+                    <th>TP%</th>
+                    <th>SL%</th>
+                    <th>移动%</th>
+                    <th>杠杆</th>
+                    <th>交易</th>
+                    <th>胜率</th>
+                    <th>EV%</th>
+                </tr>
+
+                <tr class="highlight">
+                    <td>1</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>3</td>
+                    <td class="winrate-super">100.0%</td>
+                    <td class="ev-super">6000.0%</td>
+                </tr>
+                <tr class="highlight">
+                    <td>2</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>3</td>
+                    <td class="winrate-super">100.0%</td>
+                    <td class="ev-super">6000.0%</td>
+                </tr>
+                <tr class="highlight">
+                    <td>3</td>
+                    <td>RSI超卖+恐惧</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td class="winrate-super">87.5%</td>
+                    <td class="ev-super">5246.2%</td>
+                </tr>
+                <tr class="highlight">
+                    <td>4</td>
+                    <td>RSI超卖+恐惧</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td class="winrate-super">87.5%</td>
+                    <td class="ev-super">5242.5%</td>
+                </tr>
+                <tr class="highlight">
+                    <td>5</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>3%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>3</td>
+                    <td class="winrate-super">100.0%</td>
+                    <td class="ev-super">5000.0%</td>
+                </tr>
+                <tr class="">
+                    <td>6</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>3</td>
+                    <td class="winrate-super">100.0%</td>
+                    <td class="ev-super">5000.0%</td>
+                </tr>
+                <tr class="">
+                    <td>7</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>3</td>
+                    <td class="winrate-super">100.0%</td>
+                    <td class="ev-super">5000.0%</td>
+                </tr>
+                <tr class="">
+                    <td>8</td>
+                    <td>RSI超卖+大跌</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>6</td>
+                    <td class="winrate-super">83.3%</td>
+                    <td class="ev-super">4995.0%</td>
+                </tr>
+                <tr class="">
+                    <td>9</td>
+                    <td>RSI超卖+大跌</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>6</td>
+                    <td class="winrate-super">83.3%</td>
+                    <td class="ev-super">4990.0%</td>
+                </tr>
+                <tr class="">
+                    <td>10</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>3</td>
+                    <td class="winrate-super">100.0%</td>
+                    <td class="ev-super">4500.0%</td>
+                </tr>
+                <tr class="">
+                    <td>11</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>3</td>
+                    <td class="winrate-super">100.0%</td>
+                    <td class="ev-super">4500.0%</td>
+                </tr>
+                <tr class="">
+                    <td>12</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-1h">1h</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td class="winrate-super">75.0%</td>
+                    <td class="ev-super">4485.0%</td>
+                </tr>
+                <tr class="">
+                    <td>13</td>
+                    <td>RSI超卖+恐惧</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>8</td>
+                    <td class="winrate-super">87.5%</td>
+                    <td class="ev-super">4371.9%</td>
+                </tr>
+                <tr class="">
+                    <td>14</td>
+                    <td>RSI超卖+恐惧</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>8</td>
+                    <td class="winrate-super">87.5%</td>
+                    <td class="ev-super">4368.8%</td>
+                </tr>
+                <tr class="">
+                    <td>15</td>
+                    <td>RSI超卖+恐惧</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>3%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>8</td>
+                    <td class="winrate-super">87.5%</td>
+                    <td class="ev-super">4365.6%</td>
+                </tr>
+                <tr class="">
+                    <td>16</td>
+                    <td>RSI超卖+大跌</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>6</td>
+                    <td class="winrate-super">83.3%</td>
+                    <td class="ev-super">4162.5%</td>
+                </tr>
+                <tr class="">
+                    <td>17</td>
+                    <td>RSI超卖+大跌</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>6</td>
+                    <td class="winrate-super">83.3%</td>
+                    <td class="ev-super">4158.3%</td>
+                </tr>
+                <tr class="">
+                    <td>18</td>
+                    <td>RSI超卖+大跌</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>3%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>6</td>
+                    <td class="winrate-super">83.3%</td>
+                    <td class="ev-super">4154.2%</td>
+                </tr>
+                <tr class="">
+                    <td>19</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>20x</td>
+                    <td>3</td>
+                    <td class="winrate-super">100.0%</td>
+                    <td class="ev-super">4000.0%</td>
+                </tr>
+                <tr class="">
+                    <td>20</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>20x</td>
+                    <td>3</td>
+                    <td class="winrate-super">100.0%</td>
+                    <td class="ev-super">4000.0%</td>
+                </tr>
+                <tr class="">
+                    <td>21</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>3%</td>
+                    <td>5%</td>
+                    <td>20x</td>
+                    <td>3</td>
+                    <td class="winrate-super">100.0%</td>
+                    <td class="ev-super">4000.0%</td>
+                </tr>
+                <tr class="">
+                    <td>22</td>
+                    <td>RSI超卖+恐惧</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td class="winrate-super">87.5%</td>
+                    <td class="ev-super">3933.8%</td>
+                </tr>
+                <tr class="">
+                    <td>23</td>
+                    <td>RSI超卖+恐惧</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td class="winrate-super">87.5%</td>
+                    <td class="ev-super">3930.0%</td>
+                </tr>
+                <tr class="">
+                    <td>24</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>3</td>
+                    <td class="winrate-super">100.0%</td>
+                    <td class="ev-super">3750.0%</td>
+                </tr>
+                <tr class="">
+                    <td>25</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>3</td>
+                    <td class="winrate-super">100.0%</td>
+                    <td class="ev-super">3750.0%</td>
+                </tr>
+                <tr class="">
+                    <td>26</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>3%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>3</td>
+                    <td class="winrate-super">100.0%</td>
+                    <td class="ev-super">3750.0%</td>
+                </tr>
+                <tr class="">
+                    <td>27</td>
+                    <td>RSI超卖+大跌</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>6</td>
+                    <td class="winrate-super">83.3%</td>
+                    <td class="ev-super">3745.0%</td>
+                </tr>
+                <tr class="">
+                    <td>28</td>
+                    <td>RSI超卖+大跌</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>6</td>
+                    <td class="winrate-super">83.3%</td>
+                    <td class="ev-super">3740.0%</td>
+                </tr>
+                <tr class="">
+                    <td>29</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-1h">1h</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td class="winrate-super">62.5%</td>
+                    <td class="ev-super">3738.8%</td>
+                </tr>
+                <tr class="">
+                    <td>30</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-1h">1h</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>8</td>
+                    <td class="winrate-super">75.0%</td>
+                    <td class="ev-super">3737.5%</td>
+                </tr>
+                <tr class="">
+                    <td>31</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-1h">1h</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>3%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>8</td>
+                    <td class="winrate-super">75.0%</td>
+                    <td class="ev-super">3731.2%</td>
+                </tr>
+                <tr class="">
+                    <td>32</td>
+                    <td>趋势+动量+成交量</td>
+                    <td><span class="badge badge-4h">4h</span></td>
+                    <td><span class="badge badge-fixed">fixed</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>0%</td>
+                    <td>30x</td>
+                    <td>5</td>
+                    <td class="winrate-super">60.0%</td>
+                    <td class="ev-super">3576.0%</td>
+                </tr>
+                <tr class="">
+                    <td>33</td>
+                    <td>趋势+动量+成交量</td>
+                    <td><span class="badge badge-4h">4h</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>15%</td>
+                    <td>30x</td>
+                    <td>5</td>
+                    <td class="winrate-super">60.0%</td>
+                    <td class="ev-super">3576.0%</td>
+                </tr>
+                <tr class="">
+                    <td>34</td>
+                    <td>趋势+动量+成交量</td>
+                    <td><span class="badge badge-4h">4h</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>5</td>
+                    <td class="winrate-super">60.0%</td>
+                    <td class="ev-super">3576.0%</td>
+                </tr>
+                <tr class="">
+                    <td>35</td>
+                    <td>趋势+动量+成交量</td>
+                    <td><span class="badge badge-4h">4h</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>10%</td>
+                    <td>30x</td>
+                    <td>5</td>
+                    <td class="winrate-super">60.0%</td>
+                    <td class="ev-super">3576.0%</td>
+                </tr>
+                <tr class="">
+                    <td>36</td>
+                    <td>趋势+动量+成交量</td>
+                    <td><span class="badge badge-4h">4h</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>20%</td>
+                    <td>30x</td>
+                    <td>5</td>
+                    <td class="winrate-super">60.0%</td>
+                    <td class="ev-super">3576.0%</td>
+                </tr>
+                <tr class="">
+                    <td>37</td>
+                    <td>RSI超卖+恐惧</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>20x</td>
+                    <td>8</td>
+                    <td class="winrate-super">87.5%</td>
+                    <td class="ev-super">3497.5%</td>
+                </tr>
+                <tr class="">
+                    <td>38</td>
+                    <td>RSI超卖+恐惧</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>20x</td>
+                    <td>8</td>
+                    <td class="winrate-super">87.5%</td>
+                    <td class="ev-super">3495.0%</td>
+                </tr>
+                <tr class="">
+                    <td>39</td>
+                    <td>RSI超卖+恐惧</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>3%</td>
+                    <td>5%</td>
+                    <td>20x</td>
+                    <td>8</td>
+                    <td class="winrate-super">87.5%</td>
+                    <td class="ev-super">3492.5%</td>
+                </tr>
+                <tr class="">
+                    <td>40</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-1h">1h</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td class="winrate-super">75.0%</td>
+                    <td class="ev-super">3360.0%</td>
+                </tr>
+                <tr class="">
+                    <td>41</td>
+                    <td>RSI超卖+大跌</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>20x</td>
+                    <td>6</td>
+                    <td class="winrate-super">83.3%</td>
+                    <td class="ev-super">3330.0%</td>
+                </tr>
+                <tr class="">
+                    <td>42</td>
+                    <td>RSI超卖+大跌</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>20x</td>
+                    <td>6</td>
+                    <td class="winrate-super">83.3%</td>
+                    <td class="ev-super">3326.7%</td>
+                </tr>
+                <tr class="">
+                    <td>43</td>
+                    <td>RSI超卖+大跌</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>3%</td>
+                    <td>5%</td>
+                    <td>20x</td>
+                    <td>6</td>
+                    <td class="winrate-super">83.3%</td>
+                    <td class="ev-super">3323.3%</td>
+                </tr>
+                <tr class="">
+                    <td>44</td>
+                    <td>RSI超卖+恐惧</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>8</td>
+                    <td class="winrate-super">87.5%</td>
+                    <td class="ev-super">3278.1%</td>
+                </tr>
+                <tr class="">
+                    <td>45</td>
+                    <td>RSI超卖+恐惧</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>8</td>
+                    <td class="winrate-super">87.5%</td>
+                    <td class="ev-super">3275.0%</td>
+                </tr>
+                <tr class="">
+                    <td>46</td>
+                    <td>RSI超卖+恐惧</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>3%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>8</td>
+                    <td class="winrate-super">87.5%</td>
+                    <td class="ev-super">3271.9%</td>
+                </tr>
+                <tr class="">
+                    <td>47</td>
+                    <td>RSI超卖+大跌</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>6</td>
+                    <td class="winrate-super">83.3%</td>
+                    <td class="ev-super">3120.8%</td>
+                </tr>
+                <tr class="">
+                    <td>48</td>
+                    <td>RSI超卖+大跌</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>6</td>
+                    <td class="winrate-super">83.3%</td>
+                    <td class="ev-super">3116.7%</td>
+                </tr>
+                <tr class="">
+                    <td>49</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-1h">1h</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>8</td>
+                    <td class="winrate-super">62.5%</td>
+                    <td class="ev-super">3115.6%</td>
+                </tr>
+                <tr class="">
+                    <td>50</td>
+                    <td>RSI超卖+大跌</td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>3%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>6</td>
+                    <td class="winrate-super">83.3%</td>
+                    <td class="ev-super">3112.5%</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>周线 (1w) Top 10 策略</h2>
+            <table>
+                <tr>
+                    <th>#</th>
+                    <th>策略</th>
+                    <th>止盈类型</th>
+                    <th>TP%</th>
+                    <th>SL%</th>
+                    <th>移动%</th>
+                    <th>杠杆</th>
+                    <th>交易</th>
+                    <th>胜率</th>
+                    <th>EV%</th>
+                </tr>
+
+                <tr>
+                    <td>1</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>3</td>
+                    <td>100.0%</td>
+                    <td class="ev-super">6000.0%</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>3</td>
+                    <td>100.0%</td>
+                    <td class="ev-super">6000.0%</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>RSI超卖+恐惧</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td>87.5%</td>
+                    <td class="ev-super">5246.2%</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>RSI超卖+恐惧</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td>87.5%</td>
+                    <td class="ev-super">5242.5%</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>3</td>
+                    <td>100.0%</td>
+                    <td class="ev-super">5000.0%</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>3%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>3</td>
+                    <td>100.0%</td>
+                    <td class="ev-super">5000.0%</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>3</td>
+                    <td>100.0%</td>
+                    <td class="ev-super">5000.0%</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>RSI超卖+大跌</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>6</td>
+                    <td>83.3%</td>
+                    <td class="ev-super">4995.0%</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>RSI超卖+大跌</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>6</td>
+                    <td>83.3%</td>
+                    <td class="ev-super">4990.0%</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>恐惧+Pin Bar</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>3</td>
+                    <td>100.0%</td>
+                    <td class="ev-super">4500.0%</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>日线 (1d) Top 10 策略</h2>
+            <table>
+                <tr>
+                    <th>#</th>
+                    <th>策略</th>
+                    <th>止盈类型</th>
+                    <th>TP%</th>
+                    <th>SL%</th>
+                    <th>移动%</th>
+                    <th>杠杆</th>
+                    <th>交易</th>
+                    <th>胜率</th>
+                    <th>EV%</th>
+                </tr>
+
+                <tr>
+                    <td>1</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td>50.0%</td>
+                    <td class="ev-super">2985.0%</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td>50.0%</td>
+                    <td class="ev-super">2970.0%</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Pin Bar+RSI超卖</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>9</td>
+                    <td>44.4%</td>
+                    <td class="ev-super">2633.3%</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>布林带下轨+RSI超卖+恐惧</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>14</td>
+                    <td>42.9%</td>
+                    <td class="ev-super">2554.3%</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>布林带下轨+RSI超卖+恐惧</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>14</td>
+                    <td>42.9%</td>
+                    <td class="ev-super">2537.1%</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>8</td>
+                    <td>50.0%</td>
+                    <td class="ev-super">2487.5%</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>8</td>
+                    <td>50.0%</td>
+                    <td class="ev-super">2475.0%</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>Pin Bar+RSI超卖</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>3%</td>
+                    <td>15%</td>
+                    <td>25x</td>
+                    <td>8</td>
+                    <td>50.0%</td>
+                    <td class="ev-super">2462.5%</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>MACD金叉+RSI回升+趋势</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>3%</td>
+                    <td>10%</td>
+                    <td>25x</td>
+                    <td>4</td>
+                    <td>50.0%</td>
+                    <td class="ev-super">2462.5%</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>3%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>8</td>
+                    <td>50.0%</td>
+                    <td class="ev-super">2462.5%</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>4小时 (4h) Top 10 策略</h2>
+            <table>
+                <tr>
+                    <th>#</th>
+                    <th>策略</th>
+                    <th>止盈类型</th>
+                    <th>TP%</th>
+                    <th>SL%</th>
+                    <th>移动%</th>
+                    <th>杠杆</th>
+                    <th>交易</th>
+                    <th>胜率</th>
+                    <th>EV%</th>
+                </tr>
+
+                <tr>
+                    <td>1</td>
+                    <td>趋势+动量+成交量</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>5</td>
+                    <td>60.0%</td>
+                    <td class="ev-super">3576.0%</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>趋势+动量+成交量</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>10%</td>
+                    <td>30x</td>
+                    <td>5</td>
+                    <td>60.0%</td>
+                    <td class="ev-super">3576.0%</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>趋势+动量+成交量</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>20%</td>
+                    <td>30x</td>
+                    <td>5</td>
+                    <td>60.0%</td>
+                    <td class="ev-super">3576.0%</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>趋势+动量+成交量</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>15%</td>
+                    <td>30x</td>
+                    <td>5</td>
+                    <td>60.0%</td>
+                    <td class="ev-super">3576.0%</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>趋势+动量+成交量</td>
+                    <td><span class="badge badge-fixed">fixed</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>0%</td>
+                    <td>30x</td>
+                    <td>5</td>
+                    <td>60.0%</td>
+                    <td class="ev-super">3576.0%</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>趋势+动量+成交量</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>10%</td>
+                    <td>25x</td>
+                    <td>5</td>
+                    <td>60.0%</td>
+                    <td class="ev-super">2980.0%</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>趋势+动量+成交量</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>15%</td>
+                    <td>25x</td>
+                    <td>5</td>
+                    <td>60.0%</td>
+                    <td class="ev-super">2980.0%</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>趋势+动量+成交量</td>
+                    <td><span class="badge badge-fixed">fixed</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>0%</td>
+                    <td>25x</td>
+                    <td>5</td>
+                    <td>60.0%</td>
+                    <td class="ev-super">2980.0%</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>趋势+动量+成交量</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>20%</td>
+                    <td>25x</td>
+                    <td>5</td>
+                    <td>60.0%</td>
+                    <td class="ev-super">2980.0%</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>趋势+动量+成交量</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>5</td>
+                    <td>60.0%</td>
+                    <td class="ev-super">2980.0%</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>1小时 (1h) Top 10 策略</h2>
+            <table>
+                <tr>
+                    <th>#</th>
+                    <th>策略</th>
+                    <th>止盈类型</th>
+                    <th>TP%</th>
+                    <th>SL%</th>
+                    <th>移动%</th>
+                    <th>杠杆</th>
+                    <th>交易</th>
+                    <th>胜率</th>
+                    <th>EV%</th>
+                </tr>
+
+                <tr>
+                    <td>1</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td>75.0%</td>
+                    <td class="ev-super">4485.0%</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td>62.5%</td>
+                    <td class="ev-super">3738.8%</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>8</td>
+                    <td>75.0%</td>
+                    <td class="ev-super">3737.5%</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>3%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>8</td>
+                    <td>75.0%</td>
+                    <td class="ev-super">3731.2%</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td>75.0%</td>
+                    <td class="ev-super">3360.0%</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>8</td>
+                    <td>62.5%</td>
+                    <td class="ev-super">3115.6%</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>20x</td>
+                    <td>8</td>
+                    <td>75.0%</td>
+                    <td class="ev-super">2990.0%</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>3%</td>
+                    <td>5%</td>
+                    <td>20x</td>
+                    <td>8</td>
+                    <td>75.0%</td>
+                    <td class="ev-super">2985.0%</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td>62.5%</td>
+                    <td class="ev-super">2801.2%</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>极度恐惧+闪崩</td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>150%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>8</td>
+                    <td>75.0%</td>
+                    <td class="ev-super">2800.0%</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>每个策略的最佳参数配置</h2>
+            <table>
+                <tr>
+                    <th>策略</th>
+                    <th>最佳周期</th>
+                    <th>止盈类型</th>
+                    <th>TP%</th>
+                    <th>SL%</th>
+                    <th>移动%</th>
+                    <th>杠杆</th>
+                    <th>交易</th>
+                    <th>胜率</th>
+                    <th>EV%</th>
+                </tr>
+
+                <tr>
+                    <td><b>恐惧+Pin Bar</b></td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>3</td>
+                    <td>100.0%</td>
+                    <td class="ev-super">6000.0%</td>
+                </tr>
+                <tr>
+                    <td><b>RSI超卖+恐惧</b></td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td>87.5%</td>
+                    <td class="ev-super">5246.2%</td>
+                </tr>
+                <tr>
+                    <td><b>RSI超卖+大跌</b></td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>6</td>
+                    <td>83.3%</td>
+                    <td class="ev-super">4995.0%</td>
+                </tr>
+                <tr>
+                    <td><b>极度恐惧+闪崩</b></td>
+                    <td><span class="badge badge-1h">1h</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td>75.0%</td>
+                    <td class="ev-super">4485.0%</td>
+                </tr>
+                <tr>
+                    <td><b>趋势+动量+成交量</b></td>
+                    <td><span class="badge badge-4h">4h</span></td>
+                    <td><span class="badge badge-fixed">fixed</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>0%</td>
+                    <td>30x</td>
+                    <td>5</td>
+                    <td>60.0%</td>
+                    <td class="ev-super">3576.0%</td>
+                </tr>
+                <tr>
+                    <td><b>Pin Bar+RSI超卖</b></td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>2</td>
+                    <td>50.0%</td>
+                    <td class="ev-super">2985.0%</td>
+                </tr>
+                <tr>
+                    <td><b>EMA金叉+上升趋势</b></td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>2</td>
+                    <td>50.0%</td>
+                    <td class="ev-super">2985.0%</td>
+                </tr>
+                <tr>
+                    <td><b>EMA金叉+强趋势</b></td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>2</td>
+                    <td>50.0%</td>
+                    <td class="ev-super">2985.0%</td>
+                </tr>
+                <tr>
+                    <td><b>恐惧+大跌</b></td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>18</td>
+                    <td>50.0%</td>
+                    <td class="ev-super">2985.0%</td>
+                </tr>
+                <tr>
+                    <td><b>负资金费+RSI超卖</b></td>
+                    <td><span class="badge badge-1w">1w</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td>50.0%</td>
+                    <td class="ev-super">2985.0%</td>
+                </tr>
+                <tr>
+                    <td><b>EMA金叉+MACD金叉+放量</b></td>
+                    <td><span class="badge badge-4h">4h</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>36</td>
+                    <td>44.4%</td>
+                    <td class="ev-super">2633.3%</td>
+                </tr>
+                <tr>
+                    <td><b>完美抄底</b></td>
+                    <td><span class="badge badge-4h">4h</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>23</td>
+                    <td>43.5%</td>
+                    <td class="ev-super">2574.8%</td>
+                </tr>
+                <tr>
+                    <td><b>布林带下轨+RSI超卖+恐惧</b></td>
+                    <td><span class="badge badge-1d">1d</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>14</td>
+                    <td>42.9%</td>
+                    <td class="ev-super">2554.3%</td>
+                </tr>
+                <tr>
+                    <td><b>黄金交叉+趋势</b></td>
+                    <td><span class="badge badge-4h">4h</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>3%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>31</td>
+                    <td>51.6%</td>
+                    <td class="ev-super">2544.4%</td>
+                </tr>
+                <tr>
+                    <td><b>EMA金叉+放量</b></td>
+                    <td><span class="badge badge-4h">4h</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>42</td>
+                    <td>42.9%</td>
+                    <td class="ev-super">2537.1%</td>
+                </tr>
+                <tr>
+                    <td><b>MACD金叉+RSI回升+趋势</b></td>
+                    <td><span class="badge badge-1d">1d</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>3%</td>
+                    <td>10%</td>
+                    <td>25x</td>
+                    <td>4</td>
+                    <td>50.0%</td>
+                    <td class="ev-super">2462.5%</td>
+                </tr>
+                <tr>
+                    <td><b>Pin Bar+上升趋势</b></td>
+                    <td><span class="badge badge-1d">1d</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>3%</td>
+                    <td>5%</td>
+                    <td>25x</td>
+                    <td>45</td>
+                    <td>48.9%</td>
+                    <td class="ev-super">2406.1%</td>
+                </tr>
+                <tr>
+                    <td><b>三重底部信号</b></td>
+                    <td><span class="badge badge-4h">4h</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>5</td>
+                    <td>40.0%</td>
+                    <td class="ev-super">2382.0%</td>
+                </tr>
+                <tr>
+                    <td><b>RSI超卖+布林带下轨</b></td>
+                    <td><span class="badge badge-1d">1d</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>25</td>
+                    <td>40.0%</td>
+                    <td class="ev-super">2382.0%</td>
+                </tr>
+                <tr>
+                    <td><b>RSI极度超卖+极度恐惧</b></td>
+                    <td><span class="badge badge-1d">1d</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>8</td>
+                    <td>37.5%</td>
+                    <td class="ev-super">2231.2%</td>
+                </tr>
+                <tr>
+                    <td><b>恐惧+放量下跌</b></td>
+                    <td><span class="badge badge-1d">1d</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>1%</td>
+                    <td>5%</td>
+                    <td>30x</td>
+                    <td>3</td>
+                    <td>33.3%</td>
+                    <td class="ev-super">1980.0%</td>
+                </tr>
+                <tr>
+                    <td><b>Pin Bar+放量</b></td>
+                    <td><span class="badge badge-1d">1d</span></td>
+                    <td><span class="badge badge-fixed">fixed</span></td>
+                    <td>200%</td>
+                    <td>2%</td>
+                    <td>0%</td>
+                    <td>30x</td>
+                    <td>3</td>
+                    <td>33.3%</td>
+                    <td class="ev-super">1960.0%</td>
+                </tr>
+                <tr>
+                    <td><b>EMA金叉+MACD金叉</b></td>
+                    <td><span class="badge badge-1d">1d</span></td>
+                    <td><span class="badge badge-trail">trailing</span></td>
+                    <td>200%</td>
+                    <td>3%</td>
+                    <td>10%</td>
+                    <td>25x</td>
+                    <td>28</td>
+                    <td>39.3%</td>
+                    <td class="ev-super">1918.8%</td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="text-align: center; color: #666; margin-top: 30px; padding: 20px;">
+            <p>EV公式: E(R) = (胜率 × 止盈% × 杠杆) - ((1-胜率) × 止损% × 杠杆)</p>
+            <p>数据来源: Binance BTCUSDT 期货 | 2019-09 至 2025-11</p>
+        </div>
+    </div>
+</body>
+</html>
