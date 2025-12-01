@@ -8,3 +8,7 @@
 node_modules/
 build/
 .vercel
+
+# Binance historical data files (stored in separate repo)
+trading_strategy/combo_backtest/*.csv
+trading_strategy/combo_backtest/*.zip
