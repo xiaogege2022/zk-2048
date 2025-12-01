@@ -12,3 +12,4 @@ build/
 # Binance historical data files (stored in separate repo)
 trading_strategy/combo_backtest/*.csv
 trading_strategy/combo_backtest/*.zip
+__pycache__/
