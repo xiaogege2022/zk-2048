@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTC/USDT 自动交易工具</title>
+    <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+            color: #e6edf3;
+            min-height: 100vh;
+            padding: 15px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            background: linear-gradient(90deg, #ffd700, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 15px; }
+        .card {
+            background: rgba(22, 27, 34, 0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 15px;
+        }
+        .card h2 {
+            color: #58a6ff;
+            font-size: 1em;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .form-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        .form-group { flex: 1; }
+        label { display: block; font-size: 0.75em; color: #8b949e; margin-bottom: 4px; }
+        input, select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 6px;
+            background: rgba(0,0,0,0.3);
+            color: #e6edf3;
+            font-size: 13px;
+        }
+        input:focus { outline: none; border-color: #58a6ff; }
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: linear-gradient(135deg, #238636, #2ea043); color: white; }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(46,160,67,0.4); }
+        .btn-danger { background: linear-gradient(135deg, #da3633, #f85149); color: white; }
+        .btn-danger:hover { box-shadow: 0 4px 12px rgba(248,81,73,0.4); }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #e6edf3; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        .status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 0.8em; }
+        .status-ok { background: rgba(46,160,67,0.2); color: #3fb950; }
+        .status-err { background: rgba(248,81,73,0.2); color: #f85149; }
+        .status-warn { background: rgba(210,153,34,0.2); color: #d29922; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .dot-green { background: #3fb950; animation: pulse 1.5s infinite; }
+        .dot-red { background: #f85149; }
+        .dot-yellow { background: #d29922; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 10px 0; }
+        .stat { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; text-align: center; }
+        .stat-val { font-size: 1.3em; font-weight: bold; color: #ffd700; }
+        .stat-lbl { font-size: 0.7em; color: #8b949e; margin-top: 2px; }
+        .fear-bar { height: 6px; background: linear-gradient(90deg, #da3633, #d29922, #3fb950); border-radius: 3px; margin: 8px 0; position: relative; }
+        .fear-marker { position: absolute; top: -4px; width: 14px; height: 14px; background: white; border-radius: 50%; transform: translateX(-50%); box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .strategy-list { max-height: 280px; overflow-y: auto; }
+        .strategy-item {
+            display: flex; align-items: center; padding: 8px; margin-bottom: 4px;
+            background: rgba(0,0,0,0.2); border-radius: 6px; cursor: pointer; transition: all 0.15s;
+        }
+        .strategy-item:hover { background: rgba(88,166,255,0.1); }
+        .strategy-item.selected { background: rgba(88,166,255,0.2); border-left: 3px solid #58a6ff; }
+        .strategy-item.signal { background: rgba(46,160,67,0.15); border-left: 3px solid #3fb950; }
+        .badge { padding: 2px 6px; border-radius: 4px; font-size: 0.65em; font-weight: bold; margin-right: 6px; }
+        .badge-1w { background: #da3633; }
+        .badge-1d { background: #d29922; }
+        .badge-4h { background: #1f6feb; }
+        .badge-1h { background: #8957e5; }
+        .strategy-info { flex: 1; min-width: 0; }
+        .strategy-name { font-size: 0.85em; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .strategy-meta { font-size: 0.7em; color: #8b949e; }
+        .strategy-stats { text-align: right; }
+        .win-rate { color: #3fb950; font-weight: bold; font-size: 0.9em; }
+        .ev-val { color: #ffd700; font-size: 0.75em; }
+        .position-card {
+            background: rgba(46,160,67,0.1); border: 1px solid rgba(46,160,67,0.3);
+            border-radius: 8px; padding: 12px; margin-bottom: 10px;
+        }
+        .position-card.loss { background: rgba(248,81,73,0.1); border-color: rgba(248,81,73,0.3); }
+        .pnl-pos { color: #3fb950; }
+        .pnl-neg { color: #f85149; }
+        .trade-log { max-height: 200px; overflow-y: auto; font-size: 0.8em; }
+        .log-item { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .log-time { color: #8b949e; font-size: 0.85em; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 10px; }
+        .tab { flex: 1; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 6px; text-align: center; cursor: pointer; font-size: 0.85em; }
+        .tab.active { background: rgba(88,166,255,0.2); color: #58a6ff; }
+        .alert { padding: 10px; border-radius: 6px; margin-bottom: 10px; font-size: 0.85em; }
+        .alert-info { background: rgba(88,166,255,0.15); color: #58a6ff; }
+        .alert-success { background: rgba(46,160,67,0.15); color: #3fb950; }
+        .alert-error { background: rgba(248,81,73,0.15); color: #f85149; }
+        .hidden { display: none !important; }
+        .trail-info { background: rgba(255,215,0,0.1); border-radius: 6px; padding: 8px; margin-top: 8px; font-size: 0.8em; }
+        .trail-info b { color: #ffd700; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>BTC/USDT 自动交易工具</h1>
+
+    <div id="alerts"></div>
+
+    <div class="grid">
+        <!-- 左侧: 连接 + 行情 -->
+        <div>
+            <div class="card">
+                <h2>🔗 API 连接</h2>
+                <div id="conn-status" class="status status-err" style="margin-bottom:10px;">
+                    <span class="dot dot-red"></span> 未连接
+                </div>
+                <div id="conn-form">
+                    <div class="form-group">
+                        <label>API Key</label>
+                        <input type="text" id="apiKey" placeholder="输入API Key">
+                    </div>
+                    <div class="form-group" style="margin-top:8px;">
+                        <label>API Secret</label>
+                        <input type="password" id="apiSecret" placeholder="输入API Secret">
+                    </div>
+                    <div style="margin:10px 0;">
+                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+                            <input type="checkbox" id="useTestnet" checked style="width:auto;">
+                            <span>使用测试网 (推荐)</span>
+                        </label>
+                    </div>
+                    <button class="btn-primary" style="width:100%;" onclick="connect()">连接</button>
+                </div>
+                <div id="conn-info" class="hidden">
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-val" id="balance">-</div>
+                            <div class="stat-lbl">余额 USDT</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-val" id="price">-</div>
+                            <div class="stat-lbl">BTC 价格</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-val" id="pnl">-</div>
+                            <div class="stat-lbl">今日盈亏</div>
+                        </div>
+                    </div>
+                    <div style="margin-top:10px;">
+                        <label style="font-size:0.8em;color:#8b949e;">恐惧贪婪指数</label>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span id="fearVal" style="font-size:1.5em;font-weight:bold;color:#d29922;">-</span>
+                            <div style="flex:1;">
+                                <div class="fear-bar"><div class="fear-marker" id="fearMarker" style="left:50%;"></div></div>
+                            </div>
+                            <span id="fearText" style="font-size:0.8em;color:#8b949e;">-</span>
+                        </div>
+                    </div>
+                    <button class="btn-secondary btn-sm" style="width:100%;margin-top:10px;" onclick="disconnect()">断开连接</button>
+                </div>
+            </div>
+
+            <!-- 持仓 -->
+            <div class="card" style="margin-top:15px;">
+                <h2>📊 当前持仓</h2>
+                <div id="positionInfo">
+                    <p style="color:#8b949e;font-size:0.9em;">无持仓</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧: 策略 + 交易 -->
+        <div>
+            <div class="card">
+                <h2>📈 交易模式</h2>
+                <div class="tabs">
+                    <div class="tab active" id="tabManual" onclick="setMode('manual')">手动交易</div>
+                    <div class="tab" id="tabAuto" onclick="setMode('auto')">AI 全自动</div>
+                </div>
+
+                <!-- 手动面板 -->
+                <div id="manualPanel">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>周期筛选</label>
+                            <select id="tfFilter" onchange="renderStrategies()">
+                                <option value="all">全部</option>
+                                <option value="1w">周线</option>
+                                <option value="1d">日线</option>
+                                <option value="4h">4小时</option>
+                                <option value="1h">1小时</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>开仓金额(USDT)</label>
+                            <input type="number" id="amount" value="100" min="10">
+                        </div>
+                    </div>
+
+                    <div class="strategy-list" id="strategyList"></div>
+
+                    <div class="form-row" style="margin-top:10px;">
+                        <div class="form-group">
+                            <label>止盈%</label>
+                            <input type="number" id="tpPct" value="100">
+                        </div>
+                        <div class="form-group">
+                            <label>止损%</label>
+                            <input type="number" id="slPct" value="5">
+                        </div>
+                        <div class="form-group">
+                            <label>移动止损%</label>
+                            <input type="number" id="trailPct" value="5">
+                        </div>
+                        <div class="form-group">
+                            <label>杠杆</label>
+                            <input type="number" id="leverage" value="10">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <button class="btn-primary" style="flex:1;" onclick="openPosition()">开仓</button>
+                        <button class="btn-danger" style="flex:1;" onclick="closePosition()">平仓</button>
+                    </div>
+                    <button class="btn-secondary btn-sm" style="width:100%;margin-top:8px;" onclick="checkSignals()">🔍 检测当前信号</button>
+                </div>
+
+                <!-- 自动面板 -->
+                <div id="autoPanel" class="hidden">
+                    <div class="alert alert-info">
+                        选择策略后启动，系统将自动监控信号并开仓
+                    </div>
+                    <div class="strategy-list" id="autoStrategyList"></div>
+                    <div class="form-row" style="margin-top:10px;">
+                        <div class="form-group">
+                            <label>最大仓位(USDT)</label>
+                            <input type="number" id="autoAmount" value="100">
+                        </div>
+                        <div class="form-group">
+                            <label>检查间隔(秒)</label>
+                            <input type="number" id="autoInterval" value="60">
+                        </div>
+                    </div>
+                    <div id="autoStatus" style="margin:10px 0;font-size:0.85em;">
+                        <span class="dot dot-red" style="display:inline-block;"></span> 自动交易未启动
+                    </div>
+                    <div class="form-row">
+                        <button class="btn-primary" style="flex:1;" id="btnStartAuto" onclick="startAuto()">启动</button>
+                        <button class="btn-danger hidden" style="flex:1;" id="btnStopAuto" onclick="stopAuto()">停止</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 交易日志 -->
+    <div class="card" style="margin-top:15px;">
+        <h2>📝 交易日志</h2>
+        <div class="trade-log" id="tradeLog">
+            <div class="log-item" style="color:#8b949e;">暂无交易记录</div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ==================== 策略数据 ====================
+const STRATEGIES = [
+    {name:'恐惧+Pin Bar',tf:'1w',wr:100,ev:2500,tp:100,sl:3,trail:5,lev:25},
+    {name:'RSI超卖+恐惧',tf:'1w',wr:87.5,ev:2178,tp:100,sl:3,trail:5,lev:25},
+    {name:'RSI超卖+大跌',tf:'1w',wr:83.3,ev:2071,tp:100,sl:3,trail:5,lev:25},
+    {name:'极度恐惧+闪崩',tf:'1h',wr:75,ev:1856,tp:100,sl:3,trail:5,lev:25},
+    {name:'趋势+动量+成交量',tf:'4h',wr:60,ev:1470,tp:100,sl:3,trail:5,lev:25},
+    {name:'黄金交叉+趋势',tf:'4h',wr:51.6,ev:1254,tp:100,sl:3,trail:5,lev:25},
+    {name:'EMA金叉+MACD金叉+放量',tf:'4h',wr:51.4,ev:1249,tp:100,sl:3,trail:10,lev:25},
+    {name:'EMA金叉+上升趋势',tf:'1w',wr:50,ev:1213,tp:100,sl:3,trail:5,lev:25},
+    {name:'恐惧+大跌',tf:'1w',wr:50,ev:1213,tp:100,sl:3,trail:5,lev:25},
+    {name:'黄金交叉+趋势',tf:'1d',wr:50,ev:465,tp:100,sl:7,trail:10,lev:10},
+    {name:'极度恐惧+闪崩',tf:'1d',wr:50,ev:1213,tp:100,sl:3,trail:5,lev:25},
+    {name:'Pin Bar+上升趋势',tf:'1d',wr:48.9,ev:1184,tp:100,sl:3,trail:5,lev:25},
+    {name:'完美抄底',tf:'4h',wr:47.8,ev:1157,tp:100,sl:3,trail:5,lev:25},
+    {name:'EMA金叉+放量',tf:'4h',wr:47.6,ev:1151,tp:100,sl:3,trail:5,lev:25},
+    {name:'恐惧+放量下跌',tf:'1h',wr:47.6,ev:675,tp:100,sl:5,trail:0,lev:15},
+    {name:'趋势+动量+成交量',tf:'1h',wr:47.1,ev:1137,tp:100,sl:3,trail:10,lev:25},
+    {name:'RSI超卖+大跌',tf:'4h',wr:46.2,ev:1113,tp:100,sl:3,trail:5,lev:25},
+    {name:'黄金交叉+趋势',tf:'1h',wr:44.4,ev:1068,tp:100,sl:3,trail:5,lev:25},
+    {name:'负资金费+RSI超卖',tf:'1d',wr:43.5,ev:1045,tp:100,sl:3,trail:5,lev:25},
+    {name:'负资金费+RSI超卖',tf:'1h',wr:43.5,ev:1046,tp:100,sl:3,trail:0,lev:25},
+    {name:'布林带下轨+RSI超卖+恐惧',tf:'1d',wr:42.9,ev:1029,tp:100,sl:3,trail:5,lev:25},
+    {name:'恐惧+大跌',tf:'1h',wr:42.9,ev:1029,tp:100,sl:3,trail:10,lev:25},
+    {name:'EMA金叉+强趋势',tf:'1d',wr:41.7,ev:998,tp:100,sl:3,trail:5,lev:25},
+    {name:'RSI超卖+布林带下轨',tf:'1d',wr:40,ev:955,tp:100,sl:3,trail:5,lev:25},
+    {name:'Pin Bar+上升趋势',tf:'1w',wr:40,ev:955,tp:100,sl:3,trail:5,lev:25},
+    {name:'三重底部信号',tf:'4h',wr:40,ev:955,tp:100,sl:3,trail:5,lev:25},
+    {name:'RSI超卖+大跌',tf:'1h',wr:40,ev:955,tp:100,sl:3,trail:5,lev:25},
+    {name:'三重底部信号',tf:'1h',wr:40,ev:955,tp:100,sl:3,trail:5,lev:25},
+];
+
+// ==================== 全局状态 ====================
+let state = {
+    connected: false,
+    apiKey: '',
+    apiSecret: '',
+    testnet: true,
+    baseUrl: '',
+    wsUrl: '',
+    ws: null,
+    position: null,
+    selectedStrategy: null,
+    autoStrategies: [],
+    autoRunning: false,
+    autoTimer: null,
+    trailStop: { enabled: false, highest: 0, sl: 0, pct: 5 },
+    logs: [],
+    fearIndex: 50
+};
+
+// ==================== 初始化 ====================
+document.addEventListener('DOMContentLoaded', () => {
+    renderStrategies();
+    renderAutoStrategies();
+    loadState();
+    fetchFearIndex();
+    setInterval(fetchFearIndex, 300000); // 5分钟更新
+});
+
+function loadState() {
+    const saved = localStorage.getItem('tradingState');
+    if (saved) {
+        const s = JSON.parse(saved);
+        state.logs = s.logs || [];
+        renderLogs();
+    }
+}
+
+function saveState() {
+    localStorage.setItem('tradingState', JSON.stringify({ logs: state.logs.slice(-50) }));
+}
+
+// ==================== UI ====================
+function showAlert(msg, type='info') {
+    const el = document.createElement('div');
+    el.className = `alert alert-${type}`;
+    el.textContent = msg;
+    document.getElementById('alerts').appendChild(el);
+    setTimeout(() => el.remove(), 4000);
+}
+
+function addLog(msg, type='info') {
+    const time = new Date().toLocaleTimeString();
+    state.logs.unshift({ time, msg, type });
+    if (state.logs.length > 50) state.logs.pop();
+    renderLogs();
+    saveState();
+}
+
+function renderLogs() {
+    const el = document.getElementById('tradeLog');
+    if (state.logs.length === 0) {
+        el.innerHTML = '<div class="log-item" style="color:#8b949e;">暂无交易记录</div>';
+        return;
+    }
+    el.innerHTML = state.logs.map(l => {
+        const color = l.type === 'success' ? '#3fb950' : l.type === 'error' ? '#f85149' : '#e6edf3';
+        return `<div class="log-item"><span class="log-time">${l.time}</span> <span style="color:${color}">${l.msg}</span></div>`;
+    }).join('');
+}
+
+function setMode(mode) {
+    document.getElementById('tabManual').classList.toggle('active', mode === 'manual');
+    document.getElementById('tabAuto').classList.toggle('active', mode === 'auto');
+    document.getElementById('manualPanel').classList.toggle('hidden', mode !== 'manual');
+    document.getElementById('autoPanel').classList.toggle('hidden', mode !== 'auto');
+}
+
+function renderStrategies() {
+    const filter = document.getElementById('tfFilter').value;
+    const list = filter === 'all' ? STRATEGIES : STRATEGIES.filter(s => s.tf === filter);
+    const el = document.getElementById('strategyList');
+
+    el.innerHTML = list.map((s, i) => {
+        const idx = STRATEGIES.indexOf(s);
+        const sel = state.selectedStrategy === idx ? 'selected' : '';
+        return `
+        <div class="strategy-item ${sel}" onclick="selectStrategy(${idx})">
+            <span class="badge badge-${s.tf}">${s.tf}</span>
+            <div class="strategy-info">
+                <div class="strategy-name">${s.name}</div>
+                <div class="strategy-meta">TP:${s.tp}% SL:${s.sl}% 移动:${s.trail}% ${s.lev}x</div>
+            </div>
+            <div class="strategy-stats">
+                <div class="win-rate">${s.wr}%</div>
+                <div class="ev-val">EV:${s.ev}%</div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function renderAutoStrategies() {
+    const el = document.getElementById('autoStrategyList');
+    el.innerHTML = STRATEGIES.slice(0, 15).map((s, i) => `
+        <div class="strategy-item">
+            <input type="checkbox" style="width:auto;margin-right:8px;" onchange="toggleAutoStrategy(${i}, this.checked)">
+            <span class="badge badge-${s.tf}">${s.tf}</span>
+            <div class="strategy-info">
+                <div class="strategy-name">${s.name}</div>
+            </div>
+            <div class="strategy-stats">
+                <div class="win-rate">${s.wr}%</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function selectStrategy(idx) {
+    state.selectedStrategy = idx;
+    const s = STRATEGIES[idx];
+    document.getElementById('tpPct').value = s.tp;
+    document.getElementById('slPct').value = s.sl;
+    document.getElementById('trailPct').value = s.trail;
+    document.getElementById('leverage').value = s.lev;
+    renderStrategies();
+}
+
+function toggleAutoStrategy(idx, checked) {
+    if (checked) {
+        state.autoStrategies.push(STRATEGIES[idx]);
+    } else {
+        state.autoStrategies = state.autoStrategies.filter(s => s !== STRATEGIES[idx]);
+    }
+}
+
+// ==================== API ====================
+function getBaseUrl() {
+    return state.testnet
+        ? 'https://testnet.binancefuture.com'
+        : 'https://fapi.binance.com';
+}
+
+function sign(params) {
+    const query = Object.entries(params).map(([k,v]) => `${k}=${v}`).join('&');
+    const signature = CryptoJS.HmacSHA256(query, state.apiSecret).toString();
+    return query + '&signature=' + signature;
+}
+
+async function apiCall(endpoint, params = {}, method = 'GET') {
+    params.timestamp = Date.now();
+    params.recvWindow = 5000;
+
+    const url = getBaseUrl() + endpoint + '?' + sign(params);
+
+    try {
+        const opts = {
+            method,
+            headers: { 'X-MBX-APIKEY': state.apiKey }
+        };
+        const res = await fetch(url, opts);
+        const data = await res.json();
+
+        if (data.code && data.code !== 200) {
+            throw new Error(data.msg || 'API错误');
+        }
+        return data;
+    } catch (e) {
+        console.error('API Error:', e);
+        throw e;
+    }
+}
+
+async function publicApi(endpoint, params = {}) {
+    const query = Object.entries(params).map(([k,v]) => `${k}=${v}`).join('&');
+    const url = getBaseUrl() + endpoint + (query ? '?' + query : '');
+    const res = await fetch(url);
+    return res.json();
+}
+
+// ==================== 连接 ====================
+async function connect() {
+    state.apiKey = document.getElementById('apiKey').value.trim();
+    state.apiSecret = document.getElementById('apiSecret').value.trim();
+    state.testnet = document.getElementById('useTestnet').checked;
+
+    if (!state.apiKey || !state.apiSecret) {
+        showAlert('请输入API Key和Secret', 'error');
+        return;
+    }
+
+    try {
+        // 测试连接
+        const balance = await apiCall('/fapi/v2/balance');
+        if (Array.isArray(balance)) {
+            state.connected = true;
+
+            document.getElementById('conn-status').innerHTML = '<span class="dot dot-green"></span> 已连接' + (state.testnet ? ' (测试网)' : '');
+            document.getElementById('conn-status').className = 'status status-ok';
+            document.getElementById('conn-form').classList.add('hidden');
+            document.getElementById('conn-info').classList.remove('hidden');
+
+            showAlert('连接成功!', 'success');
+            addLog('API连接成功', 'success');
+
+            // 启动WebSocket
+            startWebSocket();
+
+            // 更新状态
+            updateAccount();
+            updatePosition();
+            setInterval(updateAccount, 5000);
+            setInterval(updatePosition, 3000);
+        }
+    } catch (e) {
+        showAlert('连接失败: ' + e.message, 'error');
+    }
+}
+
+function disconnect() {
+    state.connected = false;
+    if (state.ws) state.ws.close();
+    stopAuto();
+
+    document.getElementById('conn-status').innerHTML = '<span class="dot dot-red"></span> 未连接';
+    document.getElementById('conn-status').className = 'status status-err';
+    document.getElementById('conn-form').classList.remove('hidden');
+    document.getElementById('conn-info').classList.add('hidden');
+
+    addLog('已断开连接', 'info');
+}
+
+function startWebSocket() {
+    const wsUrl = state.testnet
+        ? 'wss://stream.binancefuture.com/ws/btcusdt@ticker'
+        : 'wss://fstream.binance.com/ws/btcusdt@ticker';
+
+    state.ws = new WebSocket(wsUrl);
+    state.ws.onmessage = (e) => {
+        const d = JSON.parse(e.data);
+        document.getElementById('price').textContent = parseFloat(d.c).toFixed(0);
+
+        // 更新移动止损
+        if (state.position && state.trailStop.enabled) {
+            const price = parseFloat(d.c);
+            if (price > state.trailStop.highest) {
+                state.trailStop.highest = price;
+                const newSl = price * (1 - state.trailStop.pct / 100);
+                if (newSl > state.trailStop.sl) {
+                    state.trailStop.sl = newSl;
+                    addLog(`移动止损更新: $${newSl.toFixed(0)}`, 'info');
+                }
+            }
+            // 检查是否触发止损
+            if (price <= state.trailStop.sl && state.trailStop.sl > 0) {
+                addLog(`触发移动止损 @ $${state.trailStop.sl.toFixed(0)}`, 'error');
+                closePosition();
+            }
+        }
+    };
+    state.ws.onclose = () => {
+        if (state.connected) setTimeout(startWebSocket, 3000);
+    };
+}
+
+async function updateAccount() {
+    if (!state.connected) return;
+    try {
+        const data = await apiCall('/fapi/v2/balance');
+        const usdt = data.find(b => b.asset === 'USDT');
+        if (usdt) {
+            document.getElementById('balance').textContent = parseFloat(usdt.availableBalance).toFixed(2);
+            const pnl = parseFloat(usdt.crossUnPnl || 0);
+            document.getElementById('pnl').textContent = (pnl >= 0 ? '+' : '') + pnl.toFixed(2);
+            document.getElementById('pnl').className = 'stat-val ' + (pnl >= 0 ? 'pnl-pos' : 'pnl-neg');
+        }
+    } catch (e) {}
+}
+
+async function updatePosition() {
+    if (!state.connected) return;
+    try {
+        const data = await apiCall('/fapi/v2/positionRisk', { symbol: 'BTCUSDT' });
+        const pos = data.find(p => parseFloat(p.positionAmt) !== 0);
+
+        const el = document.getElementById('positionInfo');
+        if (!pos) {
+            state.position = null;
+            el.innerHTML = '<p style="color:#8b949e;font-size:0.9em;">无持仓</p>';
+            return;
+        }
+
+        state.position = pos;
+        const amt = Math.abs(parseFloat(pos.positionAmt));
+        const entry = parseFloat(pos.entryPrice);
+        const pnl = parseFloat(pos.unRealizedProfit);
+        const lev = pos.leverage;
+        const pnlPct = (pnl / (entry * amt) * 100).toFixed(2);
+
+        el.innerHTML = `
+            <div class="position-card ${pnl < 0 ? 'loss' : ''}">
+                <div class="stats" style="grid-template-columns:repeat(4,1fr);">
+                    <div class="stat"><div class="stat-val">${amt}</div><div class="stat-lbl">数量 BTC</div></div>
+                    <div class="stat"><div class="stat-val">$${entry.toFixed(0)}</div><div class="stat-lbl">入场价</div></div>
+                    <div class="stat"><div class="stat-val ${pnl>=0?'pnl-pos':'pnl-neg'}">${pnl>=0?'+':''}${pnl.toFixed(2)}</div><div class="stat-lbl">盈亏 USDT</div></div>
+                    <div class="stat"><div class="stat-val">${lev}x</div><div class="stat-lbl">杠杆</div></div>
+                </div>
+                ${state.trailStop.enabled ? `
+                <div class="trail-info">
+                    <b>移动止损</b> | 最高价: $${state.trailStop.highest.toFixed(0)} | 当前止损: $${state.trailStop.sl.toFixed(0)} | 回撤: ${state.trailStop.pct}%
+                </div>` : ''}
+            </div>
+        `;
+    } catch (e) {}
+}
+
+// ==================== 恐惧指数 ====================
+async function fetchFearIndex() {
+    try {
+        const res = await fetch('https://api.alternative.me/fng/?limit=1');
+        const data = await res.json();
+        const val = parseInt(data.data[0].value);
+        const cls = data.data[0].value_classification;
+        state.fearIndex = val;
+
+        document.getElementById('fearVal').textContent = val;
+        document.getElementById('fearMarker').style.left = val + '%';
+        document.getElementById('fearText').textContent = cls;
+
+        let color = '#d29922';
+        if (val < 25) color = '#da3633';
+        else if (val < 40) color = '#f85149';
+        else if (val > 75) color = '#238636';
+        else if (val > 60) color = '#3fb950';
+        document.getElementById('fearVal').style.color = color;
+    } catch (e) {}
+}
+
+// ==================== 交易 ====================
+async function openPosition() {
+    if (!state.connected) {
+        showAlert('请先连接API', 'error');
+        return;
+    }
+    if (state.position) {
+        showAlert('已有持仓，请先平仓', 'error');
+        return;
+    }
+
+    const amount = parseFloat(document.getElementById('amount').value);
+    const tp = parseFloat(document.getElementById('tpPct').value);
+    const sl = parseFloat(document.getElementById('slPct').value);
+    const trail = parseFloat(document.getElementById('trailPct').value);
+    const lev = parseInt(document.getElementById('leverage').value);
+
+    try {
+        // 设置杠杆
+        await apiCall('/fapi/v1/leverage', { symbol: 'BTCUSDT', leverage: lev }, 'POST');
+
+        // 获取价格
+        const ticker = await publicApi('/fapi/v1/ticker/price', { symbol: 'BTCUSDT' });
+        const price = parseFloat(ticker.price);
+        const qty = (amount * lev / price).toFixed(3);
+
+        // 开仓
+        const order = await apiCall('/fapi/v1/order', {
+            symbol: 'BTCUSDT',
+            side: 'BUY',
+            type: 'MARKET',
+            quantity: qty
+        }, 'POST');
+
+        const tpPrice = (price * (1 + tp / 100)).toFixed(2);
+        const slPrice = (price * (1 - sl / 100)).toFixed(2);
+
+        // 设置止盈
+        await apiCall('/fapi/v1/order', {
+            symbol: 'BTCUSDT',
+            side: 'SELL',
+            type: 'TAKE_PROFIT_MARKET',
+            stopPrice: tpPrice,
+            closePosition: 'true'
+        }, 'POST');
+
+        // 设置止损
+        await apiCall('/fapi/v1/order', {
+            symbol: 'BTCUSDT',
+            side: 'SELL',
+            type: 'STOP_MARKET',
+            stopPrice: slPrice,
+            closePosition: 'true'
+        }, 'POST');
+
+        // 设置移动止损
+        state.trailStop = {
+            enabled: trail > 0,
+            highest: price,
+            sl: parseFloat(slPrice),
+            pct: trail
+        };
+
+        const strategyName = state.selectedStrategy !== null ? STRATEGIES[state.selectedStrategy].name : '手动';
+        showAlert(`开仓成功: ${qty} BTC @ $${price.toFixed(0)}`, 'success');
+        addLog(`开仓 ${strategyName}: ${qty} BTC @ $${price.toFixed(0)} | TP:$${tpPrice} SL:$${slPrice}`, 'success');
+
+        updatePosition();
+    } catch (e) {
+        showAlert('开仓失败: ' + e.message, 'error');
+        addLog('开仓失败: ' + e.message, 'error');
+    }
+}
+
+async function closePosition() {
+    if (!state.connected || !state.position) {
+        showAlert('无持仓', 'error');
+        return;
+    }
+
+    try {
+        // 取消所有挂单
+        await apiCall('/fapi/v1/allOpenOrders', { symbol: 'BTCUSDT' }, 'DELETE');
+
+        // 市价平仓
+        const qty = Math.abs(parseFloat(state.position.positionAmt));
+        await apiCall('/fapi/v1/order', {
+            symbol: 'BTCUSDT',
+            side: 'SELL',
+            type: 'MARKET',
+            quantity: qty
+        }, 'POST');
+
+        state.trailStop = { enabled: false, highest: 0, sl: 0, pct: 5 };
+
+        showAlert('平仓成功', 'success');
+        addLog(`平仓 ${qty} BTC`, 'success');
+
+        updatePosition();
+    } catch (e) {
+        showAlert('平仓失败: ' + e.message, 'error');
+    }
+}
+
+// ==================== 信号检测 ====================
+async function checkSignals() {
+    if (!state.connected) {
+        showAlert('请先连接API', 'error');
+        return;
+    }
+
+    showAlert('检测信号中...', 'info');
+
+    try {
+        const tf = document.getElementById('tfFilter').value;
+        const interval = tf === 'all' ? '1h' : tf;
+
+        const klines = await publicApi('/fapi/v1/klines', {
+            symbol: 'BTCUSDT',
+            interval,
+            limit: 100
+        });
+
+        const triggered = detectSignals(klines, interval);
+
+        if (triggered.length > 0) {
+            showAlert(`检测到 ${triggered.length} 个信号!`, 'success');
+            triggered.forEach(s => {
+                addLog(`信号触发: ${s.name} (${s.tf}) 胜率:${s.wr}%`, 'success');
+            });
+
+            // 高亮显示
+            document.querySelectorAll('.strategy-item').forEach(el => el.classList.remove('signal'));
+            triggered.forEach(s => {
+                const idx = STRATEGIES.indexOf(s);
+                const items = document.querySelectorAll('.strategy-item');
+                if (items[idx]) items[idx].classList.add('signal');
+            });
+        } else {
+            showAlert('暂无信号触发', 'info');
+            addLog('检测完成，暂无信号', 'info');
+        }
+    } catch (e) {
+        showAlert('检测失败: ' + e.message, 'error');
+    }
+}
+
+function detectSignals(klines, tf) {
+    // 计算指标
+    const closes = klines.map(k => parseFloat(k[4]));
+    const highs = klines.map(k => parseFloat(k[2]));
+    const lows = klines.map(k => parseFloat(k[3]));
+    const volumes = klines.map(k => parseFloat(k[5]));
+
+    const rsi = calcRSI(closes, 14);
+    const ema12 = calcEMA(closes, 12);
+    const ema26 = calcEMA(closes, 26);
+    const ema50 = calcEMA(closes, 50);
+    const volMa = calcSMA(volumes, 20);
+
+    const last = closes.length - 1;
+    const prev = last - 1;
+
+    // 条件
+    const emaGolden = ema12[prev] <= ema26[prev] && ema12[last] > ema26[last];
+    const rsiOversold = rsi[last] < 30;
+    const rsiExtreme = rsi[last] < 20;
+    const uptrend = ema50[last] > ema50[last - 10];
+    const volumeSpike = volumes[last] > volMa[last] * 1.5;
+    const bigDrop = (closes[last] - closes[prev]) / closes[prev] * 100 < -5;
+    const flashCrash = (closes[last] - closes[prev]) / closes[prev] * 100 < -10;
+    const fear = state.fearIndex < 30;
+    const extremeFear = state.fearIndex < 20;
+
+    // Pin Bar检测
+    const body = Math.abs(closes[last] - parseFloat(klines[last][1]));
+    const lowerWick = Math.min(closes[last], parseFloat(klines[last][1])) - lows[last];
+    const isPinBar = lowerWick > body * 2;
+
+    const triggered = [];
+
+    STRATEGIES.filter(s => tf === 'all' || s.tf === tf).forEach(s => {
+        let signal = false;
+
+        switch(s.name) {
+            case '恐惧+Pin Bar': signal = fear && isPinBar; break;
+            case 'RSI超卖+恐惧': signal = rsiOversold && fear; break;
+            case 'RSI超卖+大跌': signal = rsiOversold && bigDrop; break;
+            case '极度恐惧+闪崩': signal = extremeFear && flashCrash; break;
+            case '趋势+动量+成交量': signal = uptrend && emaGolden && volumeSpike; break;
+            case '黄金交叉+趋势': signal = emaGolden && uptrend; break;
+            case 'EMA金叉+MACD金叉+放量': signal = emaGolden && volumeSpike; break;
+            case 'EMA金叉+上升趋势': signal = emaGolden && uptrend; break;
+            case '恐惧+大跌': signal = fear && bigDrop; break;
+            case 'Pin Bar+上升趋势': signal = isPinBar && uptrend; break;
+            case '完美抄底': signal = rsiExtreme && extremeFear && isPinBar; break;
+            case 'EMA金叉+放量': signal = emaGolden && volumeSpike; break;
+            case '恐惧+放量下跌': signal = fear && volumeSpike && bigDrop; break;
+            case '负资金费+RSI超卖': signal = rsiOversold; break;
+            case '布林带下轨+RSI超卖+恐惧': signal = rsiOversold && fear; break;
+            case 'EMA金叉+强趋势': signal = emaGolden && uptrend; break;
+            case 'RSI超卖+布林带下轨': signal = rsiOversold; break;
+            case '三重底部信号': signal = rsiExtreme && extremeFear; break;
+        }
+
+        if (signal) triggered.push(s);
+    });
+
+    return triggered;
+}
+
+// 技术指标计算
+function calcRSI(data, period) {
+    const rsi = new Array(data.length).fill(50);
+    let gains = 0, losses = 0;
+
+    for (let i = 1; i <= period; i++) {
+        const diff = data[i] - data[i-1];
+        if (diff > 0) gains += diff;
+        else losses -= diff;
+    }
+
+    let avgGain = gains / period;
+    let avgLoss = losses / period;
+
+    for (let i = period; i < data.length; i++) {
+        const diff = data[i] - data[i-1];
+        avgGain = (avgGain * (period-1) + (diff > 0 ? diff : 0)) / period;
+        avgLoss = (avgLoss * (period-1) + (diff < 0 ? -diff : 0)) / period;
+        const rs = avgLoss === 0 ? 100 : avgGain / avgLoss;
+        rsi[i] = 100 - 100 / (1 + rs);
+    }
+    return rsi;
+}
+
+function calcEMA(data, period) {
+    const ema = [data[0]];
+    const k = 2 / (period + 1);
+    for (let i = 1; i < data.length; i++) {
+        ema.push(data[i] * k + ema[i-1] * (1-k));
+    }
+    return ema;
+}
+
+function calcSMA(data, period) {
+    const sma = [];
+    for (let i = 0; i < data.length; i++) {
+        if (i < period - 1) { sma.push(data[i]); continue; }
+        let sum = 0;
+        for (let j = 0; j < period; j++) sum += data[i-j];
+        sma.push(sum / period);
+    }
+    return sma;
+}
+
+// ==================== 自动交易 ====================
+function startAuto() {
+    if (!state.connected) {
+        showAlert('请先连接API', 'error');
+        return;
+    }
+    if (state.autoStrategies.length === 0) {
+        showAlert('请选择至少一个策略', 'error');
+        return;
+    }
+
+    state.autoRunning = true;
+    const interval = parseInt(document.getElementById('autoInterval').value) * 1000;
+
+    document.getElementById('autoStatus').innerHTML = '<span class="dot dot-green" style="display:inline-block;"></span> 自动交易运行中...';
+    document.getElementById('btnStartAuto').classList.add('hidden');
+    document.getElementById('btnStopAuto').classList.remove('hidden');
+
+    addLog('自动交易已启动', 'success');
+
+    state.autoTimer = setInterval(autoCheck, interval);
+    autoCheck();
+}
+
+function stopAuto() {
+    state.autoRunning = false;
+    if (state.autoTimer) clearInterval(state.autoTimer);
+
+    document.getElementById('autoStatus').innerHTML = '<span class="dot dot-red" style="display:inline-block;"></span> 自动交易已停止';
+    document.getElementById('btnStartAuto').classList.remove('hidden');
+    document.getElementById('btnStopAuto').classList.add('hidden');
+
+    addLog('自动交易已停止', 'info');
+}
+
+async function autoCheck() {
+    if (!state.autoRunning || state.position) return;
+
+    try {
+        for (const s of state.autoStrategies) {
+            const klines = await publicApi('/fapi/v1/klines', {
+                symbol: 'BTCUSDT',
+                interval: s.tf,
+                limit: 100
+            });
+
+            const triggered = detectSignals(klines, s.tf);
+            const match = triggered.find(t => t.name === s.name);
+
+            if (match) {
+                addLog(`自动交易信号: ${s.name}`, 'success');
+
+                // 自动开仓
+                document.getElementById('amount').value = document.getElementById('autoAmount').value;
+                document.getElementById('tpPct').value = s.tp;
+                document.getElementById('slPct').value = s.sl;
+                document.getElementById('trailPct').value = s.trail;
+                document.getElementById('leverage').value = s.lev;
+
+                await openPosition();
+                return;
+            }
+        }
+    } catch (e) {
+        console.error('Auto check error:', e);
+    }
+}
+</script>
+</body>
+</html>
