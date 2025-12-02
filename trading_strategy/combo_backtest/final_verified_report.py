@@ -148,11 +148,13 @@ def backtest_trailing(df, signal_array, tp_pct, sl_pct, trail_pct, leverage, hol
                 if low_arr[j] <= current_sl_price:
                     exit_price = current_sl_price
                     exit_time = timestamps[j]
-                    # 判断是初始止损还是移动止损触发
-                    if current_sl_price > initial_sl_price:
-                        exit_reason = 'TRAIL_SL'  # 移动止损 (保本或盈利出场)
+                    # 判断是移动止盈还是移动止损
+                    if current_sl_price > entry_price:
+                        exit_reason = 'TRAIL_TP'  # 移动止盈 (出场价>入场价，盈利出场)
+                    elif current_sl_price > initial_sl_price:
+                        exit_reason = 'TRAIL_SL'  # 移动止损 (止损已上移但仍亏损)
                     else:
-                        exit_reason = 'SL'  # 初始止损
+                        exit_reason = 'SL'  # 初始止损 (未上移的止损)
                     break
 
                 # 检查止盈
@@ -203,7 +205,8 @@ def calculate_stats(trades):
     total = len(trades)
     tp_wins = sum(1 for t in trades if t['exit_reason'] == 'TP')
     sl_losses = sum(1 for t in trades if t['exit_reason'] == 'SL')
-    trail_exits = sum(1 for t in trades if t['exit_reason'] == 'TRAIL_SL')
+    trail_tp_exits = sum(1 for t in trades if t['exit_reason'] == 'TRAIL_TP')  # 移动止盈 (盈利)
+    trail_sl_exits = sum(1 for t in trades if t['exit_reason'] == 'TRAIL_SL')  # 移动止损 (亏损)
     timeouts = sum(1 for t in trades if t['exit_reason'] == 'TIMEOUT')
 
     wins = sum(1 for t in trades if t['pnl_pct'] > 0)
@@ -221,7 +224,8 @@ def calculate_stats(trades):
         'total': total,
         'tp_wins': tp_wins,
         'sl_losses': sl_losses,
-        'trail_exits': trail_exits,
+        'trail_tp_exits': trail_tp_exits,  # 移动止盈出场数
+        'trail_sl_exits': trail_sl_exits,  # 移动止损出场数
         'timeouts': timeouts,
         'wins': wins,
         'win_rate': win_rate,
@@ -521,7 +525,8 @@ def generate_html_report(results):
                     <th>交易</th>
                     <th>止盈</th>
                     <th>止损</th>
-                    <th>移动出</th>
+                    <th>移动止盈</th>
+                    <th>移动止损</th>
                     <th>超时</th>
                     <th>理论胜率<br/>(无止盈止损)</th>
                     <th>回测胜率<br/>(实际)</th>
@@ -552,7 +557,8 @@ def generate_html_report(results):
                     <td>{r['total']}</td>
                     <td class="win">{r['tp_wins']}</td>
                     <td class="loss">{r['sl_losses']}</td>
-                    <td>{r.get('trail_exits', 0)}</td>
+                    <td class="win">{r.get('trail_tp_exits', 0)}</td>
+                    <td class="loss">{r.get('trail_sl_exits', 0)}</td>
                     <td>{r['timeouts']}</td>
                     <td>{theory_wr:.1f}%</td>
                     <td>{r['win_rate']:.1f}%</td>
@@ -579,7 +585,8 @@ def generate_html_report(results):
                     <th>交易</th>
                     <th>止盈</th>
                     <th>初始止损</th>
-                    <th>移动止损出场</th>
+                    <th>移动止盈</th>
+                    <th>移动止损</th>
                     <th>超时</th>
                     <th>理论胜率<br/>(无止盈止损)</th>
                     <th>回测胜率<br/>(实际)</th>
@@ -604,7 +611,8 @@ def generate_html_report(results):
                     <td>{r['total']}</td>
                     <td class="win">{r['tp_wins']}</td>
                     <td class="loss">{r['sl_losses']}</td>
-                    <td>{r.get('trail_exits', 0)}</td>
+                    <td class="win">{r.get('trail_tp_exits', 0)}</td>
+                    <td class="loss">{r.get('trail_sl_exits', 0)}</td>
                     <td>{r['timeouts']}</td>
                     <td>{theory_wr:.1f}%</td>
                     <td>{r['win_rate']:.1f}%</td>
@@ -641,7 +649,7 @@ def generate_html_report(results):
             <p><b>账户参数:</b> 止盈={r['tp']}% 止损={r['sl']}%{trail_info} 杠杆={r['leverage']}x |
                <b>现货价格:</b> 止盈涨幅={spot_tp:.2f}% 止损跌幅={spot_sl:.2f}% |
                <b>统计:</b> 交易={r['total']} 止盈={r['tp_wins']} 止损={r['sl_losses']}
-               移动出场={r.get('trail_exits', 0)} 超时={r['timeouts']} |
+               移动止盈={r.get('trail_tp_exits', 0)} 移动止损={r.get('trail_sl_exits', 0)} 超时={r['timeouts']} |
                <b>胜率={r['win_rate']:.1f}%</b> <b>EV={r['ev']:.0f}%</b></p>
             <div class="trade-box">
                 <table>
@@ -664,7 +672,8 @@ def generate_html_report(results):
                 entry_time = pd.Timestamp(t['entry_time']).strftime('%Y-%m-%d %H:%M')
                 reason_map = {
                     'TP': '止盈触发',
-                    'SL': '止损触发',
+                    'SL': '初始止损',
+                    'TRAIL_TP': '移动止盈',
                     'TRAIL_SL': '移动止损',
                     'TIMEOUT': '超时平仓'
                 }
