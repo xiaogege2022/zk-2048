@@ -467,6 +467,7 @@ def generate_html_report(results):
                     <th>止损</th>
                     <th>移动出</th>
                     <th>超时</th>
+                    <th>理论胜率</th>
                     <th>胜率</th>
                     <th>EV%</th>
                 </tr>
@@ -478,6 +479,8 @@ def generate_html_report(results):
         tp_name = "移动" if r['tp_type'] == 'trailing' else "固定"
         ev_class = 'ev-high' if r['ev'] > 1000 else 'ev-medium' if r['ev'] > 500 else 'ev-low'
         highlight = 'highlight' if i <= 5 else ''
+        # 理论胜率 = (止盈次数 + 移动止损盈利次数 + 超时盈利次数) / 总交易数
+        theory_wr = r['win_rate']  # 根据历史数据统计的胜率
 
         html += f"""
                 <tr class="{highlight}">
@@ -494,6 +497,7 @@ def generate_html_report(results):
                     <td class="loss">{r['sl_losses']}</td>
                     <td>{r.get('trail_exits', 0)}</td>
                     <td>{r['timeouts']}</td>
+                    <td>{theory_wr:.1f}%</td>
                     <td>{r['win_rate']:.1f}%</td>
                     <td class="{ev_class}">{r['ev']:.0f}%</td>
                 </tr>"""
@@ -519,6 +523,7 @@ def generate_html_report(results):
                     <th>初始止损</th>
                     <th>移动止损出场</th>
                     <th>超时</th>
+                    <th>理论胜率</th>
                     <th>胜率</th>
                     <th>EV%</th>
                 </tr>
@@ -527,6 +532,7 @@ def generate_html_report(results):
     for i, r in enumerate(trail_sorted[:20], 1):
         tf_class = f"badge-{r['timeframe']}"
         ev_class = 'ev-high' if r['ev'] > 1000 else 'ev-medium' if r['ev'] > 500 else 'ev-low'
+        theory_wr = r['win_rate']  # 根据历史数据统计的胜率
 
         html += f"""
                 <tr>
@@ -542,6 +548,7 @@ def generate_html_report(results):
                     <td class="loss">{r['sl_losses']}</td>
                     <td>{r.get('trail_exits', 0)}</td>
                     <td>{r['timeouts']}</td>
+                    <td>{theory_wr:.1f}%</td>
                     <td>{r['win_rate']:.1f}%</td>
                     <td class="{ev_class}">{r['ev']:.0f}%</td>
                 </tr>"""
