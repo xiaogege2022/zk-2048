@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>BTC/USDT AI自动交易系统 - 完整逻辑流程图</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: #e6e6e6;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+
+        h1 {
+            text-align: center;
+            color: #ffd700;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        .subtitle {
+            text-align: center;
+            color: #8b949e;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        /* 流程图样式 */
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        .phase {
+            background: rgba(255,255,255,0.03);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid rgba(255,215,0,0.3);
+            position: relative;
+        }
+
+        .phase-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .phase-number {
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            color: #000;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .phase-title {
+            color: #ffd700;
+            font-size: 1.5em;
+        }
+
+        .phase-desc {
+            color: #8b949e;
+            font-size: 0.9em;
+            margin-left: 65px;
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+
+        /* 步骤卡片 */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-left: 65px;
+        }
+
+        .step {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 4px solid #3fb950;
+        }
+
+        .step.warning { border-left-color: #d29922; }
+        .step.critical { border-left-color: #f85149; }
+        .step.info { border-left-color: #1f6feb; }
+
+        .step-title {
+            color: #fff;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .step-content {
+            color: #b0b0b0;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .step-content ul {
+            margin-left: 20px;
+            margin-top: 5px;
+        }
+
+        .step-content li {
+            margin: 5px 0;
+        }
+
+        .step-content code {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #ffd700;
+            font-family: monospace;
+        }
+
+        /* 箭头连接 */
+        .arrow {
+            text-align: center;
+            font-size: 2em;
+            color: #ffd700;
+            margin: 10px 0;
+        }
+
+        /* 数据维度表格 */
+        .dimension-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            margin-left: 65px;
+            max-width: calc(100% - 65px);
+        }
+
+        .dimension-table th {
+            background: rgba(255,215,0,0.15);
+            color: #ffd700;
+            padding: 12px;
+            text-align: left;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .dimension-table td {
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            vertical-align: top;
+        }
+
+        .dimension-table tr:hover {
+            background: rgba(255,215,0,0.05);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin: 2px;
+        }
+
+        .tag-required { background: #f85149; color: #fff; }
+        .tag-optional { background: #1f6feb; color: #fff; }
+        .tag-api { background: #8957e5; color: #fff; }
+        .tag-calc { background: #3fb950; color: #fff; }
+
+        /* 决策流程图 */
+        .decision-flow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .decision-box {
+            background: rgba(255,215,0,0.1);
+            border: 2px solid #ffd700;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .decision-diamond {
+            background: rgba(31,111,235,0.2);
+            border: 2px solid #1f6feb;
+            padding: 20px;
+            transform: rotate(0deg);
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .branch {
+            display: flex;
+            gap: 50px;
+            justify-content: center;
+        }
+
+        .branch-yes, .branch-no {
+            text-align: center;
+        }
+
+        .branch-label {
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .branch-yes .branch-label { background: #3fb950; }
+        .branch-no .branch-label { background: #f85149; }
+
+        /* 公式框 */
+        .formula-box {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid #ffd700;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'Consolas', monospace;
+        }
+
+        .formula-title {
+            color: #ffd700;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .formula {
+            color: #3fb950;
+            font-size: 1.1em;
+            margin: 10px 0;
+        }
+
+        /* 参数表格 */
+        .param-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .param-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .param-name {
+            color: #8b949e;
+            font-size: 0.9em;
+        }
+
+        .param-value {
+            color: #ffd700;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .param-range {
+            color: #3fb950;
+            font-size: 0.8em;
+        }
+
+        /* 警告框 */
+        .warning-box {
+            background: rgba(210,153,34,0.15);
+            border: 1px solid #d29922;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .warning-box h4 {
+            color: #d29922;
+            margin-bottom: 10px;
+        }
+
+        /* 成功框 */
+        .success-box {
+            background: rgba(63,185,80,0.15);
+            border: 1px solid #3fb950;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .success-box h4 {
+            color: #3fb950;
+            margin-bottom: 10px;
+        }
+
+        /* 代码块 */
+        .code-block {
+            background: #0d1117;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9em;
+            color: #c9d1d9;
+        }
+
+        /* 目录 */
+        .toc {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .toc h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+
+        .toc-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+
+        .toc-item {
+            color: #1f6feb;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .toc-item:hover {
+            background: rgba(31,111,235,0.2);
+        }
+
+        /* 输出规范 */
+        .output-spec {
+            background: rgba(139,69,255,0.1);
+            border: 1px solid #8b45ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .output-spec h4 {
+            color: #8b45ff;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BTC/USDT AI自动交易系统</h1>
+        <p class="subtitle">完整逻辑流程图 | 版本 1.0 | 目标收益率: 10,000%+</p>
+
+        <!-- 目录 -->
+        <div class="toc">
+            <h3>流程目录</h3>
+            <div class="toc-list">
+                <div class="toc-item">Phase 1: 数据采集模块</div>
+                <div class="toc-item">Phase 2: 数据分析维度 (9大维度)</div>
+                <div class="toc-item">Phase 3: 策略组合与EV计算</div>
+                <div class="toc-item">Phase 4: 回测验证系统</div>
+                <div class="toc-item">Phase 5: 仓位管理与风控</div>
+                <div class="toc-item">Phase 6: 执行层逻辑</div>
+                <div class="toc-item">Phase 7: Pine Script输出</div>
+            </div>
+        </div>
+
+        <div class="flowchart">
+
+            <!-- ========== Phase 1: 数据采集 ========== -->
+            <div class="phase" id="phase1">
+                <div class="phase-header">
+                    <div class="phase-number">1</div>
+                    <div class="phase-title">数据采集模块</div>
+                </div>
+                <p class="phase-desc">从Binance API获取历史K线数据，需遵守API限制规则</p>
+
+                <div class="steps">
+                    <div class="step info">
+                        <div class="step-title">📊 K线数据源</div>
+                        <div class="step-content">
+                            <ul>
+                                <li><strong>交易对:</strong> <code>BTCUSDT</code> 永续合约</li>
+                                <li><strong>时间范围:</strong> 2017年1月1日 ~ 至今</li>
+                                <li><strong>API端点:</strong> <code>api.binance.com/fapi/v1/klines</code></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">⏰ K线周期要求</div>
+                        <div class="step-content">
+                            <ul>
+                                <li><code>1m</code> - 1分钟 (用于精确入场)</li>
+                                <li><code>5m</code> - 5分钟</li>
+                                <li><code>15m</code> - 15分钟</li>
+                                <li><code>1h</code> - 1小时</li>
+                                <li><code>4h</code> - 4小时</li>
+                                <li><code>1d</code> - 日线</li>
+                                <li><code>1w</code> - 周线</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step warning">
+                        <div class="step-title">⚠️ API限制规则</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>请求频率: <code>≤1200次/分钟</code></li>
+                                <li>单次返回: <code>≤1500根K线</code></li>
+                                <li>权重限制: <code>每次请求消耗1-5权重</code></li>
+                                <li><strong>解决方案:</strong> 分批请求 + 延时等待</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step info">
+                        <div class="step-title">📈 其他数据源</div>
+                        <div class="step-content">
+                            <ul>
+                                <li><strong>恐惧贪婪指数:</strong> <code>alternative.me/crypto/fear-and-greed-index/</code></li>
+                                <li><strong>资金费率:</strong> <code>/fapi/v1/fundingRate</code></li>
+                                <li><strong>OI持仓量:</strong> <code>/fapi/v1/openInterest</code></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="output-spec">
+                    <h4>Phase 1 输出文件</h4>
+                    <ul>
+                        <li><code>BTCUSDT_1m.csv</code> - 1分钟K线数据</li>
+                        <li><code>BTCUSDT_5m.csv</code> - 5分钟K线数据</li>
+                        <li><code>BTCUSDT_15m.csv</code> - 15分钟K线数据</li>
+                        <li><code>BTCUSDT_1h.csv</code> - 1小时K线数据</li>
+                        <li><code>BTCUSDT_4h.csv</code> - 4小时K线数据</li>
+                        <li><code>BTCUSDT_1d.csv</code> - 日线数据</li>
+                        <li><code>BTCUSDT_1w.csv</code> - 周线数据</li>
+                        <li><code>fear_greed_index.csv</code> - 恐惧贪婪指数</li>
+                        <li><code>funding_rate.csv</code> - 资金费率</li>
+                        <li><code>open_interest.csv</code> - OI持仓量</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="arrow">▼</div>
+
+            <!-- ========== Phase 2: 数据分析维度 ========== -->
+            <div class="phase" id="phase2">
+                <div class="phase-header">
+                    <div class="phase-number">2</div>
+                    <div class="phase-title">数据分析维度 (9大维度)</div>
+                </div>
+                <p class="phase-desc">对每个维度单独分析，计算该维度的胜率和触发频次</p>
+
+                <table class="dimension-table">
+                    <tr>
+                        <th style="width:80px;">编号</th>
+                        <th style="width:150px;">维度名称</th>
+                        <th>具体分析内容</th>
+                        <th style="width:120px;">数据来源</th>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-required">2.1</span></td>
+                        <td><strong>K线形态</strong></td>
+                        <td>
+                            <ul>
+                                <li>暴跌后横盘震荡 → 统计震荡周数 → 后续走势概率</li>
+                                <li>震荡后突破上涨 → 上涨幅度统计</li>
+                                <li>高位横盘 → 继续突破 or 见顶下跌的概率</li>
+                                <li>统计: 上涨时间/幅度、震荡时间/幅度、下跌时间/幅度</li>
+                            </ul>
+                            <div class="formula-box">
+                                <div class="formula-title">输出格式示例:</div>
+                                <div class="formula">周线震荡N周后: 上涨概率X%, 平均涨幅Y%, 样本数Z次</div>
+                            </div>
+                        </td>
+                        <td><span class="tag tag-calc">K线计算</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-required">2.2</span></td>
+                        <td><strong>多周期联动</strong></td>
+                        <td>
+                            <ul>
+                                <li>分析周期: <code>5m, 15m, 1h, 4h, 1d, 1w</code></li>
+                                <li>大周期确定趋势，小周期确定入场点</li>
+                                <li>周线看方向，日线看结构，4h看入场</li>
+                            </ul>
+                        </td>
+                        <td><span class="tag tag-calc">K线计算</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-required">2.3</span></td>
+                        <td><strong>恐惧贪婪指数</strong></td>
+                        <td>
+                            <ul>
+                                <li><strong>极度恐惧 (0-25):</strong> 抄底信号，统计后续涨幅</li>
+                                <li><strong>恐惧 (26-45):</strong> 观望区域</li>
+                                <li><strong>中性 (46-55):</strong> 无明显信号</li>
+                                <li><strong>贪婪 (56-75):</strong> 减仓信号</li>
+                                <li><strong>极度贪婪 (76-100):</strong> 做空信号，统计后续跌幅</li>
+                            </ul>
+                            <div class="formula-box">
+                                <div class="formula-title">关键规则:</div>
+                                <div class="formula">恐惧指数 ≤ 10 → 极端底部，抄底胜率统计</div>
+                                <div class="formula">贪婪指数 ≥ 90 → 极端顶部，做空胜率统计</div>
+                            </div>
+                        </td>
+                        <td><span class="tag tag-api">外部API</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-required">2.4</span></td>
+                        <td><strong>插针数据</strong></td>
+                        <td>
+                            <ul>
+                                <li><strong>下插针(金针探底):</strong> 下影线 > 实体×N倍 → 统计反弹幅度</li>
+                                <li><strong>上插针(流星线):</strong> 上影线 > 实体×N倍 → 统计下跌幅度</li>
+                                <li>统计不同周期的插针: 5m, 15m, 1h, 4h, 1d</li>
+                                <li>插针振幅阈值: 根据周期设定 (如1h插针振幅>3%)</li>
+                            </ul>
+                            <div class="formula-box">
+                                <div class="formula-title">插针定义:</div>
+                                <div class="formula">下插针: (close - low) / (high - low) > 0.7 且 振幅 > X%</div>
+                                <div class="formula">上插针: (high - close) / (high - low) > 0.7 且 振幅 > X%</div>
+                            </div>
+                        </td>
+                        <td><span class="tag tag-calc">K线计算</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-required">2.5</span></td>
+                        <td><strong>成交量分析</strong></td>
+                        <td>
+                            <ul>
+                                <li><strong>放量上涨:</strong> 成交量 > MA(20)×2 且 涨幅>0 → 趋势延续</li>
+                                <li><strong>缩量下跌:</strong> 成交量 < MA(20)×0.5 且 跌幅>0 → 可能反转</li>
+                                <li><strong>放量下跌:</strong> 恐慌抛售，可能继续下跌</li>
+                                <li><strong>天量见顶:</strong> 成交量创新高后价格下跌</li>
+                            </ul>
+                            <div class="formula-box">
+                                <div class="formula-title">成交量比率:</div>
+                                <div class="formula">Vol_Ratio = 当前成交量 / MA(成交量, 20)</div>
+                            </div>
+                        </td>
+                        <td><span class="tag tag-calc">K线计算</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-required">2.6</span></td>
+                        <td><strong>涨跌幅统计</strong></td>
+                        <td>
+                            <ul>
+                                <li>日涨幅 > 10% 后: 次日涨跌概率</li>
+                                <li>日跌幅 > 10% 后: 次日涨跌概率</li>
+                                <li>连续N日上涨后: 继续上涨概率</li>
+                                <li>连续N日下跌后: 反弹概率</li>
+                            </ul>
+                        </td>
+                        <td><span class="tag tag-calc">K线计算</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-required">2.7</span></td>
+                        <td><strong>资金费率</strong></td>
+                        <td>
+                            <ul>
+                                <li><strong>正费率 (>0.1%):</strong> 多头付费，可能高位</li>
+                                <li><strong>负费率 (<-0.1%):</strong> 空头付费，可能低位</li>
+                                <li><strong>极端费率 (>0.3% 或 <-0.3%):</strong> 反转信号</li>
+                            </ul>
+                            <div class="formula-box">
+                                <div class="formula-title">规则:</div>
+                                <div class="formula">资金费率 < -0.1% → 短期超跌，统计反弹胜率</div>
+                                <div class="formula">资金费率 > +0.3% → 短期过热，统计回调胜率</div>
+                            </div>
+                        </td>
+                        <td><span class="tag tag-api">Binance API</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-required">2.8</span></td>
+                        <td><strong>OI持仓量</strong></td>
+                        <td>
+                            <ul>
+                                <li><strong>OI持续上升 + 价格上涨:</strong> 牛市确认</li>
+                                <li><strong>OI持续下降 + 价格下跌:</strong> 熊市确认</li>
+                                <li><strong>OI急剧下降:</strong> 大规模爆仓，可能反转</li>
+                                <li><strong>OI急剧上升 + 价格横盘:</strong> 大户建仓</li>
+                            </ul>
+                            <div class="formula-box">
+                                <div class="formula-title">计算:</div>
+                                <div class="formula">OI变化率 = (当前OI - 前N日OI) / 前N日OI × 100%</div>
+                            </div>
+                        </td>
+                        <td><span class="tag tag-api">Binance API</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-required">2.9</span></td>
+                        <td><strong>技术指标</strong></td>
+                        <td>
+                            <ul>
+                                <li><strong>EMA金叉:</strong> EMA7 上穿 EMA25 → 做多信号</li>
+                                <li><strong>EMA死叉:</strong> EMA7 下穿 EMA25 → 做空信号</li>
+                                <li><strong>MACD金叉:</strong> DIF 上穿 DEA → 做多信号</li>
+                                <li><strong>MACD死叉:</strong> DIF 下穿 DEA → 做空信号</li>
+                                <li><strong>RSI超卖:</strong> RSI < 30 → 超卖</li>
+                                <li><strong>RSI超买:</strong> RSI > 70 → 超买</li>
+                                <li><strong>布林带:</strong> 价格触及下轨 → 可能反弹</li>
+                            </ul>
+                            <div class="formula-box">
+                                <div class="formula-title">指标参数:</div>
+                                <div class="formula">EMA: 7, 25, 50, 99, 200</div>
+                                <div class="formula">MACD: (12, 26, 9)</div>
+                                <div class="formula">RSI: 14</div>
+                                <div class="formula">布林带: (20, 2)</div>
+                            </div>
+                        </td>
+                        <td><span class="tag tag-calc">K线计算</span></td>
+                    </tr>
+                </table>
+
+                <div class="output-spec">
+                    <h4>Phase 2 输出要求</h4>
+                    <p>每个维度必须输出:</p>
+                    <ul>
+                        <li><strong>单维度胜率:</strong> 该信号触发后N根K线内上涨/下跌的概率</li>
+                        <li><strong>触发频次:</strong> 历史上该信号共触发多少次</li>
+                        <li><strong>平均盈亏:</strong> 该信号触发后的平均涨跌幅</li>
+                        <li><strong>最大回撤:</strong> 该信号触发后的最大不利波动</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="arrow">▼</div>
+
+            <!-- ========== Phase 3: 策略组合 ========== -->
+            <div class="phase" id="phase3">
+                <div class="phase-header">
+                    <div class="phase-number">3</div>
+                    <div class="phase-title">策略组合与EV计算</div>
+                </div>
+                <p class="phase-desc">遍历所有维度组合，计算每个组合的期望值(EV)</p>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-title">🔢 组合生成规则</div>
+                        <div class="step-content">
+                            <ul>
+                                <li><strong>单维度:</strong> 2.1, 2.2, 2.3 ... 2.9 (9种)</li>
+                                <li><strong>双维度:</strong> 2.1+2.2, 2.1+2.3, ... (C(9,2)=36种)</li>
+                                <li><strong>三维度:</strong> 2.1+2.2+2.3, ... (C(9,3)=84种)</li>
+                                <li><strong>四维度:</strong> ... (C(9,4)=126种)</li>
+                                <li><strong>更多组合:</strong> 直到全部9维度组合</li>
+                            </ul>
+                            <div class="formula-box">
+                                <div class="formula-title">总组合数:</div>
+                                <div class="formula">Σ C(9,k) = 2^9 - 1 = 511 种组合</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step critical">
+                        <div class="step-title">📐 EV计算公式</div>
+                        <div class="step-content">
+                            <div class="formula-box">
+                                <div class="formula-title">期望值 (Expected Value):</div>
+                                <div class="formula">EV = (胜率 × 平均盈利%) - ((1-胜率) × 平均亏损%)</div>
+                                <div class="formula-title" style="margin-top:15px;">考虑杠杆后:</div>
+                                <div class="formula">实际EV = EV × 杠杆倍数</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step warning">
+                        <div class="step-title">⚠️ 筛选条件</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>胜率 ≥ <strong>70%</strong></li>
+                                <li>触发频次 ≥ <strong>10次</strong> (统计显著性)</li>
+                                <li>EV > <strong>0</strong> (期望盈利)</li>
+                                <li>盈亏比 ≥ <strong>2:1</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step info">
+                        <div class="step-title">📊 排序与筛选</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>按EV从高到低排序</li>
+                                <li>筛选胜率≥70%的策略</li>
+                                <li>合并重复/矛盾的策略</li>
+                                <li>输出Top 20最优策略</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="output-spec">
+                    <h4>Phase 3 输出报告格式</h4>
+                    <div class="code-block">
+策略总数: 511
+符合条件策略数: XX
+
+| 排名 | 策略组合 | 胜率 | 触发次数 | 平均盈利 | 平均亏损 | EV | 盈亏比 |
+|------|----------|------|----------|----------|----------|-----|--------|
+| 1    | 2.3+2.4+2.7 | 85% | 42次 | +15% | -5% | 10.75% | 3:1 |
+| 2    | 2.1+2.9 | 78% | 156次 | +12% | -6% | 8.04% | 2:1 |
+| ...  | ...      | ...  | ...      | ...      | ...      | ... | ...    |
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">▼</div>
+
+            <!-- ========== Phase 4: 回测验证 ========== -->
+            <div class="phase" id="phase4">
+                <div class="phase-header">
+                    <div class="phase-number">4</div>
+                    <div class="phase-title">回测验证系统</div>
+                </div>
+                <p class="phase-desc">使用历史数据验证策略，计算真实收益率</p>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-title">📅 回测时间范围</div>
+                        <div class="step-content">
+                            <ul>
+                                <li><strong>训练集:</strong> 2017-01-01 ~ 2022-12-31</li>
+                                <li><strong>验证集:</strong> 2023-01-01 ~ 2024-06-30</li>
+                                <li><strong>测试集:</strong> 2024-07-01 ~ 至今</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step critical">
+                        <div class="step-title">💰 仓位与杠杆规则</div>
+                        <div class="step-content">
+                            <ul>
+                                <li><strong>初始本金:</strong> 10,000 USDT</li>
+                                <li><strong>杠杆范围:</strong> 5x ~ 10x</li>
+                                <li><strong>单笔最大仓位:</strong> 总资金的 50%</li>
+                                <li><strong>凯利公式仓位:</strong></li>
+                            </ul>
+                            <div class="formula-box">
+                                <div class="formula">仓位% = (胜率 × 盈亏比 - (1-胜率)) / 盈亏比</div>
+                                <div class="formula">实际仓位 = min(凯利仓位 × 0.5, 50%)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">📈 复利计算</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>每次交易使用<strong>当前总资金</strong>计算仓位</li>
+                                <li>盈利后: 下次交易本金增加</li>
+                                <li>亏损后: 下次交易本金减少</li>
+                                <li>禁止: 固定金额交易 (不利于复利增长)</li>
+                            </ul>
+                            <div class="warning-box">
+                                <h4>❌ 错误做法</h4>
+                                <p>本金10万U时，还用10000U开仓 → 浪费资金效率</p>
+                            </div>
+                            <div class="success-box">
+                                <h4>✓ 正确做法</h4>
+                                <p>本金10万U时，用50000U开仓 (50%仓位) → 发挥复利效应</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step warning">
+                        <div class="step-title">🎯 收益目标</div>
+                        <div class="step-content">
+                            <ul>
+                                <li><strong>最低要求:</strong> 收益率 ≥ 10,000% (100倍)</li>
+                                <li><strong>期望目标:</strong> 收益率 ≥ 50,000% (500倍)</li>
+                                <li>如果有多个策略达标，全部列出</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="output-spec">
+                    <h4>Phase 4 输出要求</h4>
+                    <ul>
+                        <li>每个策略的回测权益曲线</li>
+                        <li>最大回撤百分比</li>
+                        <li>夏普比率</li>
+                        <li>总交易次数</li>
+                        <li>盈利交易次数 / 亏损交易次数</li>
+                        <li>最终收益率</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="arrow">▼</div>
+
+            <!-- ========== Phase 5: 止盈止损 ========== -->
+            <div class="phase" id="phase5">
+                <div class="phase-header">
+                    <div class="phase-number">5</div>
+                    <div class="phase-title">仓位管理与风控系统</div>
+                </div>
+                <p class="phase-desc">移动止盈止损策略，锁定利润，控制风险</p>
+
+                <div class="steps">
+                    <div class="step critical">
+                        <div class="step-title">🛑 移动止损规则 (Trailing Stop Loss)</div>
+                        <div class="step-content">
+                            <div class="formula-box">
+                                <div class="formula-title">核心逻辑:</div>
+                                <div class="formula">止损价 = 最高价 × (1 - 回撤比例%)</div>
+                                <div class="formula">止损价只能上移，永远不能下移!</div>
+                            </div>
+                            <ul>
+                                <li><strong>初始止损:</strong> 入场价 × (1 - 止损比例%)</li>
+                                <li><strong>回撤比例:</strong> 需要遍历优化 (建议5%-15%)</li>
+                                <li>例: 入场$10000, 回撤10%, 最高涨到$12000</li>
+                                <li>→ 止损价 = $12000 × 0.9 = $10800 (锁定利润)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">🎯 止盈规则</div>
+                        <div class="step-content">
+                            <ul>
+                                <li><strong>固定止盈:</strong> 达到目标盈利%时平仓</li>
+                                <li><strong>分批止盈:</strong></li>
+                                <ul>
+                                    <li>盈利50%时: 平仓30%</li>
+                                    <li>盈利100%时: 平仓30%</li>
+                                    <li>剩余40%: 移动止损跟踪</li>
+                                </ul>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step warning">
+                        <div class="step-title">⚠️ 风控红线</div>
+                        <div class="step-content">
+                            <ul>
+                                <li><strong>单笔最大亏损:</strong> ≤ 总资金的 10%</li>
+                                <li><strong>日最大亏损:</strong> ≤ 总资金的 20%</li>
+                                <li><strong>最大回撤:</strong> ≤ 总资金的 30%</li>
+                                <li>触发红线 → 停止交易24小时</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="param-grid">
+                    <div class="param-card">
+                        <div class="param-name">初始止损</div>
+                        <div class="param-value">-5%~-20%</div>
+                        <div class="param-range">账户百分比(杠杆后)</div>
+                    </div>
+                    <div class="param-card">
+                        <div class="param-name">移动止损回撤</div>
+                        <div class="param-value">5%~15%</div>
+                        <div class="param-range">从最高价回撤</div>
+                    </div>
+                    <div class="param-card">
+                        <div class="param-name">止盈目标</div>
+                        <div class="param-value">50%~300%</div>
+                        <div class="param-range">账户百分比(杠杆后)</div>
+                    </div>
+                    <div class="param-card">
+                        <div class="param-name">杠杆倍数</div>
+                        <div class="param-value">5x~10x</div>
+                        <div class="param-range">根据胜率调整</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">▼</div>
+
+            <!-- ========== Phase 6: 执行逻辑 ========== -->
+            <div class="phase" id="phase6">
+                <div class="phase-header">
+                    <div class="phase-number">6</div>
+                    <div class="phase-title">交易执行逻辑</div>
+                </div>
+                <p class="phase-desc">从信号触发到订单执行的完整流程</p>
+
+                <div class="decision-flow">
+                    <div class="decision-box">
+                        <strong>开始: 新K线收盘</strong>
+                    </div>
+                    <div class="arrow" style="margin:5px 0;">↓</div>
+
+                    <div class="decision-diamond">
+                        策略信号是否触发?<br/>
+                        (检查所有维度条件)
+                    </div>
+                    <div class="branch">
+                        <div class="branch-no">
+                            <div class="branch-label">否</div>
+                            <div>→ 继续监控</div>
+                        </div>
+                        <div class="branch-yes">
+                            <div class="branch-label">是</div>
+                            <div>↓ 进入下一步</div>
+                        </div>
+                    </div>
+
+                    <div class="arrow" style="margin:5px 0;">↓</div>
+                    <div class="decision-diamond">
+                        当前是否有持仓?
+                    </div>
+                    <div class="branch">
+                        <div class="branch-yes">
+                            <div class="branch-label">有仓位</div>
+                            <div>→ 跳过，不加仓</div>
+                        </div>
+                        <div class="branch-no">
+                            <div class="branch-label">无仓位</div>
+                            <div>↓ 准备开仓</div>
+                        </div>
+                    </div>
+
+                    <div class="arrow" style="margin:5px 0;">↓</div>
+                    <div class="decision-box">
+                        <strong>计算仓位大小</strong><br/>
+                        仓位 = 总资金 × 凯利比例 × 安全系数
+                    </div>
+
+                    <div class="arrow" style="margin:5px 0;">↓</div>
+                    <div class="decision-box">
+                        <strong>计算入场价格</strong><br/>
+                        使用下一根K线开盘价
+                    </div>
+
+                    <div class="arrow" style="margin:5px 0;">↓</div>
+                    <div class="decision-box">
+                        <strong>设置止盈止损</strong><br/>
+                        止损价 = 入场价 × (1 - 止损%/杠杆)<br/>
+                        止盈价 = 入场价 × (1 + 止盈%/杠杆)
+                    </div>
+
+                    <div class="arrow" style="margin:5px 0;">↓</div>
+                    <div class="decision-box">
+                        <strong>执行开仓</strong><br/>
+                        市价单/限价单
+                    </div>
+
+                    <div class="arrow" style="margin:5px 0;">↓</div>
+                    <div class="decision-box" style="background:rgba(63,185,80,0.2); border-color:#3fb950;">
+                        <strong>持仓监控循环</strong><br/>
+                        每根K线更新移动止损
+                    </div>
+                </div>
+
+                <div class="steps" style="margin-top:20px;">
+                    <div class="step">
+                        <div class="step-title">🔄 持仓期间逻辑</div>
+                        <div class="step-content">
+                            <div class="code-block">
+每根K线收盘时:
+  1. 获取当前价格
+  2. 如果 当前价格 > 历史最高价:
+       更新最高价
+       新止损价 = 最高价 × (1 - 回撤%)
+       如果 新止损价 > 当前止损价:
+           更新止损价 (上移)
+  3. 如果 当前价格 ≤ 止损价:
+       触发止损，平仓
+  4. 如果 当前价格 ≥ 止盈价:
+       触发止盈，平仓
+  5. 如果 持仓超过N根K线:
+       超时平仓
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step info">
+                        <div class="step-title">📝 交易记录</div>
+                        <div class="step-content">
+                            每笔交易需记录:
+                            <ul>
+                                <li>入场时间、入场价格</li>
+                                <li>出场时间、出场价格</li>
+                                <li>出场原因 (止盈/止损/超时)</li>
+                                <li>仓位大小、杠杆倍数</li>
+                                <li>盈亏金额、盈亏百分比</li>
+                                <li>交易后总资金</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">▼</div>
+
+            <!-- ========== Phase 7: Pine Script ========== -->
+            <div class="phase" id="phase7">
+                <div class="phase-header">
+                    <div class="phase-number">7</div>
+                    <div class="phase-title">Pine Script 输出</div>
+                </div>
+                <p class="phase-desc">将最优策略转换为TradingView可用的Pine Script</p>
+
+                <div class="steps">
+                    <div class="step critical">
+                        <div class="step-title">📋 Pine Script 要求</div>
+                        <div class="step-content">
+                            <ul>
+                                <li><strong>语言:</strong> Pine Script v5 (最新版本)</li>
+                                <li><strong>禁止中文:</strong> 所有注释和变量名用英文</li>
+                                <li><strong>回测时间:</strong> 2020-01-01 ~ 2025-11-20</li>
+                                <li><strong>交易品种:</strong> BTCUSDT.P (Binance永续)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">🔧 必须包含的功能</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>✓ 完整的入场条件判断</li>
+                                <li>✓ 动态仓位计算 (凯利公式)</li>
+                                <li>✓ 移动止盈止损逻辑</li>
+                                <li>✓ 信号可视化 (买卖箭头)</li>
+                                <li>✓ 策略统计面板</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step info">
+                        <div class="step-title">📊 策略设置参数</div>
+                        <div class="step-content">
+                            <div class="code-block">
+//@version=5
+strategy("BTC AI Trading System",
+    overlay=true,
+    initial_capital=10000,
+    default_qty_type=strategy.percent_of_equity,
+    default_qty_value=50,
+    commission_type=strategy.commission.percent,
+    commission_value=0.04,
+    slippage=1,
+    pyramiding=0)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="output-spec">
+                    <h4>Phase 7 最终输出</h4>
+                    <ul>
+                        <li><code>btc_ai_strategy.pine</code> - 完整的Pine Script代码</li>
+                        <li>代码必须可以直接复制到TradingView使用</li>
+                        <li>包含所有策略逻辑和参数</li>
+                        <li>英文注释说明每个部分的作用</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ========== 总结 ========== -->
+            <div class="phase" style="border-color:#3fb950; background:rgba(63,185,80,0.05);">
+                <div class="phase-header">
+                    <div class="phase-number" style="background:linear-gradient(135deg,#3fb950,#2ea043);">✓</div>
+                    <div class="phase-title" style="color:#3fb950;">验收标准</div>
+                </div>
+
+                <div class="steps">
+                    <div class="step" style="border-left-color:#3fb950;">
+                        <div class="step-title">✓ 数据完整性</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>所有周期K线数据下载完成</li>
+                                <li>恐惧贪婪指数、资金费率、OI数据完整</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step" style="border-left-color:#3fb950;">
+                        <div class="step-title">✓ 策略报告</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>测试策略总数: 511种组合</li>
+                                <li>筛选出胜率≥70%的策略列表</li>
+                                <li>每个策略的EV、频次、盈亏比</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step" style="border-left-color:#3fb950;">
+                        <div class="step-title">✓ 回测结果</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>至少1个策略收益率≥10,000%</li>
+                                <li>回测包含移动止盈止损</li>
+                                <li>使用复利模式计算</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step" style="border-left-color:#3fb950;">
+                        <div class="step-title">✓ Pine Script</div>
+                        <div class="step-content">
+                            <ul>
+                                <li>代码语法正确，无错误</li>
+                                <li>可直接在TradingView运行</li>
+                                <li>回测时间: 2020.1.1 - 2025.11.20</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div style="text-align:center; margin-top:40px; color:#8b949e;">
+            <p>BTC/USDT AI自动交易系统逻辑流程图 v1.0</p>
+            <p>生成时间: 2024年12月</p>
+        </div>
+    </div>
+</body>
+</html>
