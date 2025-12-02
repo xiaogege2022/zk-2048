@@ -398,7 +398,7 @@
                         <div class="step-content">
                             <ul>
                                 <li><strong>交易对:</strong> <code>BTCUSDT</code> 永续合约</li>
-                                <li><strong>时间范围:</strong> 2017年1月1日 ~ 至今</li>
+                                <li><strong>时间范围:</strong> 2019年9月8日 ~ 至今 (BTC/USDT永续合约上线日)</li>
                                 <li><strong>API端点:</strong> <code>api.binance.com/fapi/v1/klines</code></li>
                             </ul>
                         </div>
@@ -549,7 +549,7 @@
                         <td>
                             <ul>
                                 <li><strong>放量上涨:</strong> 成交量 > MA(20)×2 且 涨幅>0 → 趋势延续</li>
-                                <li><strong>缩量下跌:</strong> 成交量 < MA(20)×0.5 且 跌幅>0 → 可能反转</li>
+                                <li><strong>缩量下跌:</strong> 成交量 < MA(20)×0.5 且 收盘价<开盘价 → 可能反转</li>
                                 <li><strong>放量下跌:</strong> 恐慌抛售，可能继续下跌</li>
                                 <li><strong>天量见顶:</strong> 成交量创新高后价格下跌</li>
                             </ul>
@@ -913,9 +913,13 @@
                         <div class="step-content">
                             <div class="formula-box">
                                 <div class="formula-title">期望值 (Expected Value):</div>
-                                <div class="formula">EV = (胜率 × 平均盈利%) - ((1-胜率) × 平均亏损%)</div>
-                                <div class="formula-title" style="margin-top:15px;">考虑杠杆后:</div>
-                                <div class="formula">实际EV = EV × 杠杆倍数</div>
+                                <div class="formula">EV = (胜率 × 账户止盈%) - ((1-胜率) × 账户止损%)</div>
+                                <div class="formula-title" style="margin-top:15px;">注意:</div>
+                                <div class="formula" style="color:#d29922;">
+                                    止盈%和止损%必须是账户百分比(已含杠杆)<br/>
+                                    例: 现货涨5%, 10x杠杆 → 账户盈利50%<br/>
+                                    EV = (70% × 50%) - (30% × 20%) = 29%
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1041,9 +1045,36 @@
                     </div>
                 </div>
 
+                <div class="steps" style="margin-top:20px;">
+                    <div class="step info">
+                        <div class="step-title">📊 胜率定义 (重要概念!)</div>
+                        <div class="step-content">
+                            <div class="formula-box">
+                                <div class="formula-title">理论胜率 (Theoretical Win Rate):</div>
+                                <div class="formula">
+                                    = 不设止盈止损，持仓N根K线后，价格 > 入场价 的比例<br/>
+                                    <span style="color:#8b949e;">作用: 反映策略方向判断能力，不受TP/SL参数影响</span>
+                                </div>
+                                <div class="formula-title" style="margin-top:15px;">回测胜率 (Backtest Win Rate):</div>
+                                <div class="formula">
+                                    = 设置止盈止损后，盈利出场的交易比例<br/>
+                                    <span style="color:#8b949e;">作用: 反映策略+参数组合的实际盈利能力</span>
+                                </div>
+                                <div class="formula-title" style="margin-top:15px;">两者区别:</div>
+                                <div class="formula" style="color:#d29922;">
+                                    先跌20%触发止损，后涨回来 → 理论赢，回测输<br/>
+                                    先涨100%止盈，后跌回来 → 理论可能输，回测赢
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="output-spec">
                     <h4>Phase 4 输出要求</h4>
                     <ul>
+                        <li><strong>理论胜率:</strong> 不设止盈止损时的方向正确率</li>
+                        <li><strong>回测胜率:</strong> 设置止盈止损后的实际盈利率</li>
                         <li>每个策略的回测权益曲线</li>
                         <li>最大回撤百分比</li>
                         <li>夏普比率</li>
@@ -1106,6 +1137,24 @@
                                 <li><strong>最大回撤:</strong> ≤ 总资金的 30%</li>
                                 <li>触发红线 → 停止交易24小时</li>
                             </ul>
+                        </div>
+                    </div>
+
+                    <div class="step critical">
+                        <div class="step-title">🚨 止损优先规则 (重要!)</div>
+                        <div class="step-content">
+                            <div class="formula-box">
+                                <div class="formula-title">同一K线同时触及止盈和止损时:</div>
+                                <div class="formula" style="color:#f85149;">
+                                    止损优先! 按止损价计算盈亏
+                                </div>
+                                <div class="formula-title" style="margin-top:10px;">原因:</div>
+                                <div class="formula" style="color:#8b949e;">
+                                    1. K线只显示OHLC，无法确定价格先触及止盈还是止损<br/>
+                                    2. 保守处理，避免高估策略收益<br/>
+                                    3. 实盘中滑点可能导致止损先成交
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1218,17 +1267,21 @@
                         <div class="step-content">
                             <div class="code-block">
 每根K线收盘时:
-  1. 获取当前价格
+  1. 获取当前价格 (最高价、最低价、收盘价)
   2. 如果 当前价格 > 历史最高价:
        更新最高价
        新止损价 = 最高价 × (1 - 回撤%)
        如果 新止损价 > 当前止损价:
            更新止损价 (上移)
-  3. 如果 当前价格 ≤ 止损价:
-       触发止损，平仓
-  4. 如果 当前价格 ≥ 止盈价:
-       触发止盈，平仓
-  5. 如果 持仓超过N根K线:
+  3. 检查是否触发止盈止损:
+       如果 最低价 ≤ 止损价 且 最高价 ≥ 止盈价:
+           【同一K线同时触及止盈止损】→ 止损优先!
+           原因: 无法确定实际触发顺序，保守处理
+       否则如果 最低价 ≤ 止损价:
+           触发止损，平仓
+       否则如果 最高价 ≥ 止盈价:
+           触发止盈，平仓
+  4. 如果 持仓超过N根K线:
        超时平仓
                             </div>
                         </div>
