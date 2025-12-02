@@ -372,6 +372,7 @@
         <div class="toc">
             <h3>流程目录</h3>
             <div class="toc-list">
+                <div class="toc-item">Phase 0: 核心术语定义</div>
                 <div class="toc-item">Phase 1: 数据采集模块</div>
                 <div class="toc-item">Phase 2: 数据分析维度 (9大维度)</div>
                 <div class="toc-item">Phase 3: 策略组合与EV计算</div>
@@ -381,6 +382,112 @@
                 <div class="toc-item">Phase 7: Pine Script输出</div>
             </div>
         </div>
+
+        <!-- ========== Phase 0: 术语定义 ========== -->
+        <div class="phase" id="phase0" style="border-color:#f85149; background:rgba(248,81,73,0.05);">
+            <div class="phase-header">
+                <div class="phase-number" style="background:linear-gradient(135deg,#f85149,#da3633);">0</div>
+                <div class="phase-title" style="color:#f85149;">核心术语定义 (必读!)</div>
+            </div>
+            <p class="phase-desc">所有百分比的基准必须明确，否则会导致严重计算错误</p>
+
+            <table class="dimension-table">
+                <tr>
+                    <th style="width:150px;">术语</th>
+                    <th style="width:120px;">英文</th>
+                    <th>定义</th>
+                    <th style="width:200px;">示例</th>
+                </tr>
+                <tr>
+                    <td><strong style="color:#ffd700;">总资金</strong></td>
+                    <td>Total Capital</td>
+                    <td>账户中的全部资金</td>
+                    <td>账户余额 = <code>10,000 USDT</code></td>
+                </tr>
+                <tr>
+                    <td><strong style="color:#ffd700;">开仓金额</strong></td>
+                    <td>Margin</td>
+                    <td>本次交易投入的保证金 (不含杠杆)</td>
+                    <td>使用 <code>1,000 USDT</code> 开仓</td>
+                </tr>
+                <tr>
+                    <td><strong style="color:#ffd700;">仓位比例</strong></td>
+                    <td>Position Size %</td>
+                    <td>开仓金额 / 总资金 × 100%</td>
+                    <td>1,000 / 10,000 = <code>10%</code></td>
+                </tr>
+                <tr>
+                    <td><strong style="color:#ffd700;">仓位价值</strong></td>
+                    <td>Position Value</td>
+                    <td>开仓金额 × 杠杆倍数</td>
+                    <td>1,000 × 20x = <code>20,000 USDT</code></td>
+                </tr>
+                <tr>
+                    <td><strong style="color:#3fb950;">现货涨跌%</strong></td>
+                    <td>Spot Change %</td>
+                    <td>标的资产价格变化百分比</td>
+                    <td>BTC从$100,000跌到$99,000 = <code>-1%</code></td>
+                </tr>
+                <tr>
+                    <td><strong style="color:#3fb950;">保证金盈亏%</strong></td>
+                    <td>Margin P&L %</td>
+                    <td>= 现货涨跌% × 杠杆<br/><span style="color:#8b949e;">相对于开仓金额的盈亏</span></td>
+                    <td>-1% × 20x = <code>-20%</code><br/>亏损 1,000 × 20% = 200 USDT</td>
+                </tr>
+                <tr>
+                    <td><strong style="color:#3fb950;">总资金盈亏%</strong></td>
+                    <td>Capital P&L %</td>
+                    <td>= 保证金盈亏% × 仓位比例<br/><span style="color:#8b949e;">相对于总资金的盈亏</span></td>
+                    <td>-20% × 10% = <code>-2%</code><br/>亏损 10,000 × 2% = 200 USDT</td>
+                </tr>
+            </table>
+
+            <div class="warning-box" style="margin-left:65px; max-width:calc(100% - 65px);">
+                <h4>⚠️ 关键换算公式</h4>
+                <div class="formula-box" style="margin:10px 0;">
+                    <div class="formula" style="color:#ffd700;">
+                        保证金盈亏% = 现货涨跌% × 杠杆倍数
+                    </div>
+                    <div class="formula" style="color:#3fb950;">
+                        总资金盈亏% = 保证金盈亏% × 仓位比例 = 现货涨跌% × 杠杆 × 仓位比例
+                    </div>
+                </div>
+                <div style="margin-top:15px;">
+                    <strong>示例计算:</strong><br/>
+                    • 总资金: 10,000 USDT<br/>
+                    • 开仓金额: 1,000 USDT (仓位比例 = 10%)<br/>
+                    • 杠杆: 20x<br/>
+                    • 现货跌 1%<br/>
+                    <hr style="border-color:rgba(255,255,255,0.1); margin:10px 0;"/>
+                    • 保证金亏损: 1% × 20 = <strong style="color:#f85149;">20%</strong> (相对于1,000 USDT)<br/>
+                    • 实际亏损金额: 1,000 × 20% = <strong style="color:#f85149;">200 USDT</strong><br/>
+                    • 总资金亏损: 200 / 10,000 = <strong style="color:#f85149;">2%</strong>
+                </div>
+            </div>
+
+            <div class="steps" style="margin-top:20px;">
+                <div class="step critical">
+                    <div class="step-title">🚨 本文档中百分比的默认基准</div>
+                    <div class="step-content">
+                        <ul>
+                            <li><strong>止盈%、止损%:</strong> 默认指<span style="color:#ffd700;">保证金盈亏%</span> (相对于开仓金额)</li>
+                            <li><strong>仓位%:</strong> 默认指<span style="color:#ffd700;">仓位比例</span> (开仓金额/总资金)</li>
+                            <li><strong>回撤%:</strong> 默认指<span style="color:#3fb950;">现货价格回撤%</span></li>
+                            <li><strong>EV中的止盈止损:</strong> 使用<span style="color:#ffd700;">保证金盈亏%</span></li>
+                        </ul>
+                        <div class="formula-box" style="margin-top:15px;">
+                            <div class="formula-title" style="color:#f85149;">易混淆示例:</div>
+                            <div class="formula" style="color:#e6e6e6;">
+                                "止损20%" = 保证金亏损20% = 现货跌 20%/杠杆<br/>
+                                例: 20x杠杆下，"止损20%" = 现货跌1%时触发
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrow">▼</div>
 
         <div class="flowchart">
 
@@ -945,12 +1052,17 @@
                         <div class="step-content">
                             <div class="formula-box">
                                 <div class="formula-title">期望值 (Expected Value):</div>
-                                <div class="formula">EV = (胜率 × 账户止盈%) - ((1-胜率) × 账户止损%)</div>
-                                <div class="formula-title" style="margin-top:15px;">注意:</div>
+                                <div class="formula">EV = (胜率 × 保证金止盈%) - ((1-胜率) × 保证金止损%)</div>
+                                <div class="formula-title" style="margin-top:15px;">术语说明 (参见Phase 0):</div>
                                 <div class="formula" style="color:#d29922;">
-                                    止盈%和止损%必须是账户百分比(已含杠杆)<br/>
-                                    例: 现货涨5%, 10x杠杆 → 账户盈利50%<br/>
-                                    EV = (70% × 50%) - (30% × 20%) = 29%
+                                    保证金止盈% = 现货涨幅% × 杠杆<br/>
+                                    保证金止损% = 现货跌幅% × 杠杆
+                                </div>
+                                <div class="formula-title" style="margin-top:15px;">示例 (10x杠杆, 胜率70%):</div>
+                                <div class="formula" style="color:#e6e6e6;">
+                                    止盈: 现货涨5% → 保证金盈利 = 5% × 10 = 50%<br/>
+                                    止损: 现货跌2% → 保证金亏损 = 2% × 10 = 20%<br/>
+                                    <span style="color:#3fb950;">EV = (70% × 50%) - (30% × 20%) = 35% - 6% = 29%</span>
                                 </div>
                             </div>
                         </div>
@@ -1024,7 +1136,7 @@
                         <div class="step-title">📅 回测时间范围</div>
                         <div class="step-content">
                             <ul>
-                                <li><strong>训练集:</strong> 2017-01-01 ~ 2022-12-31</li>
+                                <li><strong>训练集:</strong> 2019-09-08 ~ 2022-12-31 (BTC/USDT永续上线日起)</li>
                                 <li><strong>验证集:</strong> 2023-01-01 ~ 2024-06-30</li>
                                 <li><strong>测试集:</strong> 2024-07-01 ~ 至今</li>
                             </ul>
@@ -1035,14 +1147,21 @@
                         <div class="step-title">💰 仓位与杠杆规则</div>
                         <div class="step-content">
                             <ul>
-                                <li><strong>初始本金:</strong> 10,000 USDT</li>
+                                <li><strong>初始本金:</strong> 10,000 USDT (总资金)</li>
                                 <li><strong>杠杆范围:</strong> 5x ~ 10x</li>
-                                <li><strong>单笔最大仓位:</strong> 总资金的 50%</li>
-                                <li><strong>凯利公式仓位:</strong></li>
+                                <li><strong>单笔最大仓位比例:</strong> 50% (最多用5,000 USDT开仓)</li>
+                                <li><strong>凯利公式计算仓位比例:</strong></li>
                             </ul>
                             <div class="formula-box">
-                                <div class="formula">仓位% = (胜率 × 盈亏比 - (1-胜率)) / 盈亏比</div>
-                                <div class="formula">实际仓位 = min(凯利仓位 × 0.5, 50%)</div>
+                                <div class="formula-title">仓位比例 = 开仓金额 / 总资金</div>
+                                <div class="formula">凯利仓位比例 = (胜率 × 盈亏比 - (1-胜率)) / 盈亏比</div>
+                                <div class="formula">实际仓位比例 = min(凯利仓位比例 × 0.5, 50%)</div>
+                                <div class="formula-title" style="margin-top:10px;">示例:</div>
+                                <div class="formula" style="color:#8b949e;">
+                                    胜率70%, 盈亏比2.5:1 → 凯利 = (0.7×2.5-0.3)/2.5 = 58%<br/>
+                                    实际仓位比例 = min(58%×0.5, 50%) = 29%<br/>
+                                    开仓金额 = 10,000 × 29% = 2,900 USDT
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1134,16 +1253,22 @@
                         <div class="step-title">🛑 移动止损规则 (Trailing Stop Loss)</div>
                         <div class="step-content">
                             <div class="formula-box">
-                                <div class="formula-title">核心逻辑:</div>
-                                <div class="formula">止损价 = 最高价 × (1 - 回撤比例%)</div>
+                                <div class="formula-title">核心逻辑 (基于现货价格):</div>
+                                <div class="formula">止损价 = 最高价 × (1 - 现货回撤%)</div>
                                 <div class="formula">止损价只能上移，永远不能下移!</div>
                             </div>
                             <ul>
-                                <li><strong>初始止损:</strong> 入场价 × (1 - 止损比例%)</li>
-                                <li><strong>回撤比例:</strong> 需要遍历优化 (建议5%-15%)</li>
-                                <li>例: 入场$10000, 回撤10%, 最高涨到$12000</li>
-                                <li>→ 止损价 = $12000 × 0.9 = $10800 (锁定利润)</li>
+                                <li><strong>初始止损价:</strong> 入场价 × (1 - 现货止损%)</li>
+                                <li><strong>现货回撤%:</strong> 建议5%-15% (需遍历优化)</li>
                             </ul>
+                            <div class="formula-box" style="margin-top:15px;">
+                                <div class="formula-title">示例 (10x杠杆):</div>
+                                <div class="formula" style="color:#e6e6e6;">
+                                    入场价 $100,000, 现货回撤设10%, 最高涨到 $120,000<br/>
+                                    → 止损价 = $120,000 × 0.9 = <span style="color:#3fb950;">$108,000</span><br/>
+                                    → 若触发止损: 现货盈利8%, 保证金盈利 = 8% × 10 = <span style="color:#3fb950;">80%</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1151,24 +1276,44 @@
                         <div class="step-title">🎯 止盈规则</div>
                         <div class="step-content">
                             <ul>
-                                <li><strong>固定止盈:</strong> 达到目标盈利%时平仓</li>
-                                <li><strong>分批止盈:</strong></li>
+                                <li><strong>固定止盈:</strong> 保证金盈利达到目标%时平仓</li>
+                                <li><strong>分批止盈 (保证金盈利%):</strong></li>
                                 <ul>
-                                    <li>盈利50%时: 平仓30%</li>
-                                    <li>盈利100%时: 平仓30%</li>
-                                    <li>剩余40%: 移动止损跟踪</li>
+                                    <li>盈利50%时: 平仓30%仓位</li>
+                                    <li>盈利100%时: 平仓30%仓位</li>
+                                    <li>剩余40%仓位: 移动止损跟踪</li>
                                 </ul>
                             </ul>
+                            <div class="formula-box" style="margin-top:10px;">
+                                <div class="formula-title">示例 (10x杠杆):</div>
+                                <div class="formula" style="color:#8b949e;">
+                                    保证金盈利50% = 现货涨5%<br/>
+                                    保证金盈利100% = 现货涨10%
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="step warning">
                         <div class="step-title">⚠️ 风控红线</div>
                         <div class="step-content">
+                            <div class="formula-box" style="margin-bottom:15px;">
+                                <div class="formula-title">单笔风控 (每笔交易):</div>
+                                <div class="formula" style="color:#e6e6e6;">
+                                    • <strong>止损设置:</strong> 保证金亏损 ≤ <span style="color:#ffd700;">20%</span><br/>
+                                    <span style="color:#8b949e;">　即: 开仓金额最多亏损20%</span>
+                                </div>
+                                <div class="formula" style="color:#e6e6e6; margin-top:10px;">
+                                    • <strong>仓位控制:</strong> 仓位比例 ≤ <span style="color:#ffd700;">50%</span><br/>
+                                    <span style="color:#8b949e;">　即: 单笔最多用总资金的50%开仓</span>
+                                </div>
+                                <div class="formula" style="color:#f85149; margin-top:10px;">
+                                    → 单笔最大总资金亏损 = 20% × 50% = <strong>10%</strong>
+                                </div>
+                            </div>
                             <ul>
-                                <li><strong>单笔最大亏损:</strong> ≤ 总资金的 10%</li>
-                                <li><strong>日最大亏损:</strong> ≤ 总资金的 20%</li>
-                                <li><strong>最大回撤:</strong> ≤ 总资金的 30%</li>
+                                <li><strong>日最大亏损:</strong> ≤ 总资金的 20% (当日累计)</li>
+                                <li><strong>最大回撤:</strong> ≤ 总资金的 30% (历史最高点算起)</li>
                                 <li>触发红线 → 停止交易24小时</li>
                             </ul>
                         </div>
@@ -1197,22 +1342,22 @@
                     <div class="param-card">
                         <div class="param-name">初始止损</div>
                         <div class="param-value">-5%~-20%</div>
-                        <div class="param-range">账户百分比(杠杆后)</div>
+                        <div class="param-range">保证金盈亏%<br/><span style="color:#8b949e;font-size:0.8em;">10x杠杆: 现货跌0.5%~2%</span></div>
                     </div>
                     <div class="param-card">
                         <div class="param-name">移动止损回撤</div>
                         <div class="param-value">5%~15%</div>
-                        <div class="param-range">从最高价回撤</div>
+                        <div class="param-range">现货价格回撤%<br/><span style="color:#8b949e;font-size:0.8em;">从最高价算起</span></div>
                     </div>
                     <div class="param-card">
                         <div class="param-name">止盈目标</div>
                         <div class="param-value">50%~300%</div>
-                        <div class="param-range">账户百分比(杠杆后)</div>
+                        <div class="param-range">保证金盈亏%<br/><span style="color:#8b949e;font-size:0.8em;">10x杠杆: 现货涨5%~30%</span></div>
                     </div>
                     <div class="param-card">
-                        <div class="param-name">杠杆倍数</div>
-                        <div class="param-value">5x~10x</div>
-                        <div class="param-range">根据胜率调整</div>
+                        <div class="param-name">仓位比例</div>
+                        <div class="param-value">10%~50%</div>
+                        <div class="param-range">开仓金额/总资金<br/><span style="color:#8b949e;font-size:0.8em;">凯利公式计算</span></div>
                     </div>
                 </div>
             </div>
@@ -1265,8 +1410,9 @@
 
                     <div class="arrow" style="margin:5px 0;">↓</div>
                     <div class="decision-box">
-                        <strong>计算仓位大小</strong><br/>
-                        仓位 = 总资金 × 凯利比例 × 安全系数
+                        <strong>计算开仓金额</strong><br/>
+                        开仓金额 = 总资金 × 仓位比例<br/>
+                        <span style="font-size:0.8em;color:#8b949e;">仓位比例由凯利公式计算</span>
                     </div>
 
                     <div class="arrow" style="margin:5px 0;">↓</div>
@@ -1277,9 +1423,12 @@
 
                     <div class="arrow" style="margin:5px 0;">↓</div>
                     <div class="decision-box">
-                        <strong>设置止盈止损</strong><br/>
-                        止损价 = 入场价 × (1 - 止损%/杠杆)<br/>
-                        止盈价 = 入场价 × (1 + 止盈%/杠杆)
+                        <strong>设置止盈止损价格</strong><br/>
+                        <span style="font-size:0.85em;">
+                        止损价 = 入场价 × (1 - 保证金止损%/杠杆)<br/>
+                        止盈价 = 入场价 × (1 + 保证金止盈%/杠杆)<br/>
+                        <span style="color:#8b949e;">例: 保证金止损20%, 10x杠杆 → 现货跌2%触发</span>
+                        </span>
                     </div>
 
                     <div class="arrow" style="margin:5px 0;">↓</div>
@@ -1302,15 +1451,15 @@
                             <div class="code-block">
 每根K线收盘时:
   1. 获取当前价格 (最高价、最低价、收盘价)
-  2. 如果 当前价格 > 历史最高价:
-       更新最高价
-       新止损价 = 最高价 × (1 - 回撤%)
+  2. 如果 当前最高价 > 历史最高价:
+       更新历史最高价
+       新止损价 = 历史最高价 × (1 - 现货回撤%)  <span style="color:#8b949e;">// 现货价格回撤</span>
        如果 新止损价 > 当前止损价:
-           更新止损价 (上移)
+           更新止损价 (只能上移，锁定利润)
   3. 检查是否触发止盈止损:
        如果 最低价 ≤ 止损价 且 最高价 ≥ 止盈价:
-           【同一K线同时触及止盈止损】→ 止损优先!
-           原因: 无法确定实际触发顺序，保守处理
+           【同一K线同时触及】→ 止损优先!
+           原因: K线无法确定先后顺序，保守处理
        否则如果 最低价 ≤ 止损价:
            触发止损，平仓
        否则如果 最高价 ≥ 止盈价:
