@@ -72,6 +72,10 @@ def backtest_fixed(df, signal_array, tp_pct, sl_pct, leverage, hold_bars=100):
                 exit_time = timestamps[j]
                 exit_reason = 'TIMEOUT'
 
+            # 计算超时价格(不设止盈止损时的出场价)，用于理论胜率计算
+            timeout_idx = min(i + hold_bars, n - 1)
+            timeout_price = close_arr[timeout_idx]
+
             spot_pnl_pct = (exit_price - entry_price) / entry_price * 100  # 现货盈亏%
             account_pnl_pct = spot_pnl_pct * leverage  # 账户盈亏% = 现货盈亏% × 杠杆
             trades.append({
@@ -80,6 +84,7 @@ def backtest_fixed(df, signal_array, tp_pct, sl_pct, leverage, hold_bars=100):
                 'tp_price': tp_price,
                 'sl_price': sl_price,
                 'highest_price': highest_price,
+                'timeout_price': timeout_price,  # 不设止盈止损时的出场价
                 'exit_time': exit_time,
                 'exit_price': exit_price,
                 'exit_reason': exit_reason,
@@ -161,6 +166,10 @@ def backtest_trailing(df, signal_array, tp_pct, sl_pct, trail_pct, leverage, hol
                 exit_time = timestamps[j]
                 exit_reason = 'TIMEOUT'
 
+            # 计算超时价格(不设止盈止损时的出场价)，用于理论胜率计算
+            timeout_idx = min(i + hold_bars, n - 1)
+            timeout_price = close_arr[timeout_idx]
+
             spot_pnl_pct = (exit_price - entry_price) / entry_price * 100  # 现货盈亏%
             account_pnl_pct = spot_pnl_pct * leverage  # 账户盈亏% = 现货盈亏% × 杠杆
             trades.append({
@@ -170,6 +179,7 @@ def backtest_trailing(df, signal_array, tp_pct, sl_pct, trail_pct, leverage, hol
                 'initial_sl': initial_sl_price,
                 'final_sl': current_sl_price,
                 'highest_price': highest_price,
+                'timeout_price': timeout_price,  # 不设止盈止损时的出场价
                 'exit_time': exit_time,
                 'exit_price': exit_price,
                 'exit_reason': exit_reason,
@@ -199,8 +209,9 @@ def calculate_stats(trades):
     wins = sum(1 for t in trades if t['pnl_pct'] > 0)
     win_rate = wins / total * 100
 
-    # 理论胜率: 持仓期间最高价 > 入场价的交易比例 (不含止盈止损的胜率)
-    theory_wins = sum(1 for t in trades if t.get('highest_price', t['entry_price']) > t['entry_price'])
+    # 理论胜率: 不设止盈止损，持仓到期时价格 > 入场价的比例
+    # 这反映了策略本身的胜率，不受止盈止损参数影响
+    theory_wins = sum(1 for t in trades if t.get('timeout_price', t['exit_price']) > t['entry_price'])
     theory_win_rate = theory_wins / total * 100
 
     total_pnl = sum(t['pnl_pct'] for t in trades)
@@ -512,8 +523,8 @@ def generate_html_report(results):
                     <th>止损</th>
                     <th>移动出</th>
                     <th>超时</th>
-                    <th>理论胜率</th>
-                    <th>胜率</th>
+                    <th>理论胜率<br/>(无止盈止损)</th>
+                    <th>回测胜率<br/>(实际)</th>
                     <th>EV%</th>
                 </tr>
 """
@@ -525,7 +536,7 @@ def generate_html_report(results):
         # EV现在是账户百分比，不再乘杠杆，所以阈值调低
         ev_class = 'ev-high' if r['ev'] > 50 else 'ev-medium' if r['ev'] > 20 else 'ev-low'
         highlight = 'highlight' if i <= 5 else ''
-        # 理论胜率: 持仓期间价格曾经上涨过的比例 (不含止盈止损)
+        # 理论胜率: 不设止盈止损，持仓到期时价格 > 入场价的比例
         theory_wr = r.get('theory_win_rate', r['win_rate'])
 
         html += f"""
@@ -570,8 +581,8 @@ def generate_html_report(results):
                     <th>初始止损</th>
                     <th>移动止损出场</th>
                     <th>超时</th>
-                    <th>理论胜率</th>
-                    <th>胜率</th>
+                    <th>理论胜率<br/>(无止盈止损)</th>
+                    <th>回测胜率<br/>(实际)</th>
                     <th>EV%</th>
                 </tr>
 """
@@ -579,7 +590,7 @@ def generate_html_report(results):
     for i, r in enumerate(trail_sorted[:20], 1):
         tf_class = f"badge-{r['timeframe']}"
         ev_class = 'ev-high' if r['ev'] > 50 else 'ev-medium' if r['ev'] > 20 else 'ev-low'
-        theory_wr = r.get('theory_win_rate', r['win_rate'])  # 理论胜率
+        theory_wr = r.get('theory_win_rate', r['win_rate'])  # 理论胜率: 不设止盈止损时的胜率
 
         html += f"""
                 <tr>
