@@ -16,8 +16,18 @@ warnings.filterwarnings('ignore')
 from comprehensive_backtest import load_data, add_all_indicators, get_combo_signals, STRATEGY_DESCRIPTIONS
 
 
-def backtest_fixed(df, signal_array, tp_pct, sl_pct, hold_bars=100):
-    """固定止盈止损回测"""
+def backtest_fixed(df, signal_array, tp_pct, sl_pct, leverage, hold_bars=100):
+    """固定止盈止损回测
+
+    参数说明:
+    - tp_pct: 账户止盈百分比 (杠杆后), 例如 100 表示账户盈利100%时止盈
+    - sl_pct: 账户止损百分比 (杠杆后), 例如 20 表示账户亏损20%时止损
+    - leverage: 杠杆倍数
+
+    现货价格计算:
+    - 现货止盈涨幅 = 账户止盈% / 杠杆
+    - 现货止损跌幅 = 账户止损% / 杠杆
+    """
     trades = []
     close_arr = df['close'].values
     high_arr = df['high'].values
@@ -28,12 +38,16 @@ def backtest_fixed(df, signal_array, tp_pct, sl_pct, hold_bars=100):
     warmup = min(250, n // 4)
     i = warmup
 
+    # 根据杠杆反算现货价格变化
+    spot_tp_pct = tp_pct / leverage  # 现货止盈百分比
+    spot_sl_pct = sl_pct / leverage  # 现货止损百分比
+
     while i < n - hold_bars:
         if signal_array[i]:
             entry_price = close_arr[i]
             entry_time = timestamps[i]
-            tp_price = entry_price * (1 + tp_pct / 100)
-            sl_price = entry_price * (1 - sl_pct / 100)
+            tp_price = entry_price * (1 + spot_tp_pct / 100)
+            sl_price = entry_price * (1 - spot_sl_pct / 100)
             highest_price = entry_price  # 追踪最高价
 
             exit_price, exit_time, exit_reason = None, None, None
@@ -58,17 +72,19 @@ def backtest_fixed(df, signal_array, tp_pct, sl_pct, hold_bars=100):
                 exit_time = timestamps[j]
                 exit_reason = 'TIMEOUT'
 
-            pnl_pct = (exit_price - entry_price) / entry_price * 100
+            spot_pnl_pct = (exit_price - entry_price) / entry_price * 100  # 现货盈亏%
+            account_pnl_pct = spot_pnl_pct * leverage  # 账户盈亏% = 现货盈亏% × 杠杆
             trades.append({
                 'entry_time': entry_time,
                 'entry_price': entry_price,
                 'tp_price': tp_price,
                 'sl_price': sl_price,
-                'highest_price': highest_price,  # 添加最高价
+                'highest_price': highest_price,
                 'exit_time': exit_time,
                 'exit_price': exit_price,
                 'exit_reason': exit_reason,
-                'pnl_pct': pnl_pct,
+                'spot_pnl_pct': spot_pnl_pct,  # 现货盈亏%
+                'pnl_pct': account_pnl_pct,    # 账户盈亏% (杠杆后)
                 'tp_type': 'fixed',
             })
             i = j + 1
@@ -78,8 +94,15 @@ def backtest_fixed(df, signal_array, tp_pct, sl_pct, hold_bars=100):
     return trades
 
 
-def backtest_trailing(df, signal_array, tp_pct, sl_pct, trail_pct, hold_bars=100):
-    """移动止盈止损回测 - 避免资金回撤"""
+def backtest_trailing(df, signal_array, tp_pct, sl_pct, trail_pct, leverage, hold_bars=100):
+    """移动止盈止损回测 - 避免资金回撤
+
+    参数说明:
+    - tp_pct: 账户止盈百分比 (杠杆后)
+    - sl_pct: 账户止损百分比 (杠杆后)
+    - trail_pct: 账户移动止损百分比 (杠杆后), 从最高盈利回撤此比例时触发
+    - leverage: 杠杆倍数
+    """
     trades = []
     close_arr = df['close'].values
     high_arr = df['high'].values
@@ -90,12 +113,17 @@ def backtest_trailing(df, signal_array, tp_pct, sl_pct, trail_pct, hold_bars=100
     warmup = min(250, n // 4)
     i = warmup
 
+    # 根据杠杆反算现货价格变化
+    spot_tp_pct = tp_pct / leverage
+    spot_sl_pct = sl_pct / leverage
+    spot_trail_pct = trail_pct / leverage
+
     while i < n - hold_bars:
         if signal_array[i]:
             entry_price = close_arr[i]
             entry_time = timestamps[i]
-            tp_price = entry_price * (1 + tp_pct / 100)
-            initial_sl_price = entry_price * (1 - sl_pct / 100)
+            tp_price = entry_price * (1 + spot_tp_pct / 100)
+            initial_sl_price = entry_price * (1 - spot_sl_pct / 100)
             current_sl_price = initial_sl_price
             highest_price = entry_price
 
@@ -106,8 +134,8 @@ def backtest_trailing(df, signal_array, tp_pct, sl_pct, trail_pct, hold_bars=100
                 # 更新最高价
                 if high_arr[j] > highest_price:
                     highest_price = high_arr[j]
-                    # 移动止损: 最高价回撤trail_pct%
-                    new_trail_sl = highest_price * (1 - trail_pct / 100)
+                    # 移动止损: 最高价回撤 spot_trail_pct% (现货百分比)
+                    new_trail_sl = highest_price * (1 - spot_trail_pct / 100)
                     if new_trail_sl > current_sl_price:
                         current_sl_price = new_trail_sl
 
@@ -133,7 +161,8 @@ def backtest_trailing(df, signal_array, tp_pct, sl_pct, trail_pct, hold_bars=100
                 exit_time = timestamps[j]
                 exit_reason = 'TIMEOUT'
 
-            pnl_pct = (exit_price - entry_price) / entry_price * 100
+            spot_pnl_pct = (exit_price - entry_price) / entry_price * 100  # 现货盈亏%
+            account_pnl_pct = spot_pnl_pct * leverage  # 账户盈亏% = 现货盈亏% × 杠杆
             trades.append({
                 'entry_time': entry_time,
                 'entry_price': entry_price,
@@ -144,9 +173,10 @@ def backtest_trailing(df, signal_array, tp_pct, sl_pct, trail_pct, hold_bars=100
                 'exit_time': exit_time,
                 'exit_price': exit_price,
                 'exit_reason': exit_reason,
-                'pnl_pct': pnl_pct,
+                'spot_pnl_pct': spot_pnl_pct,  # 现货盈亏%
+                'pnl_pct': account_pnl_pct,    # 账户盈亏% (杠杆后)
                 'tp_type': 'trailing',
-                'trail_pct': trail_pct,
+                'trail_pct': trail_pct,  # 账户移动止损%
             })
             i = j + 1
         else:
@@ -200,10 +230,14 @@ def run_full_backtest():
     data = load_data()
     timeframes = ['1w', '1d', '4h', '1h']
 
-    # 参数范围
-    tp_range = [20, 30, 50, 75, 100]
-    sl_range = [3, 5, 7, 10]
-    trail_range = [5, 10, 15]
+    # 参数范围 - 全部为账户百分比 (杠杆后)
+    # 止盈: 账户盈利多少%时止盈
+    tp_range = [50, 75, 100, 150, 200, 300]
+    # 止损: 账户亏损多少%时止损 (合理范围: 10-40%)
+    sl_range = [10, 15, 20, 25, 30, 40]
+    # 移动止损: 从最高盈利回撤多少%时触发 (账户百分比)
+    trail_range = [10, 15, 20, 25, 30]
+    # 杠杆倍数
     lev_range = [5, 10, 15, 20, 25]
 
     all_results = []
@@ -231,49 +265,16 @@ def run_full_backtest():
             best_trail = None
             best_trail_ev = -float('inf')
 
-            # 测试固定止盈止损
-            for tp in tp_range:
-                for sl in sl_range:
-                    if tp / sl < 2:
-                        continue
-
-                    trades = backtest_fixed(df, signal_arr, tp, sl, hold_bars=100)
-                    if len(trades) < 2:
-                        continue
-
-                    stats = calculate_stats(trades)
-                    if stats is None:
-                        continue
-
-                    for lev in lev_range:
-                        if sl * lev >= 90:
-                            continue
-
-                        ev = (stats['win_rate']/100 * tp * lev) - ((1 - stats['win_rate']/100) * sl * lev)
-
-                        if ev > best_fixed_ev:
-                            best_fixed_ev = ev
-                            best_fixed = {
-                                'strategy': strategy_name,
-                                'timeframe': tf,
-                                'tp_type': 'fixed',
-                                'tp': tp,
-                                'sl': sl,
-                                'trail': 0,
-                                'leverage': lev,
-                                **stats,
-                                'ev': ev,
-                                'trades_detail': trades,
-                            }
-
-            # 测试移动止盈止损
-            for tp in tp_range:
-                for sl in sl_range:
-                    for trail in trail_range:
+            # 测试固定止盈止损 - 参数现在是账户百分比
+            for lev in lev_range:
+                for tp in tp_range:
+                    for sl in sl_range:
+                        # 盈亏比至少 2:1
                         if tp / sl < 2:
                             continue
 
-                        trades = backtest_trailing(df, signal_arr, tp, sl, trail, hold_bars=100)
+                        # 回测时传入杠杆，函数内部会反算现货价格
+                        trades = backtest_fixed(df, signal_arr, tp, sl, lev, hold_bars=100)
                         if len(trades) < 2:
                             continue
 
@@ -281,11 +282,44 @@ def run_full_backtest():
                         if stats is None:
                             continue
 
-                        for lev in lev_range:
-                            if sl * lev >= 90:
+                        # EV计算 - tp和sl已经是账户百分比，不需要再乘杠杆
+                        ev = (stats['win_rate']/100 * tp) - ((1 - stats['win_rate']/100) * sl)
+
+                        if ev > best_fixed_ev:
+                            best_fixed_ev = ev
+                            best_fixed = {
+                                'strategy': strategy_name,
+                                'timeframe': tf,
+                                'tp_type': 'fixed',
+                                'tp': tp,      # 账户止盈%
+                                'sl': sl,      # 账户止损%
+                                'trail': 0,
+                                'leverage': lev,
+                                **stats,
+                                'ev': ev,
+                                'trades_detail': trades,
+                            }
+
+            # 测试移动止盈止损 - 参数现在是账户百分比
+            for lev in lev_range:
+                for tp in tp_range:
+                    for sl in sl_range:
+                        for trail in trail_range:
+                            # 盈亏比至少 2:1
+                            if tp / sl < 2:
                                 continue
 
-                            ev = (stats['win_rate']/100 * tp * lev) - ((1 - stats['win_rate']/100) * sl * lev)
+                            # 回测时传入杠杆，函数内部会反算现货价格
+                            trades = backtest_trailing(df, signal_arr, tp, sl, trail, lev, hold_bars=100)
+                            if len(trades) < 2:
+                                continue
+
+                            stats = calculate_stats(trades)
+                            if stats is None:
+                                continue
+
+                            # EV计算 - tp和sl已经是账户百分比
+                            ev = (stats['win_rate']/100 * tp) - ((1 - stats['win_rate']/100) * sl)
 
                             if ev > best_trail_ev:
                                 best_trail_ev = ev
@@ -293,9 +327,9 @@ def run_full_backtest():
                                     'strategy': strategy_name,
                                     'timeframe': tf,
                                     'tp_type': 'trailing',
-                                    'tp': tp,
-                                    'sl': sl,
-                                    'trail': trail,
+                                    'tp': tp,      # 账户止盈%
+                                    'sl': sl,      # 账户止损%
+                                    'trail': trail,  # 账户移动止损%
                                     'leverage': lev,
                                     **stats,
                                     'ev': ev,
@@ -462,15 +496,16 @@ def generate_html_report(results):
         <!-- Top 30 综合排名 -->
         <div class="section">
             <h2>Top 30 最优EV策略 (综合排名)</h2>
+            <p style="color:#8b949e; font-size:0.9em;">注: TP%/SL%/移动% 均为<b style="color:#ffd700;">账户盈亏百分比</b>(杠杆后)，例如 TP=100% 表示账户盈利100%时止盈</p>
             <table>
                 <tr>
                     <th>#</th>
                     <th>策略</th>
                     <th>周期</th>
                     <th>类型</th>
-                    <th>TP%</th>
-                    <th>SL%</th>
-                    <th>移动%</th>
+                    <th>账户止盈%</th>
+                    <th>账户止损%</th>
+                    <th>移动止损%</th>
                     <th>杠杆</th>
                     <th>交易</th>
                     <th>止盈</th>
@@ -487,7 +522,8 @@ def generate_html_report(results):
         tf_class = f"badge-{r['timeframe']}"
         tp_class = "badge-trail" if r['tp_type'] == 'trailing' else "badge-fixed"
         tp_name = "移动" if r['tp_type'] == 'trailing' else "固定"
-        ev_class = 'ev-high' if r['ev'] > 1000 else 'ev-medium' if r['ev'] > 500 else 'ev-low'
+        # EV现在是账户百分比，不再乘杠杆，所以阈值调低
+        ev_class = 'ev-high' if r['ev'] > 50 else 'ev-medium' if r['ev'] > 20 else 'ev-low'
         highlight = 'highlight' if i <= 5 else ''
         # 理论胜率: 持仓期间价格曾经上涨过的比例 (不含止盈止损)
         theory_wr = r.get('theory_win_rate', r['win_rate'])
@@ -519,14 +555,15 @@ def generate_html_report(results):
         <!-- 移动止盈止损专区 -->
         <div class="section">
             <h2>移动止盈止损策略 Top 20 (锁定利润,避免回撤)</h2>
+            <p style="color:#8b949e; font-size:0.9em;">注: 所有百分比均为<b style="color:#ffd700;">账户盈亏百分比</b>(杠杆后)</p>
             <table>
                 <tr>
                     <th>#</th>
                     <th>策略</th>
                     <th>周期</th>
-                    <th>TP%</th>
-                    <th>SL%</th>
-                    <th>移动止损%</th>
+                    <th>账户止盈%</th>
+                    <th>账户止损%</th>
+                    <th>账户移动止损%</th>
                     <th>杠杆</th>
                     <th>交易</th>
                     <th>止盈</th>
@@ -541,7 +578,7 @@ def generate_html_report(results):
 
     for i, r in enumerate(trail_sorted[:20], 1):
         tf_class = f"badge-{r['timeframe']}"
-        ev_class = 'ev-high' if r['ev'] > 1000 else 'ev-medium' if r['ev'] > 500 else 'ev-low'
+        ev_class = 'ev-high' if r['ev'] > 50 else 'ev-medium' if r['ev'] > 20 else 'ev-low'
         theory_wr = r.get('theory_win_rate', r['win_rate'])  # 理论胜率
 
         html += f"""
@@ -583,11 +620,15 @@ def generate_html_report(results):
 
         for rank, r in enumerate(tf_results, 1):
             tp_name = "移动止盈止损" if r['tp_type'] == 'trailing' else "固定止盈止损"
-            trail_info = f" 移动={r['trail']}%" if r['tp_type'] == 'trailing' else ""
+            trail_info = f" 移动止损={r['trail']}%" if r['tp_type'] == 'trailing' else ""
+            # 计算现货百分比供参考
+            spot_tp = r['tp'] / r['leverage']
+            spot_sl = r['sl'] / r['leverage']
 
             html += f"""
             <h3>{rank}. {r['strategy']} ({tp_name})</h3>
-            <p><b>参数:</b> TP={r['tp']}% SL={r['sl']}%{trail_info} 杠杆={r['leverage']}x |
+            <p><b>账户参数:</b> 止盈={r['tp']}% 止损={r['sl']}%{trail_info} 杠杆={r['leverage']}x |
+               <b>现货价格:</b> 止盈涨幅={spot_tp:.2f}% 止损跌幅={spot_sl:.2f}% |
                <b>统计:</b> 交易={r['total']} 止盈={r['tp_wins']} 止损={r['sl_losses']}
                移动出场={r.get('trail_exits', 0)} 超时={r['timeouts']} |
                <b>胜率={r['win_rate']:.1f}%</b> <b>EV={r['ev']:.0f}%</b></p>
@@ -601,8 +642,8 @@ def generate_html_report(results):
                         <th>止损价</th>
                         <th>出场价</th>
                         <th>出场原因</th>
-                        <th>涨跌%</th>
-                        <th>实际盈亏%</th>
+                        <th>现货涨跌%</th>
+                        <th>账户盈亏%</th>
                     </tr>
 """
 
@@ -617,8 +658,10 @@ def generate_html_report(results):
                     'TIMEOUT': '超时平仓'
                 }
                 reason_cn = reason_map.get(t['exit_reason'], t['exit_reason'])
-                pnl_class = 'win' if t['pnl_pct'] > 0 else 'loss'
-                real_pnl = t['pnl_pct'] * leverage  # 实际盈亏 = 涨跌% × 杠杆
+                # pnl_pct 现在已经是账户盈亏%
+                account_pnl = t['pnl_pct']
+                spot_pnl = t.get('spot_pnl_pct', account_pnl / leverage)  # 兼容旧数据
+                pnl_class = 'win' if account_pnl > 0 else 'loss'
 
                 # 对于移动止损，显示最终止损价
                 if r['tp_type'] == 'trailing':
@@ -635,8 +678,8 @@ def generate_html_report(results):
                         <td>{sl_display}</td>
                         <td>${t['exit_price']:,.0f}</td>
                         <td>{reason_cn}</td>
-                        <td>{t['pnl_pct']:+.2f}%</td>
-                        <td class="{pnl_class}">{real_pnl:+.2f}%</td>
+                        <td>{spot_pnl:+.2f}%</td>
+                        <td class="{pnl_class}">{account_pnl:+.2f}%</td>
                     </tr>"""
 
             if len(trades) > 30:
@@ -679,11 +722,14 @@ def generate_html_report(results):
         <div class="section">
             <h2>回测说明</h2>
             <ul>
+                <li><b>参数单位:</b> 报告中的止盈%、止损%、移动止损% 均为<span style="color:#ffd700;">账户盈亏百分比</span>（杠杆后），而非现货涨跌幅</li>
+                <li><b>价格计算:</b> 现货止盈涨幅 = 账户止盈% ÷ 杠杆，现货止损跌幅 = 账户止损% ÷ 杠杆</li>
+                <li><b>举例:</b> 账户止盈100%、止损20%、杠杆20x → 现货止盈涨幅5%、现货止损跌幅1%</li>
                 <li><b>固定止盈止损:</b> 入场后设置固定的止盈价和止损价，先触发哪个就按哪个价格出场</li>
-                <li><b>移动止盈止损:</b> 价格创新高后，止损价跟随上移(最高价 × (1-移动%)），锁定利润避免回撤</li>
+                <li><b>移动止盈止损:</b> 价格创新高后，止损价跟随上移，锁定利润避免回撤</li>
                 <li><b>止损优先:</b> 同一根K线可能同时触及止盈止损，本回测优先触发止损（更保守）</li>
                 <li><b>超时平仓:</b> 持仓100根K线后未触及止盈止损，按收盘价平仓</li>
-                <li><b>EV公式:</b> EV = (胜率 × 止盈% × 杠杆) - ((1-胜率) × 止损% × 杠杆)</li>
+                <li><b>EV公式:</b> EV = (胜率 × 账户止盈%) - ((1-胜率) × 账户止损%)</li>
             </ul>
         </div>
 
