@@ -938,9 +938,21 @@
                                 <li>插针振幅阈值: 根据周期设定 (如1h插针振幅>3%)</li>
                             </ul>
                             <div class="formula-box">
-                                <div class="formula-title">插针定义:</div>
-                                <div class="formula">下插针: (close - low) / (high - low) > 0.7 且 振幅 > X%</div>
-                                <div class="formula">上插针: (high - close) / (high - low) > 0.7 且 振幅 > X%</div>
+                                <div class="formula-title">插针定义 (需要分解K线结构):</div>
+                                <div class="formula" style="color:#8b949e; font-size:0.9em;">
+                                    实体 = |close - open|<br/>
+                                    上影线 = high - max(open, close)<br/>
+                                    下影线 = min(open, close) - low
+                                </div>
+                                <div class="formula" style="margin-top:5px;">
+                                    <strong>下插针(锤子线):</strong> 下影线 > 实体×2 且 上影线 < 实体×0.5 且 振幅 > X%
+                                </div>
+                                <div class="formula">
+                                    <strong>上插针(流星线):</strong> 上影线 > 实体×2 且 下影线 < 实体×0.5 且 振幅 > X%
+                                </div>
+                                <div class="formula" style="color:#8b949e; font-size:0.85em; margin-top:5px;">
+                                    注: 实体为0时(十字星)需特殊处理，用振幅代替实体计算
+                                </div>
                             </div>
                         </td>
                         <td><span class="tag tag-calc">K线计算</span></td>
@@ -1549,19 +1561,26 @@
                         <div class="step-content">
                             <div class="formula-box">
                                 <div class="formula-title">核心逻辑 (基于现货价格):</div>
-                                <div class="formula">止损价 = 最高价 × (1 - 现货回撤%)</div>
-                                <div class="formula">止损价只能上移，永远不能下移!</div>
+                                <div class="formula"><span style="color:#3fb950;">【做多】</span> 止损价 = 历史最高价 × (1 - 现货回撤%) <span style="color:#8b949e;">// 止损价只能上移</span></div>
+                                <div class="formula"><span style="color:#f85149;">【做空】</span> 止损价 = 历史最低价 × (1 + 现货回撤%) <span style="color:#8b949e;">// 止损价只能下移</span></div>
                             </div>
                             <ul>
-                                <li><strong>初始止损价:</strong> 入场价 × (1 - 现货止损%)</li>
+                                <li><strong>做多初始止损:</strong> 入场价 × (1 - 现货止损%)</li>
+                                <li><strong>做空初始止损:</strong> 入场价 × (1 + 现货止损%)</li>
                                 <li><strong>现货回撤%:</strong> 建议5%-15% (需遍历优化)</li>
                             </ul>
                             <div class="formula-box" style="margin-top:15px;">
-                                <div class="formula-title">示例 (10x杠杆):</div>
+                                <div class="formula-title"><span style="color:#3fb950;">做多示例</span> (10x杠杆):</div>
                                 <div class="formula" style="color:#e6e6e6;">
                                     入场价 $100,000, 现货回撤设10%, 最高涨到 $120,000<br/>
                                     → 止损价 = $120,000 × 0.9 = <span style="color:#3fb950;">$108,000</span><br/>
                                     → 若触发止损: 现货盈利8%, 保证金盈利 = 8% × 10 = <span style="color:#3fb950;">80%</span>
+                                </div>
+                                <div class="formula-title" style="margin-top:10px;"><span style="color:#f85149;">做空示例</span> (10x杠杆):</div>
+                                <div class="formula" style="color:#e6e6e6;">
+                                    入场价 $100,000, 现货回撤设10%, 最低跌到 $80,000<br/>
+                                    → 止损价 = $80,000 × 1.1 = <span style="color:#f85149;">$88,000</span><br/>
+                                    → 若触发止损: 现货盈利12%, 保证金盈利 = 12% × 10 = <span style="color:#3fb950;">120%</span>
                                 </div>
                             </div>
                         </div>
@@ -1720,9 +1739,13 @@
                     <div class="decision-box">
                         <strong>设置止盈止损价格</strong><br/>
                         <span style="font-size:0.85em;">
+                        <span style="color:#3fb950;"><strong>【做多】</strong></span><br/>
                         止损价 = 入场价 × (1 - 保证金止损%/杠杆)<br/>
                         止盈价 = 入场价 × (1 + 保证金止盈%/杠杆)<br/>
-                        <span style="color:#8b949e;">例: 保证金止损20%, 10x杠杆 → 现货跌2%触发</span>
+                        <span style="color:#f85149;"><strong>【做空】</strong></span><br/>
+                        止损价 = 入场价 × (1 + 保证金止损%/杠杆)<br/>
+                        止盈价 = 入场价 × (1 - 保证金止盈%/杠杆)<br/>
+                        <span style="color:#8b949e;">例: 保证金止损20%, 10x杠杆 → 现货涨/跌2%触发</span>
                         </span>
                     </div>
 
@@ -1746,19 +1769,35 @@
                             <div class="code-block">
 每根K线收盘时:
   1. 获取当前价格 (最高价、最低价、收盘价)
+
+  <span style="color:#3fb950;"><strong>【做多持仓】</strong></span>
   2. 如果 当前最高价 > 历史最高价:
        更新历史最高价
-       新止损价 = 历史最高价 × (1 - 现货回撤%)  <span style="color:#8b949e;">// 现货价格回撤</span>
+       新止损价 = 历史最高价 × (1 - 现货回撤%)
        如果 新止损价 > 当前止损价:
            更新止损价 (只能上移，锁定利润)
   3. 检查是否触发止盈止损:
        如果 最低价 ≤ 止损价 且 最高价 ≥ 止盈价:
            【同一K线同时触及】→ 止损优先!
-           原因: K线无法确定先后顺序，保守处理
        否则如果 最低价 ≤ 止损价:
            触发止损，平仓
        否则如果 最高价 ≥ 止盈价:
            触发止盈，平仓
+
+  <span style="color:#f85149;"><strong>【做空持仓】</strong></span>
+  2. 如果 当前最低价 < 历史最低价:
+       更新历史最低价
+       新止损价 = 历史最低价 × (1 + 现货回撤%)
+       如果 新止损价 < 当前止损价:
+           更新止损价 (只能下移，锁定利润)
+  3. 检查是否触发止盈止损:
+       如果 最高价 ≥ 止损价 且 最低价 ≤ 止盈价:
+           【同一K线同时触及】→ 止损优先!
+       否则如果 最高价 ≥ 止损价:
+           触发止损，平仓
+       否则如果 最低价 ≤ 止盈价:
+           触发止盈，平仓
+
   4. 如果 持仓超过N根K线:
        超时平仓
                             </div>
@@ -1799,7 +1838,7 @@
                             <ul>
                                 <li><strong>语言:</strong> Pine Script v5 (最新版本)</li>
                                 <li><strong>禁止中文:</strong> 所有注释和变量名用英文</li>
-                                <li><strong>回测时间:</strong> 2020-01-01 ~ 2025-11-20</li>
+                                <li><strong>回测时间:</strong> 2019-09-08 ~ 至今 (与Phase 4一致)</li>
                                 <li><strong>交易品种:</strong> BTCUSDT.P (Binance永续)</li>
                             </ul>
                         </div>
@@ -1906,7 +1945,7 @@ strategy("BTC AI Trading System",
 
         <div style="text-align:center; margin-top:40px; color:#8b949e;">
             <p>BTC/USDT AI自动交易系统逻辑流程图 v1.0</p>
-            <p>生成时间: 2024年12月</p>
+            <p>生成时间: 2025年12月</p>
         </div>
     </div>
 </body>
