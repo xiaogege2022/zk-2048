@@ -485,6 +485,301 @@
                     </div>
                 </div>
             </div>
+
+            <!-- K线术语 -->
+            <h3 style="color:#ffd700; margin: 25px 0 15px 65px;">📊 K线/蜡烛图术语</h3>
+            <table class="dimension-table">
+                <tr>
+                    <th style="width:120px;">术语</th>
+                    <th style="width:150px;">英文</th>
+                    <th>定义</th>
+                    <th style="width:180px;">示例/公式</th>
+                </tr>
+                <tr>
+                    <td><strong>K线</strong></td>
+                    <td>Candlestick</td>
+                    <td>表示一段时间内价格变化的图形，包含开盘价、最高价、最低价、收盘价</td>
+                    <td>1根日K线 = 1天的价格</td>
+                </tr>
+                <tr>
+                    <td><strong>OHLC</strong></td>
+                    <td>Open/High/Low/Close</td>
+                    <td>开盘价(O)、最高价(H)、最低价(L)、收盘价(C)</td>
+                    <td>K线的4个基本数据</td>
+                </tr>
+                <tr>
+                    <td><strong>实体</strong></td>
+                    <td>Body</td>
+                    <td>开盘价与收盘价之间的部分</td>
+                    <td><code>|close - open|</code></td>
+                </tr>
+                <tr>
+                    <td><strong>上影线</strong></td>
+                    <td>Upper Shadow</td>
+                    <td>K线实体上方的细线，表示冲高回落</td>
+                    <td><code>high - max(open, close)</code></td>
+                </tr>
+                <tr>
+                    <td><strong>下影线</strong></td>
+                    <td>Lower Shadow</td>
+                    <td>K线实体下方的细线，表示探底回升</td>
+                    <td><code>min(open, close) - low</code></td>
+                </tr>
+                <tr>
+                    <td><strong>振幅</strong></td>
+                    <td>Amplitude</td>
+                    <td>一根K线内的最大波动幅度</td>
+                    <td><code>(high - low) / open × 100%</code></td>
+                </tr>
+                <tr>
+                    <td><strong>下插针</strong></td>
+                    <td>Pin Bar (Bullish)</td>
+                    <td>下影线很长、实体很短的K线，表示买方强势抵抗</td>
+                    <td>下影线 > 实体×2 且 振幅>X%</td>
+                </tr>
+                <tr>
+                    <td><strong>上插针</strong></td>
+                    <td>Pin Bar (Bearish)</td>
+                    <td>上影线很长、实体很短的K线，表示卖方强势打压</td>
+                    <td>上影线 > 实体×2 且 振幅>X%</td>
+                </tr>
+            </table>
+
+            <!-- 技术指标术语 -->
+            <h3 style="color:#ffd700; margin: 25px 0 15px 65px;">📈 技术指标术语</h3>
+            <table class="dimension-table">
+                <tr>
+                    <th style="width:120px;">术语</th>
+                    <th style="width:150px;">英文</th>
+                    <th>定义</th>
+                    <th style="width:180px;">参数/公式</th>
+                </tr>
+                <tr>
+                    <td><strong>EMA</strong></td>
+                    <td>Exponential Moving Average</td>
+                    <td>指数移动平均线，近期价格权重更高</td>
+                    <td>常用: EMA7, 25, 50, 99, 200</td>
+                </tr>
+                <tr>
+                    <td><strong>金叉</strong></td>
+                    <td>Golden Cross</td>
+                    <td>短周期均线从下向上穿越长周期均线</td>
+                    <td>EMA7上穿EMA25 → 做多</td>
+                </tr>
+                <tr>
+                    <td><strong>死叉</strong></td>
+                    <td>Death Cross</td>
+                    <td>短周期均线从上向下穿越长周期均线</td>
+                    <td>EMA7下穿EMA25 → 做空</td>
+                </tr>
+                <tr>
+                    <td><strong>MACD</strong></td>
+                    <td>Moving Average Convergence Divergence</td>
+                    <td>由DIF线、DEA线、MACD柱组成的趋势指标</td>
+                    <td>参数: (12, 26, 9)</td>
+                </tr>
+                <tr>
+                    <td><strong>DIF</strong></td>
+                    <td>Difference</td>
+                    <td>快线与慢线的差值</td>
+                    <td><code>EMA12 - EMA26</code></td>
+                </tr>
+                <tr>
+                    <td><strong>DEA</strong></td>
+                    <td>Signal Line</td>
+                    <td>DIF的9日指数平均</td>
+                    <td><code>EMA(DIF, 9)</code></td>
+                </tr>
+                <tr>
+                    <td><strong>RSI</strong></td>
+                    <td>Relative Strength Index</td>
+                    <td>相对强弱指标，衡量超买超卖程度 (0-100)</td>
+                    <td>RSI<30超卖, RSI>70超买</td>
+                </tr>
+                <tr>
+                    <td><strong>背离</strong></td>
+                    <td>Divergence</td>
+                    <td>价格创新高/新低，但指标未创新高/新低</td>
+                    <td>顶背离(做空)、底背离(做多)</td>
+                </tr>
+                <tr>
+                    <td><strong>布林带</strong></td>
+                    <td>Bollinger Bands</td>
+                    <td>由中轨(MA20)和上下轨(±2标准差)组成</td>
+                    <td>触及下轨可能反弹</td>
+                </tr>
+            </table>
+
+            <!-- 交易术语 -->
+            <h3 style="color:#ffd700; margin: 25px 0 15px 65px;">💰 交易术语</h3>
+            <table class="dimension-table">
+                <tr>
+                    <th style="width:120px;">术语</th>
+                    <th style="width:150px;">英文</th>
+                    <th>定义</th>
+                    <th style="width:180px;">示例</th>
+                </tr>
+                <tr>
+                    <td><strong>做多</strong></td>
+                    <td>Long</td>
+                    <td>买入合约，预期价格上涨后卖出获利</td>
+                    <td>$100买入 → $110卖出 = 赚10%</td>
+                </tr>
+                <tr>
+                    <td><strong>做空</strong></td>
+                    <td>Short</td>
+                    <td>卖出合约，预期价格下跌后买回获利</td>
+                    <td>$100卖出 → $90买回 = 赚10%</td>
+                </tr>
+                <tr>
+                    <td><strong>杠杆</strong></td>
+                    <td>Leverage</td>
+                    <td>用保证金控制更大仓位的倍数</td>
+                    <td>10x杠杆: 1000U控制10000U</td>
+                </tr>
+                <tr>
+                    <td><strong>止盈</strong></td>
+                    <td>Take Profit (TP)</td>
+                    <td>价格达到目标盈利时自动平仓</td>
+                    <td>设止盈50% = 盈利50%时平仓</td>
+                </tr>
+                <tr>
+                    <td><strong>止损</strong></td>
+                    <td>Stop Loss (SL)</td>
+                    <td>价格达到最大亏损时自动平仓</td>
+                    <td>设止损20% = 亏损20%时平仓</td>
+                </tr>
+                <tr>
+                    <td><strong>移动止损</strong></td>
+                    <td>Trailing Stop</td>
+                    <td>止损价跟随价格上涨而上移，锁定利润</td>
+                    <td>回撤10%止损 (只上移不下移)</td>
+                </tr>
+                <tr>
+                    <td><strong>平仓</strong></td>
+                    <td>Close Position</td>
+                    <td>结束当前持仓，实现盈亏</td>
+                    <td>触发止盈/止损/超时 → 平仓</td>
+                </tr>
+                <tr>
+                    <td><strong>爆仓</strong></td>
+                    <td>Liquidation</td>
+                    <td>亏损达到保证金，被强制平仓</td>
+                    <td>10x杠杆，跌10%即爆仓</td>
+                </tr>
+                <tr>
+                    <td><strong>滑点</strong></td>
+                    <td>Slippage</td>
+                    <td>实际成交价与预期价格的差异</td>
+                    <td>预期$100成交，实际$100.5</td>
+                </tr>
+            </table>
+
+            <!-- 统计/回测术语 -->
+            <h3 style="color:#ffd700; margin: 25px 0 15px 65px;">📊 统计与回测术语</h3>
+            <table class="dimension-table">
+                <tr>
+                    <th style="width:120px;">术语</th>
+                    <th style="width:150px;">英文</th>
+                    <th>定义</th>
+                    <th style="width:180px;">公式/示例</th>
+                </tr>
+                <tr>
+                    <td><strong>理论胜率</strong></td>
+                    <td>Theoretical Win Rate</td>
+                    <td>不设止盈止损，持仓N根K线后价格>入场价的比例</td>
+                    <td>反映策略方向判断能力</td>
+                </tr>
+                <tr>
+                    <td><strong>回测胜率</strong></td>
+                    <td>Backtest Win Rate</td>
+                    <td>设置止盈止损后，盈利出场的交易比例</td>
+                    <td>反映策略+参数实际表现</td>
+                </tr>
+                <tr>
+                    <td><strong>盈亏比</strong></td>
+                    <td>Risk-Reward Ratio</td>
+                    <td>平均盈利 / 平均亏损</td>
+                    <td>盈亏比2:1 = 赚2赔1</td>
+                </tr>
+                <tr>
+                    <td><strong>EV</strong></td>
+                    <td>Expected Value</td>
+                    <td>每次交易的期望收益</td>
+                    <td><code>(胜率×止盈%) - ((1-胜率)×止损%)</code></td>
+                </tr>
+                <tr>
+                    <td><strong>最大回撤</strong></td>
+                    <td>Maximum Drawdown</td>
+                    <td>从历史最高点到最低点的最大跌幅</td>
+                    <td>峰值100万跌到70万 = 30%回撤</td>
+                </tr>
+                <tr>
+                    <td><strong>夏普比率</strong></td>
+                    <td>Sharpe Ratio</td>
+                    <td>风险调整后的收益指标</td>
+                    <td><code>(收益率-无风险利率)/波动率</code></td>
+                </tr>
+                <tr>
+                    <td><strong>凯利公式</strong></td>
+                    <td>Kelly Criterion</td>
+                    <td>计算最优仓位比例的公式</td>
+                    <td><code>(胜率×盈亏比-(1-胜率))/盈亏比</code></td>
+                </tr>
+                <tr>
+                    <td><strong>复利</strong></td>
+                    <td>Compound Interest</td>
+                    <td>盈利后用新本金继续交易</td>
+                    <td>1万→1.1万→1.21万→...</td>
+                </tr>
+                <tr>
+                    <td><strong>触发频次</strong></td>
+                    <td>Trigger Frequency</td>
+                    <td>策略信号在历史上触发的次数</td>
+                    <td>≥10次才有统计意义</td>
+                </tr>
+            </table>
+
+            <!-- 市场数据术语 -->
+            <h3 style="color:#ffd700; margin: 25px 0 15px 65px;">🌐 市场数据术语</h3>
+            <table class="dimension-table">
+                <tr>
+                    <th style="width:120px;">术语</th>
+                    <th style="width:150px;">英文</th>
+                    <th>定义</th>
+                    <th style="width:180px;">数值解读</th>
+                </tr>
+                <tr>
+                    <td><strong>恐惧贪婪指数</strong></td>
+                    <td>Fear & Greed Index</td>
+                    <td>衡量市场情绪的指标 (0-100)</td>
+                    <td>0-25极度恐惧, 75-100极度贪婪</td>
+                </tr>
+                <tr>
+                    <td><strong>资金费率</strong></td>
+                    <td>Funding Rate</td>
+                    <td>永续合约多空双方的定期结算费用</td>
+                    <td>正费率=多付空, 负费率=空付多</td>
+                </tr>
+                <tr>
+                    <td><strong>OI/持仓量</strong></td>
+                    <td>Open Interest</td>
+                    <td>市场中未平仓的合约总量</td>
+                    <td>OI增加=资金流入, OI减少=资金流出</td>
+                </tr>
+                <tr>
+                    <td><strong>成交量</strong></td>
+                    <td>Volume</td>
+                    <td>一段时间内的交易量</td>
+                    <td>放量=成交量>均值×2倍</td>
+                </tr>
+                <tr>
+                    <td><strong>永续合约</strong></td>
+                    <td>Perpetual Contract</td>
+                    <td>没有到期日的合约，通过资金费率锚定现货价</td>
+                    <td>BTCUSDT.P = BTC永续</td>
+                </tr>
+            </table>
         </div>
 
         <div class="arrow">▼</div>
