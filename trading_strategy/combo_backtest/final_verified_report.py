@@ -34,11 +34,15 @@ def backtest_fixed(df, signal_array, tp_pct, sl_pct, hold_bars=100):
             entry_time = timestamps[i]
             tp_price = entry_price * (1 + tp_pct / 100)
             sl_price = entry_price * (1 - sl_pct / 100)
+            highest_price = entry_price  # 追踪最高价
 
             exit_price, exit_time, exit_reason = None, None, None
 
             end_idx = min(i + hold_bars + 1, n)
             for j in range(i + 1, end_idx):
+                # 更新最高价
+                if high_arr[j] > highest_price:
+                    highest_price = high_arr[j]
                 # 先检查止损
                 if low_arr[j] <= sl_price:
                     exit_price, exit_time, exit_reason = sl_price, timestamps[j], 'SL'
@@ -60,6 +64,7 @@ def backtest_fixed(df, signal_array, tp_pct, sl_pct, hold_bars=100):
                 'entry_price': entry_price,
                 'tp_price': tp_price,
                 'sl_price': sl_price,
+                'highest_price': highest_price,  # 添加最高价
                 'exit_time': exit_time,
                 'exit_price': exit_price,
                 'exit_reason': exit_reason,
@@ -164,6 +169,10 @@ def calculate_stats(trades):
     wins = sum(1 for t in trades if t['pnl_pct'] > 0)
     win_rate = wins / total * 100
 
+    # 理论胜率: 持仓期间最高价 > 入场价的交易比例 (不含止盈止损的胜率)
+    theory_wins = sum(1 for t in trades if t.get('highest_price', t['entry_price']) > t['entry_price'])
+    theory_win_rate = theory_wins / total * 100
+
     total_pnl = sum(t['pnl_pct'] for t in trades)
     avg_pnl = total_pnl / total
 
@@ -175,6 +184,7 @@ def calculate_stats(trades):
         'timeouts': timeouts,
         'wins': wins,
         'win_rate': win_rate,
+        'theory_win_rate': theory_win_rate,
         'total_pnl': total_pnl,
         'avg_pnl': avg_pnl,
     }
@@ -479,8 +489,8 @@ def generate_html_report(results):
         tp_name = "移动" if r['tp_type'] == 'trailing' else "固定"
         ev_class = 'ev-high' if r['ev'] > 1000 else 'ev-medium' if r['ev'] > 500 else 'ev-low'
         highlight = 'highlight' if i <= 5 else ''
-        # 理论胜率 = (止盈次数 + 移动止损盈利次数 + 超时盈利次数) / 总交易数
-        theory_wr = r['win_rate']  # 根据历史数据统计的胜率
+        # 理论胜率: 持仓期间价格曾经上涨过的比例 (不含止盈止损)
+        theory_wr = r.get('theory_win_rate', r['win_rate'])
 
         html += f"""
                 <tr class="{highlight}">
@@ -532,7 +542,7 @@ def generate_html_report(results):
     for i, r in enumerate(trail_sorted[:20], 1):
         tf_class = f"badge-{r['timeframe']}"
         ev_class = 'ev-high' if r['ev'] > 1000 else 'ev-medium' if r['ev'] > 500 else 'ev-low'
-        theory_wr = r['win_rate']  # 根据历史数据统计的胜率
+        theory_wr = r.get('theory_win_rate', r['win_rate'])  # 理论胜率
 
         html += f"""
                 <tr>
