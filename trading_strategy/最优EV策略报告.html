@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>BTC/USDT 最优EV策略报告</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: #e6e6e6;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        h1 { text-align: center; color: #ffd700; font-size: 2.2em; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #8b949e; margin-bottom: 30px; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .stat { background: rgba(255,255,255,0.05); border-radius: 10px; padding: 20px; text-align: center; border: 1px solid rgba(255,215,0,0.3); }
+        .stat-val { font-size: 2em; color: #ffd700; font-weight: bold; }
+        .stat-lbl { color: #8b949e; margin-top: 5px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; }
+        th { background: rgba(255,215,0,0.15); color: #ffd700; padding: 12px 8px; text-align: left; }
+        td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        tr:hover { background: rgba(255,215,0,0.05); }
+        .rank { color: #ffd700; font-weight: bold; }
+        .pos { color: #3fb950; }
+        .neg { color: #f85149; }
+        .tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.75em; margin: 1px; }
+        .tag-l { background: #3fb950; color: #fff; }
+        .tag-s { background: #f85149; color: #fff; }
+        .tag-t { background: #1f6feb; color: #fff; }
+        .section { background: rgba(255,255,255,0.03); border-radius: 15px; padding: 25px; margin: 20px 0; border: 1px solid rgba(255,215,0,0.2); }
+        .section-title { color: #ffd700; font-size: 1.3em; margin-bottom: 15px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
+        .formula { background: rgba(0,0,0,0.5); border: 1px solid #ffd700; border-radius: 10px; padding: 15px; margin: 15px 0; font-family: monospace; }
+        .highlight { background: rgba(255,215,0,0.1); padding: 15px; border-radius: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BTC/USDT 最优EV策略报告</h1>
+        <p class="subtitle">数据范围: 2019-09-08 ~ 2025-11-27 | 生成: 2025-12-05 06:10</p>
+
+        <div class="stats">
+            <div class="stat"><div class="stat-val">38</div><div class="stat-lbl">有效策略</div></div>
+            <div class="stat"><div class="stat-val">83.3%</div><div class="stat-lbl">最高胜率</div></div>
+            <div class="stat"><div class="stat-val">60.00%</div><div class="stat-lbl">最高EV</div></div>
+            <div class="stat"><div class="stat-val">5.00</div><div class="stat-lbl">最高盈亏比</div></div>
+            <div class="stat"><div class="stat-val">14573</div><div class="stat-lbl">总交易次数</div></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">EV计算公式</div>
+            <div class="formula">
+                <strong>EV = (胜率 × 平均盈利%) - ((1-胜率) × 平均亏损%)</strong><br/><br/>
+                • 止盈/止损: 保证金盈亏% (10x杠杆)<br/>
+                • 例: TP50%=现货涨5%, SL20%=现货跌2%
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">TOP 50 最优EV策略</div>
+            <table>
+                <tr>
+                    <th>#</th>
+                    <th>策略</th>
+                    <th>周期</th>
+                    <th>方向</th>
+                    <th>TP/SL</th>
+                    <th>次数</th>
+                    <th>胜率</th>
+                    <th>盈利</th>
+                    <th>亏损</th>
+                    <th>EV</th>
+                    <th>盈亏比</th>
+                    <th>总收益</th>
+                </tr>
+
+                <tr>
+                    <td class="rank">1</td>
+                    <td>4h_负费率+跌>5%+RSI<30</td>
+                    <td><span class="tag tag-t">4h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>100%/20%</td>
+                    <td>3</td>
+                    <td class="pos">66.7%</td>
+                    <td class="pos">+100.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">60.0%</td>
+                    <td>5.0</td>
+                    <td class="pos">180.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">2</td>
+                    <td>4h_负费率+跌>5%+RSI<35</td>
+                    <td><span class="tag tag-t">4h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>100%/20%</td>
+                    <td>3</td>
+                    <td class="pos">66.7%</td>
+                    <td class="pos">+100.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">60.0%</td>
+                    <td>5.0</td>
+                    <td class="pos">180.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">3</td>
+                    <td>1d_负费率+跌>3%+RSI<30</td>
+                    <td><span class="tag tag-t">1d</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>100%/20%</td>
+                    <td>5</td>
+                    <td class="pos">60.0%</td>
+                    <td class="pos">+100.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">52.0%</td>
+                    <td>5.0</td>
+                    <td class="pos">260.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">4</td>
+                    <td>4h_负费率+EMA7金叉</td>
+                    <td><span class="tag tag-t">4h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>80%/20%</td>
+                    <td>9</td>
+                    <td class="pos">66.7%</td>
+                    <td class="pos">+69.7%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">39.79%</td>
+                    <td>3.48</td>
+                    <td class="pos">358.1%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">5</td>
+                    <td>4h_跌>5%+回踩EMA25</td>
+                    <td><span class="tag tag-t">4h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>6</td>
+                    <td class="pos">83.3%</td>
+                    <td class="pos">+46.4%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">35.37%</td>
+                    <td>2.32</td>
+                    <td class="pos">212.2%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">6</td>
+                    <td>4h_跌>5%+回踩EMA25</td>
+                    <td><span class="tag tag-t">4h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>100%/20%</td>
+                    <td>6</td>
+                    <td class="pos">83.3%</td>
+                    <td class="pos">+45.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">34.2%</td>
+                    <td>2.25</td>
+                    <td class="pos">205.2%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">7</td>
+                    <td>4h_负费率+跌>3%+RSI<35</td>
+                    <td><span class="tag tag-t">4h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>11</td>
+                    <td class="pos">72.7%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">30.91%</td>
+                    <td>2.5</td>
+                    <td class="pos">340.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">8</td>
+                    <td>4h_负费率+跌>5%+RSI<35</td>
+                    <td><span class="tag tag-t">4h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>3</td>
+                    <td class="pos">66.7%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">26.67%</td>
+                    <td>2.5</td>
+                    <td class="pos">80.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">9</td>
+                    <td>4h_负费率+跌>5%+RSI<30</td>
+                    <td><span class="tag tag-t">4h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>3</td>
+                    <td class="pos">66.7%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">26.67%</td>
+                    <td>2.5</td>
+                    <td class="pos">80.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">10</td>
+                    <td>4h_负费率+EMA7金叉</td>
+                    <td><span class="tag tag-t">4h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>9</td>
+                    <td class="pos">66.7%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">26.67%</td>
+                    <td>2.5</td>
+                    <td class="pos">240.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">11</td>
+                    <td>4h_负费率+跌>3%+RSI<30</td>
+                    <td><span class="tag tag-t">4h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>9</td>
+                    <td class="pos">66.7%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">26.67%</td>
+                    <td>2.5</td>
+                    <td class="pos">240.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">12</td>
+                    <td>4h_负费率+MACD金叉</td>
+                    <td><span class="tag tag-t">4h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>80%/20%</td>
+                    <td>14</td>
+                    <td class="pos">50.0%</td>
+                    <td class="pos">+70.9%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">25.46%</td>
+                    <td>3.55</td>
+                    <td class="pos">356.4%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">13</td>
+                    <td>1d_FNG≤15+跌>5%+RSI<35</td>
+                    <td><span class="tag tag-t">1d</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>11</td>
+                    <td class="pos">63.6%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">24.55%</td>
+                    <td>2.5</td>
+                    <td class="pos">270.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">14</td>
+                    <td>1d_FNG≤15+跌>5%+RSI<30</td>
+                    <td><span class="tag tag-t">1d</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>10</td>
+                    <td class="pos">60.0%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">22.0%</td>
+                    <td>2.5</td>
+                    <td class="pos">220.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">15</td>
+                    <td>1d_负费率+跌>3%+RSI<30</td>
+                    <td><span class="tag tag-t">1d</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>5</td>
+                    <td class="pos">60.0%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">22.0%</td>
+                    <td>2.5</td>
+                    <td class="pos">110.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">16</td>
+                    <td>1d_FNG≤15+跌>3%+RSI<35</td>
+                    <td><span class="tag tag-t">1d</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>16</td>
+                    <td class="pos">56.2%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">19.38%</td>
+                    <td>2.5</td>
+                    <td class="pos">310.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">17</td>
+                    <td>1d_FNG≤15+跌>5%</td>
+                    <td><span class="tag tag-t">1d</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>15</td>
+                    <td class="pos">53.3%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">17.33%</td>
+                    <td>2.5</td>
+                    <td class="pos">260.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">18</td>
+                    <td>1d_跌>3%+RSI<30</td>
+                    <td><span class="tag tag-t">1d</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>55</td>
+                    <td class="pos">50.9%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">15.64%</td>
+                    <td>2.5</td>
+                    <td class="pos">860.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">19</td>
+                    <td>4h_负费率+MACD金叉</td>
+                    <td><span class="tag tag-t">4h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>14</td>
+                    <td class="pos">50.0%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">15.0%</td>
+                    <td>2.5</td>
+                    <td class="pos">210.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">20</td>
+                    <td>1d_负费率+RSI<30</td>
+                    <td><span class="tag tag-t">1d</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>12</td>
+                    <td class="pos">50.0%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">15.0%</td>
+                    <td>2.5</td>
+                    <td class="pos">180.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">21</td>
+                    <td>1d_FNG≤20+跌>5%</td>
+                    <td><span class="tag tag-t">1d</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>18</td>
+                    <td class="pos">50.0%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">15.0%</td>
+                    <td>2.5</td>
+                    <td class="pos">270.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">22</td>
+                    <td>4h_跌>3%+回踩EMA25</td>
+                    <td><span class="tag tag-t">4h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>42</td>
+                    <td class="pos">50.0%</td>
+                    <td class="pos">+49.2%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">14.58%</td>
+                    <td>2.46</td>
+                    <td class="pos">612.2%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">23</td>
+                    <td>4h_强负费率</td>
+                    <td><span class="tag tag-t">4h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/15%</td>
+                    <td>11</td>
+                    <td class="pos">45.5%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-15.0%</td>
+                    <td class="pos">14.55%</td>
+                    <td>3.33</td>
+                    <td class="pos">160.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">24</td>
+                    <td>1d_负费率</td>
+                    <td><span class="tag tag-t">1d</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/15%</td>
+                    <td>33</td>
+                    <td class="pos">45.5%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-15.0%</td>
+                    <td class="pos">14.55%</td>
+                    <td>3.33</td>
+                    <td class="pos">480.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">25</td>
+                    <td>1d_负费率</td>
+                    <td><span class="tag tag-t">1d</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>33</td>
+                    <td class="pos">45.5%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">11.82%</td>
+                    <td>2.5</td>
+                    <td class="pos">390.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">26</td>
+                    <td>1d_RSI<25</td>
+                    <td><span class="tag tag-t">1d</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>66</td>
+                    <td class="pos">45.5%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">11.82%</td>
+                    <td>2.5</td>
+                    <td class="pos">780.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">27</td>
+                    <td>4h_强负费率</td>
+                    <td><span class="tag tag-t">4h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>50%/20%</td>
+                    <td>11</td>
+                    <td class="pos">45.5%</td>
+                    <td class="pos">+50.0%</td>
+                    <td class="neg">-20.0%</td>
+                    <td class="pos">11.82%</td>
+                    <td>2.5</td>
+                    <td class="pos">130.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">28</td>
+                    <td>4h_强负费率</td>
+                    <td><span class="tag tag-t">4h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>30%/10%</td>
+                    <td>12</td>
+                    <td class="pos">50.0%</td>
+                    <td class="pos">+30.0%</td>
+                    <td class="neg">-10.0%</td>
+                    <td class="pos">10.0%</td>
+                    <td>3.0</td>
+                    <td class="pos">120.0%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">29</td>
+                    <td>1h_MACD金叉</td>
+                    <td><span class="tag tag-t">1h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>150%/30%</td>
+                    <td>1308</td>
+                    <td class="pos">46.9%</td>
+                    <td class="pos">+28.1%</td>
+                    <td class="neg">-21.0%</td>
+                    <td class="pos">1.99%</td>
+                    <td>1.34</td>
+                    <td class="pos">2596.7%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">30</td>
+                    <td>1h_站上EMA99</td>
+                    <td><span class="tag tag-t">1h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>150%/30%</td>
+                    <td>1338</td>
+                    <td class="pos">46.0%</td>
+                    <td class="pos">+27.6%</td>
+                    <td class="neg">-20.3%</td>
+                    <td class="pos">1.71%</td>
+                    <td>1.36</td>
+                    <td class="pos">2290.6%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">31</td>
+                    <td>1h_RSI<35</td>
+                    <td><span class="tag tag-t">1h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>150%/30%</td>
+                    <td>1427</td>
+                    <td class="pos">47.5%</td>
+                    <td class="pos">+28.9%</td>
+                    <td class="neg">-23.3%</td>
+                    <td class="pos">1.5%</td>
+                    <td>1.24</td>
+                    <td class="pos">2133.8%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">32</td>
+                    <td>1h_EMA7金叉</td>
+                    <td><span class="tag tag-t">1h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>150%/30%</td>
+                    <td>905</td>
+                    <td class="pos">46.5%</td>
+                    <td class="pos">+26.2%</td>
+                    <td class="neg">-20.6%</td>
+                    <td class="pos">1.16%</td>
+                    <td>1.27</td>
+                    <td class="pos">1049.6%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">33</td>
+                    <td>1h_RSI<30</td>
+                    <td><span class="tag tag-t">1h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>150%/30%</td>
+                    <td>1119</td>
+                    <td class="pos">46.4%</td>
+                    <td class="pos">+29.5%</td>
+                    <td class="neg">-23.7%</td>
+                    <td class="pos">0.98%</td>
+                    <td>1.25</td>
+                    <td class="pos">1095.7%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">34</td>
+                    <td>1h_连跌3</td>
+                    <td><span class="tag tag-t">1h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>150%/30%</td>
+                    <td>1544</td>
+                    <td class="pos">47.0%</td>
+                    <td class="pos">+27.1%</td>
+                    <td class="neg">-22.4%</td>
+                    <td class="pos">0.87%</td>
+                    <td>1.21</td>
+                    <td class="pos">1347.9%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">35</td>
+                    <td>1h_回踩EMA25</td>
+                    <td><span class="tag tag-t">1h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>150%/30%</td>
+                    <td>2016</td>
+                    <td class="pos">47.5%</td>
+                    <td class="pos">+25.6%</td>
+                    <td class="neg">-21.5%</td>
+                    <td class="pos">0.86%</td>
+                    <td>1.19</td>
+                    <td class="pos">1739.1%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">36</td>
+                    <td>1h_回踩EMA25</td>
+                    <td><span class="tag tag-t">1h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>100%/25%</td>
+                    <td>2171</td>
+                    <td class="pos">45.0%</td>
+                    <td class="pos">+26.2%</td>
+                    <td class="neg">-19.9%</td>
+                    <td class="pos">0.81%</td>
+                    <td>1.31</td>
+                    <td class="pos">1764.2%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">37</td>
+                    <td>1h_触BB下轨</td>
+                    <td><span class="tag tag-t">1h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>150%/30%</td>
+                    <td>1113</td>
+                    <td class="pos">49.2%</td>
+                    <td class="pos">+26.7%</td>
+                    <td class="neg">-24.4%</td>
+                    <td class="pos">0.8%</td>
+                    <td>1.1</td>
+                    <td class="pos">889.3%</td>
+                </tr>
+
+                <tr>
+                    <td class="rank">38</td>
+                    <td>1h_触BB下轨</td>
+                    <td><span class="tag tag-t">1h</span></td>
+                    <td><span class="tag tag-l">多</span></td>
+                    <td>100%/25%</td>
+                    <td>1187</td>
+                    <td class="pos">45.7%</td>
+                    <td class="pos">+26.7%</td>
+                    <td class="neg">-22.0%</td>
+                    <td class="pos">0.28%</td>
+                    <td>1.21</td>
+                    <td class="pos">329.6%</td>
+                </tr>
+
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="section-title">策略类型EV排名</div>
+            <div class="highlight">
+<p><strong>跌>5%</strong>: 平均EV 34.78%, 平均胜率 83.3%, 总交易 12次</p><p><strong>负费率</strong>: 平均EV 30.21%, 平均胜率 60.0%, 总交易 166次</p><p><strong>FNG≤15</strong>: 平均EV 20.81%, 平均胜率 58.3%, 总交易 52次</p><p><strong>跌>3%</strong>: 平均EV 15.11%, 平均胜率 50.5%, 总交易 97次</p><p><strong>FNG≤20</strong>: 平均EV 15.00%, 平均胜率 50.0%, 总交易 18次</p><p><strong>强负费率</strong>: 平均EV 12.12%, 平均胜率 47.0%, 总交易 34次</p><p><strong>RSI<25</strong>: 平均EV 11.82%, 平均胜率 45.5%, 总交易 66次</p><p><strong>MACD金叉</strong>: 平均EV 1.99%, 平均胜率 46.9%, 总交易 1308次</p><p><strong>站上EMA99</strong>: 平均EV 1.71%, 平均胜率 46.0%, 总交易 1338次</p><p><strong>RSI<35</strong>: 平均EV 1.50%, 平均胜率 47.5%, 总交易 1427次</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Top 5 策略详解</div>
+            <ul style="margin-left:20px; line-height:2;">
+
+                <li><strong>【1】4h_负费率+跌>5%+RSI<30</strong><br/>
+                    周期:4h | 方向:做多 |
+                    TP/SL:100%/20% |
+                    胜率:66.7% | EV:60.0% |
+                    交易3次 | 盈亏比5.0
+                </li>
+
+                <li><strong>【2】4h_负费率+跌>5%+RSI<35</strong><br/>
+                    周期:4h | 方向:做多 |
+                    TP/SL:100%/20% |
+                    胜率:66.7% | EV:60.0% |
+                    交易3次 | 盈亏比5.0
+                </li>
+
+                <li><strong>【3】1d_负费率+跌>3%+RSI<30</strong><br/>
+                    周期:1d | 方向:做多 |
+                    TP/SL:100%/20% |
+                    胜率:60.0% | EV:52.0% |
+                    交易5次 | 盈亏比5.0
+                </li>
+
+                <li><strong>【4】4h_负费率+EMA7金叉</strong><br/>
+                    周期:4h | 方向:做多 |
+                    TP/SL:80%/20% |
+                    胜率:66.7% | EV:39.79% |
+                    交易9次 | 盈亏比3.48
+                </li>
+
+                <li><strong>【5】4h_跌>5%+回踩EMA25</strong><br/>
+                    周期:4h | 方向:做多 |
+                    TP/SL:50%/20% |
+                    胜率:83.3% | EV:35.37% |
+                    交易6次 | 盈亏比2.32
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="section">
+            <div class="section-title">风险提示</div>
+            <ul style="margin-left:20px; line-height:1.8; color:#d29922;">
+                <li>历史回测≠未来收益</li>
+                <li>实盘有滑点、手续费成本</li>
+                <li>建议半凯利仓位控制风险</li>
+                <li>单笔最大亏损≤总资金10%</li>
+            </ul>
+        </div>
+
+        <div style="text-align:center; margin-top:40px; color:#8b949e;">
+            <p>BTC/USDT 最优EV策略报告 v2.0</p>
+            <p>2025年12月05日</p>
+        </div>
+    </div>
+</body>
+</html>
