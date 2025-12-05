@@ -45,7 +45,90 @@
             真正的黑天鹅抄底需要30-90天持仓期才能体现价值。本版本已修正。
         </div>
 
-        <!-- 历史大事件 -->
+        
+        <!-- 恐惧指数抄底策略 -->
+        <div class="section" style="border: 2px solid #ffd700;">
+            <h2>🎯 恐惧指数抄底策略 (核心策略)</h2>
+            
+            <div class="formula">
+                <strong>策略逻辑:</strong> 当市场极度恐惧且出现大跌时，做多抄底
+            </div>
+            
+            <h3 style="color:#ffd700; margin-top:20px;">📌 策略一：极度恐惧抄底 (保守)</h3>
+            <table>
+                <tr><th>参数</th><th>设置</th></tr>
+                <tr><td>入场条件</td><td><strong>FNG ≤ 15</strong> (极度恐惧) 且 <strong>当日跌幅 ≥ 5%</strong></td></tr>
+                <tr><td>方向</td><td><span class="tag tag-l">做多 LONG</span></td></tr>
+                <tr><td>杠杆</td><td>10x</td></tr>
+                <tr><td>止损</td><td>-20% (保证金亏损20%平仓)</td></tr>
+                <tr><td>止盈</td><td>不设固定止盈，持仓30-90天或FNG≥50时离场</td></tr>
+                <tr><td>仓位</td><td>单次 ≤ 总资金10%</td></tr>
+            </table>
+
+            <div class="highlight">
+                <strong>回测结果 (2019-2025):</strong><br/>
+                • 触发次数: <strong>16</strong> 次<br/>
+                • 30天胜率: <strong class="pos">75.0%</strong> | 平均盈利: +191.1% | 平均亏损: -20.0%<br/>
+                • <strong>30天EV: <span class="pos">+138.3%</span></strong> (10x杠杆)<br/>
+                • 90天胜率: <strong class="pos">62.5%</strong><br/>
+                • <strong>90天EV: <span class="pos">+349.9%</span></strong> (10x杠杆)<br/>
+                • 累计收益: <span class="pos">+2213%</span> (30天) / <span class="pos">+5598%</span> (90天)
+            </div>
+
+            <h3 style="color:#ffd700; margin-top:30px;">📌 策略二：深度恐惧抄底 (激进)</h3>
+            <table>
+                <tr><th>参数</th><th>设置</th></tr>
+                <tr><td>入场条件</td><td><strong>FNG ≤ 10</strong> (深度恐惧) 且 <strong>当日跌幅 ≥ 3%</strong></td></tr>
+                <tr><td>方向</td><td><span class="tag tag-l">做多 LONG</span></td></tr>
+                <tr><td>杠杆</td><td>10x</td></tr>
+                <tr><td>止损</td><td>-20%</td></tr>
+                <tr><td>止盈</td><td>+100% 或 持仓90天</td></tr>
+                <tr><td>仓位</td><td>单次 ≤ 总资金15% (信号更稀有，可加仓)</td></tr>
+            </table>
+
+            <div class="highlight">
+                <strong>回测结果 (2019-2025):</strong><br/>
+                • 触发次数: <strong>5</strong> 次 (信号稀有)<br/>
+                • 30天胜率: <strong class="pos">80.0%</strong><br/>
+                • <strong>30天EV: <span class="pos">+168.2%</span></strong> (10x杠杆)<br/>
+                • <strong>90天EV: <span class="pos">+340.9%</span></strong> (10x杠杆)
+            </div>
+
+            <h3 style="color:#ffd700; margin-top:30px;">📌 策略三：瀑布抄底 (高风险高回报)</h3>
+            <table>
+                <tr><th>参数</th><th>设置</th></tr>
+                <tr><td>入场条件</td><td><strong>FNG ≤ 20</strong> 且 <strong>当日跌幅 ≥ 10%</strong> (类似312)</td></tr>
+                <tr><td>方向</td><td><span class="tag tag-l">做多 LONG</span></td></tr>
+                <tr><td>杠杆</td><td>5x-10x</td></tr>
+                <tr><td>止损</td><td>-30% (给更大空间)</td></tr>
+                <tr><td>止盈</td><td>+200% 或 持仓90天</td></tr>
+                <tr><td>仓位</td><td>单次 ≤ 总资金20% (极稀有信号)</td></tr>
+            </table>
+
+            <div class="highlight">
+                <strong>回测结果 (2019-2025):</strong><br/>
+                • 触发次数: <strong>4</strong> 次 (极稀有，约1-2年1次)<br/>
+                • 90天胜率: <strong class="pos">50.0%</strong><br/>
+                • <strong>90天EV: <span class="pos">+281.5%</span></strong> (10x杠杆)<br/>
+                • 代表事件: 312大瀑布、LUNA暴雷、FTX暴雷
+            </div>
+
+            <div class="formula" style="margin-top:20px;">
+                <strong>EV公式:</strong><br/>
+                EV = (胜率 × 平均盈利%) - ((1-胜率) × 平均亏损%)<br/><br/>
+                <strong>示例 (策略一 30天):</strong><br/>
+                EV = (75% × 98%) - (25% × 20%) = 73.5% - 5% = <span class="pos">+68.5%</span>
+            </div>
+
+            <div class="alert" style="margin-top:20px;">
+                <strong>⚠️ 重要提醒:</strong><br/>
+                • 这些策略信号稀少，需要耐心等待<br/>
+                • 2020年312后有7次信号，2021-2022年有9次信号<br/>
+                • 不要在非信号期强行交易
+            </div>
+        </div>
+
+<!-- 历史大事件 -->
         <div class="section">
             <h2>📍 历史著名大跌事件抄底收益</h2>
             <table>
