@@ -13,3 +13,4 @@ build/
 trading_strategy/combo_backtest/*.csv
 trading_strategy/combo_backtest/*.zip
 __pycache__/
+binance_kline_data/
